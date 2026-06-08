@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGAMA · Аналитика WB · 31.05 – 07.06.2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0c10;
+  --bg2:#11141a;
+  --bg3:#181c24;
+  --bg4:#1e2330;
+  --border:#ffffff12;
+  --border2:#ffffff20;
+  --text:#f0f2f8;
+  --text2:#8892a4;
+  --text3:#525c6e;
+  --accent:#4f8ef7;
+  --accent2:#6366f1;
+  --green:#22c55e;
+  --red:#ef4444;
+  --amber:#f59e0b;
+  --cyan:#06b6d4;
+  --purple:#a855f7;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
+
+/* HEADER */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,#4f8ef7,#6366f1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;letter-spacing:.5px}
+.logo-text{font-size:15px;font-weight:600;color:var(--text)}
+.logo-sub{font-size:12px;color:var(--text2);margin-top:1px}
+.header-right{display:flex;align-items:center;gap:16px}
+.period-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--text2)}
+.period-badge span{color:var(--text);font-weight:500}
+.wb-badge{background:#cb11ab18;border:1px solid #cb11ab40;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;color:#cb11ab}
+
+/* TABS */
+.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:4px}
+.tab{padding:14px 20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* CONTENT */
+.content{padding:28px 32px;max-width:1400px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px}
+.card-sm{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
+
+/* METRIC CARDS */
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-color,var(--accent))}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:500}
+.metric-value{font-size:28px;font-weight:700;color:var(--text);margin:6px 0 4px;line-height:1}
+.metric-sub{font-size:12px;color:var(--text2)}
+.metric-delta{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:6px}
+.delta-up{background:#22c55e18;color:#22c55e}
+.delta-down{background:#ef444418;color:#ef4444}
+.delta-neutral{background:#f59e0b18;color:#f59e0b}
+
+/* SECTION TITLES */
+.section-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.block-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.block-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+
+/* CHART WRAPPER */
+.chart-wrap{position:relative;width:100%}
+
+/* ARTICLE TABLE */
+.art-table{width:100%;border-collapse:collapse}
+.art-table th{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:500}
+.art-table td{padding:12px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.art-table tr:last-child td{border-bottom:none}
+.art-table tr:hover td{background:var(--bg3)}
+.art-name{font-weight:500;color:var(--text);font-size:13px;margin-bottom:2px}
+.art-category{font-size:11px;color:var(--text3)}
+.art-wb{font-size:11px;color:var(--text3);margin-top:1px}
+.num{font-weight:600;color:var(--text)}
+.num-muted{color:var(--text2);font-size:12px;margin-top:1px}
+.rating-stars{display:flex;align-items:center;gap:4px}
+.rating-val{font-weight:600;color:var(--text)}
+.star{color:#f59e0b;font-size:12px}
+.badge-green{background:#22c55e18;color:#22c55e;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+.badge-red{background:#ef444418;color:#ef4444;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+.badge-amber{background:#f59e0b18;color:#f59e0b;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+.badge-blue{background:#4f8ef718;color:#4f8ef7;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+
+/* PROGRESS BAR */
+.prog-wrap{display:flex;align-items:center;gap:10px}
+.prog-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .8s ease}
+.prog-val{font-size:12px;font-weight:600;color:var(--text);min-width:36px;text-align:right}
+
+/* WAREHOUSE TABLE */
+.wh-table{width:100%;border-collapse:collapse}
+.wh-table th{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500;text-align:left}
+.wh-table td{padding:10px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.wh-table tr:last-child td{border-bottom:none}
+.wh-table tr:hover td{background:var(--bg3)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.dot-green{background:#22c55e}
+.dot-amber{background:#f59e0b}
+.dot-red{background:#ef4444}
+
+/* GEO BARS */
+.geo-item{margin-bottom:14px}
+.geo-name{font-size:12px;color:var(--text2);margin-bottom:5px;display:flex;justify-content:space-between}
+.geo-name span{font-weight:600;color:var(--text)}
+
+/* FUNNEL VIZ */
+.funnel-step{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px;position:relative}
+.funnel-arrow{color:var(--text3);font-size:16px;text-align:center;margin:2px 0}
+.funnel-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.funnel-data{flex:1}
+.funnel-name{font-size:12px;color:var(--text2)}
+.funnel-val{font-size:20px;font-weight:700;color:var(--text)}
+.funnel-conv{font-size:11px;color:var(--text3);margin-top:1px}
+.funnel-bar-wrap{width:100px;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;flex-shrink:0}
+.funnel-bar-fill{height:100%;background:var(--accent);transition:width 1s ease}
+
+/* ALERT CARDS */
+.alert{border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.alert-body{font-size:12px;line-height:1.5}
+.alert-warn{background:#f59e0b10;border:1px solid #f59e0b30}
+.alert-warn .alert-title{color:#f59e0b}
+.alert-warn .alert-body{color:#f59e0b99}
+.alert-danger{background:#ef444410;border:1px solid #ef444430}
+.alert-danger .alert-title{color:#ef4444}
+.alert-danger .alert-body{color:#ef444499}
+.alert-success{background:#22c55e10;border:1px solid #22c55e30}
+.alert-success .alert-title{color:#22c55e}
+.alert-success .alert-body{color:#22c55e99}
+.alert-info{background:#4f8ef710;border:1px solid #4f8ef730}
+.alert-info .alert-title{color:#4f8ef7}
+.alert-info .alert-body{color:#4f8ef799}
+
+/* SCORE RING */
+.score-ring-wrap{display:flex;align-items:center;gap:20px}
+.score-ring{position:relative;width:90px;height:90px}
+.score-ring svg{transform:rotate(-90deg)}
+.score-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.score-center .val{font-size:20px;font-weight:700;color:var(--text)}
+.score-center .lbl{font-size:9px;color:var(--text3);text-transform:uppercase}
+
+/* MINI SPARKLINE */
+.sparkline-row{display:flex;align-items:center;gap:10px}
+
+/* SEPARATOR */
+.sep{height:1px;background:var(--border);margin:20px 0}
+
+/* FOOTER */
+.footer{text-align:center;padding:32px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:40px}
+.footer strong{color:var(--accent)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.page.active .card,.page.active .metric,.page.active .art-table,.page.active .alert{animation:fadeUp .35s ease both}
+.page.active .card:nth-child(2){animation-delay:.05s}
+.page.active .card:nth-child(3){animation-delay:.1s}
+.page.active .card:nth-child(4){animation-delay:.15s}
+.page.active .metric:nth-child(2){animation-delay:.04s}
+.page.active .metric:nth-child(3){animation-delay:.08s}
+.page.active .metric:nth-child(4){animation-delay:.12s}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">IG</div>
+    <div>
+      <div class="logo-text">ИП Игнатьева Г.Р. · IGAMA</div>
+      <div class="logo-sub">Еженедельный отчёт · подготовлен ScaleUP</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge">Период: <span>31.05 — 07.06.2026</span></div>
+    <div class="wb-badge">Wildberries</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('overview',this)">📊 Обзор</div>
+  <div class="tab" onclick="showPage('funnel',this)">🎯 Воронка продаж</div>
+  <div class="tab" onclick="showPage('articles',this)">📦 Товары</div>
+  <div class="tab" onclick="showPage('stocks',this)">🏪 Остатки</div>
+  <div class="tab" onclick="showPage('geo',this)">🗺 География</div>
+  <div class="tab" onclick="showPage('alerts',this)">⚠️ Рекомендации</div>
+</div>
+
+<!-- ==================== PAGE: OVERVIEW ==================== -->
+<div id="page-overview" class="page content active">
+
+  <div class="grid4" style="margin-bottom:20px">
+    <div class="metric" style="--accent-color:#4f8ef7">
+      <div class="metric-label">Выручка (заказы)</div>
+      <div class="metric-value">320 198 ₽</div>
+      <div class="metric-sub">за 8 дней</div>
+      <div class="metric-delta delta-up">↑ +65% к пред. периоду</div>
+    </div>
+    <div class="metric" style="--accent-color:#22c55e">
+      <div class="metric-label">Заказов, шт.</div>
+      <div class="metric-value">428</div>
+      <div class="metric-sub">в среднем 54/день</div>
+      <div class="metric-delta delta-up">↑ +58% к пред. периоду</div>
+    </div>
+    <div class="metric" style="--accent-color:#a855f7">
+      <div class="metric-label">Переходов в карточки</div>
+      <div class="metric-value">9 265</div>
+      <div class="metric-sub">по всем артикулам</div>
+      <div class="metric-delta delta-up">↑ +41% к пред. периоду</div>
+    </div>
+    <div class="metric" style="--accent-color:#f59e0b">
+      <div class="metric-label">В корзину добавили</div>
+      <div class="metric-value">1 727</div>
+      <div class="metric-sub">конверсия 18.6%</div>
+      <div class="metric-delta delta-up">↑ +52% к пред. периоду</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="block-title">Динамика заказов по дням</div>
+      <div class="block-sub">шт., все артикулы</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartOrders" aria-label="Заказы по дням">Заказы: 53, 56, 51, 63, 60, 59, 48, 38</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Выручка по дням</div>
+      <div class="block-sub">₽, все артикулы</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartRevenue" aria-label="Выручка по дням">37934, 40119, 36582, 43308, 52602, 48029, 35190, 26434</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3" style="margin-bottom:20px">
+    <div class="card">
+      <div class="section-title">Доля артикулов в выручке</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="chartPie" aria-label="Доля артикулов в выручке">Блесна тейл 54.3%, ПОДСАК 31.7%, Силиконовые 9.7%, Раттлин 3.4%, Ратлины 0.9%</canvas>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:#4f8ef7;display:inline-block"></span>Блесна тейл — 54.3%</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:#22c55e;display:inline-block"></span>ПОДСАК — 31.7%</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:#a855f7;display:inline-block"></span>Силиконовые — 9.7%</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>Раттлин — 3.4%</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:#06b6d4;display:inline-block"></span>Ратлины — 0.9%</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Ключевые конверсии</div>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:12px;color:var(--text2)">Переходы → Корзина</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text)">18.6%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:18.6%;background:#4f8ef7"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:12px;color:var(--text2)">Переходы → Заказ</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text)">4.6%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:15%;background:#22c55e"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:12px;color:var(--text2)">Средний % выкупа</span>
+            <span style="font-size:12px;font-weight:600;color:var(--green)">95.4%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:95.4%;background:#22c55e"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:12px;color:var(--text2)">Локальные заказы</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text)">49.3%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:49.3%;background:#a855f7"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:12px;color:var(--text2)">В пути к покупателю</span>
+            <span style="font-size:12px;font-weight:600;color:var(--amber)">73 шт.</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:45%;background:#f59e0b"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Рейтинги карточек</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:10px 12px">
+          <div style="font-size:12px;color:var(--text2)">Блесна тейл</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="color:#f59e0b">★★★★★</span>
+            <span style="font-weight:600;font-size:13px">4.8</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:10px 12px">
+          <div style="font-size:12px;color:var(--text2)">Силиконовые 65мм</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="color:#f59e0b">★★★★★</span>
+            <span style="font-weight:600;font-size:13px">4.9</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:10px 12px">
+          <div style="font-size:12px;color:var(--text2)">ПОДСАК складной</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="color:#f59e0b">★★★★★</span>
+            <span style="font-weight:600;font-size:13px">4.8</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:10px 12px">
+          <div style="font-size:12px;color:var(--text2)">Раттлин на судака</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="color:#f59e0b">★★★★★</span>
+            <span style="font-weight:600;font-size:13px">5.0</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:10px 12px">
+          <div style="font-size:12px;color:var(--text2)">Ратлины</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="color:#f59e0b">★★★★★</span>
+            <span style="font-weight:600;font-size:13px">4.6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== PAGE: FUNNEL ==================== -->
+<div id="page-funnel" class="page content">
+
+  <div class="grid2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="block-title">Воронка продаж</div>
+      <div class="block-sub">Суммарно по всем артикулам, период 31.05 – 07.06</div>
+
+      <div class="funnel-step" style="border-color:#4f8ef740">
+        <div class="funnel-icon" style="background:#4f8ef718">👁</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Показы карточек</div>
+          <div class="funnel-val" style="color:#4f8ef7">~180 000</div>
+          <div class="funnel-conv">расчётная оценка</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:100%;background:#4f8ef7"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 5.1% CTR</div>
+
+      <div class="funnel-step" style="border-color:#a855f740">
+        <div class="funnel-icon" style="background:#a855f718">🖱</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Переходов в карточку</div>
+          <div class="funnel-val" style="color:#a855f7">9 265</div>
+          <div class="funnel-conv">все артикулы</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:100%;background:#a855f7"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 18.6%</div>
+
+      <div class="funnel-step" style="border-color:#06b6d440">
+        <div class="funnel-icon" style="background:#06b6d418">🛒</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Добавили в корзину</div>
+          <div class="funnel-val" style="color:#06b6d4">1 727</div>
+          <div class="funnel-conv">18.6% от переходов</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:18.6%;background:#06b6d4"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 24.8%</div>
+
+      <div class="funnel-step" style="border-color:#22c55e40">
+        <div class="funnel-icon" style="background:#22c55e18">✅</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Заказали, шт.</div>
+          <div class="funnel-val" style="color:#22c55e">428</div>
+          <div class="funnel-conv">4.6% от переходов · 24.8% из корзины</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:4.6%;background:#22c55e"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 95.4% выкуп</div>
+
+      <div class="funnel-step" style="border-color:#f59e0b40">
+        <div class="funnel-icon" style="background:#f59e0b18">📦</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Выкуплено, шт.</div>
+          <div class="funnel-val" style="color:#f59e0b">~408</div>
+          <div class="funnel-conv">95.4% средний процент выкупа</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:4.4%;background:#f59e0b"></div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div class="card">
+        <div class="block-title">Заказы vs Корзина по дням</div>
+        <div class="block-sub">сравнение активности</div>
+        <div class="chart-wrap" style="height:190px">
+          <canvas id="chartFunnelDays" aria-label="Заказы и корзина по дням">226,53; 215,56; 209,51; 197,63; 216,60; 243,59; 246,48; 175,38</canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="block-title">Переходы по дням</div>
+        <div class="block-sub">трафик на карточки</div>
+        <div class="chart-wrap" style="height:170px">
+          <canvas id="chartVisits" aria-label="Переходы по дням">1086,1172,1191,1229,1282,1164,1234,907</canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid4">
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Конверсия в корзину</div>
+      <div style="font-size:26px;font-weight:700;color:#06b6d4">18.6%</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">↑ отличный показатель</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Конверсия в заказ</div>
+      <div style="font-size:26px;font-weight:700;color:#22c55e">4.6%</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">из переходов → заказы</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Средний выкуп</div>
+      <div style="font-size:26px;font-weight:700;color:#22c55e">95.4%</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">очень высокий показатель</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Средний чек</div>
+      <div style="font-size:26px;font-weight:700;color:#f59e0b">748 ₽</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">320 198 ₽ / 428 шт.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: ARTICLES ==================== -->
+<div id="page-articles" class="page content">
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="block-title">Детальная аналитика по артикулам</div>
+    <div class="block-sub">Период 31.05 – 07.06.2026 · сравнение с предыдущим периодом</div>
+    <div style="overflow-x:auto">
+    <table class="art-table">
+      <thead>
+        <tr>
+          <th>Товар</th>
+          <th>Заказы, шт.</th>
+          <th>Выручка, ₽</th>
+          <th>Выкуп %</th>
+          <th>Переходы</th>
+          <th>Конв. в заказ</th>
+          <th>Ср. цена</th>
+          <th>Остаток WB</th>
+          <th>Рейтинг</th>
+          <th>Доля выручки</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="art-name">Блесна тейл спиннер</div>
+            <div class="art-category">Блесны рыболовные</div>
+            <div class="art-wb">WB: 158293481</div>
+          </td>
+          <td>
+            <div class="num">290</div>
+            <div class="num-muted">пред: 157 <span class="badge-green">+85%</span></div>
+          </td>
+          <td>
+            <div class="num">173 986 ₽</div>
+            <div class="num-muted">пред: 94 195 ₽</div>
+          </td>
+          <td><span class="badge-green">96%</span></td>
+          <td>
+            <div class="num">4 995</div>
+            <div class="num-muted">пред: 2 417</div>
+          </td>
+          <td><span class="badge-green">25%</span></td>
+          <td class="num">600 ₽</td>
+          <td>
+            <div class="num">42</div>
+            <div class="num-muted badge-amber" style="display:inline-block">низкий!</div>
+          </td>
+          <td>
+            <div style="color:#f59e0b;font-size:14px">★ 4.8</div>
+          </td>
+          <td>
+            <div style="font-weight:600;color:#4f8ef7">54.3%</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="art-name">ПОДСАК складной</div>
+            <div class="art-category">Подсачники</div>
+            <div class="art-wb">WB: 389870872</div>
+          </td>
+          <td>
+            <div class="num">47</div>
+            <div class="num-muted">пред: 29 <span class="badge-green">+62%</span></div>
+          </td>
+          <td>
+            <div class="num">101 521 ₽</div>
+            <div class="num-muted">пред: 63 803 ₽</div>
+          </td>
+          <td><span class="badge-green">97%</span></td>
+          <td>
+            <div class="num">1 742</div>
+            <div class="num-muted">пред: 1 822</div>
+          </td>
+          <td><span class="badge-green">32%</span></td>
+          <td class="num">2 160 ₽</td>
+          <td>
+            <div class="num">19</div>
+            <div class="num-muted badge-red" style="display:inline-block">критично!</div>
+          </td>
+          <td>
+            <div style="color:#f59e0b;font-size:14px">★ 4.8</div>
+          </td>
+          <td>
+            <div style="font-weight:600;color:#22c55e">31.7%</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="art-name">Силиконовые приманки 65мм</div>
+            <div class="art-category">Приманки мягкие</div>
+            <div class="art-wb">WB: 158311067</div>
+          </td>
+          <td>
+            <div class="num">66</div>
+            <div class="num-muted">пред: 17 <span class="badge-green">+288%</span></div>
+          </td>
+          <td>
+            <div class="num">31 152 ₽</div>
+            <div class="num-muted">пред: 8 262 ₽</div>
+          </td>
+          <td><span class="badge-green">88%</span></td>
+          <td>
+            <div class="num">1 086</div>
+            <div class="num-muted">пред: 361</div>
+          </td>
+          <td><span class="badge-green">24%</span></td>
+          <td class="num">472 ₽</td>
+          <td>
+            <div class="num">170</div>
+            <div class="num-muted" style="color:var(--green)">норма ✓</div>
+          </td>
+          <td>
+            <div style="color:#f59e0b;font-size:14px">★ 4.9</div>
+          </td>
+          <td>
+            <div style="font-weight:600;color:#a855f7">9.7%</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="art-name">Раттлин на судака</div>
+            <div class="art-category">Раттлины</div>
+            <div class="art-wb">WB: 648381505</div>
+          </td>
+          <td>
+            <div class="num">20</div>
+            <div class="num-muted">пред: 62 <span class="badge-red">-68%</span></div>
+          </td>
+          <td>
+            <div class="num">10 764 ₽</div>
+            <div class="num-muted">пред: 20 500 ₽</div>
+          </td>
+          <td><span class="badge-green">91%</span></td>
+          <td>
+            <div class="num">485</div>
+            <div class="num-muted">пред: 481</div>
+          </td>
+          <td><span class="badge-amber">25%</span></td>
+          <td class="num">538 ₽</td>
+          <td>
+            <div class="num">171</div>
+            <div class="num-muted" style="color:var(--green)">норма ✓</div>
+          </td>
+          <td>
+            <div style="color:#f59e0b;font-size:14px">★ 5.0</div>
+          </td>
+          <td>
+            <div style="font-weight:600;color:#f59e0b">3.4%</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="art-name">Ратлины (набор)</div>
+            <div class="art-category">Блесны рыболовные</div>
+            <div class="art-wb">WB: 195517926</div>
+          </td>
+          <td>
+            <div class="num">5</div>
+            <div class="num-muted">пред: 2 <span class="badge-green">+150%</span></div>
+          </td>
+          <td>
+            <div class="num">2 775 ₽</div>
+            <div class="num-muted">пред: 1 140 ₽</div>
+          </td>
+          <td><span class="badge-green">100%</span></td>
+          <td>
+            <div class="num">836</div>
+            <div class="num-muted">пред: 388</div>
+          </td>
+          <td><span class="badge-amber">17%</span></td>
+          <td class="num">555 ₽</td>
+          <td>
+            <div class="num">32</div>
+            <div class="num-muted" style="color:var(--amber)">внимание</div>
+          </td>
+          <td>
+            <div style="color:#f59e0b;font-size:14px">★ 4.6</div>
+          </td>
+          <td>
+            <div style="font-weight:600;color:#06b6d4">0.9%</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="art-name">Набор балансиров</div>
+            <div class="art-category">Балансиры</div>
+            <div class="art-wb">WB: 291136708</div>
+          </td>
+          <td>
+            <div class="num">0</div>
+            <div class="num-muted">пред: 1 <span class="badge-red">-100%</span></div>
+          </td>
+          <td>
+            <div class="num">0 ₽</div>
+            <div class="num-muted">пред: 880 ₽</div>
+          </td>
+          <td><span class="badge-red">0%</span></td>
+          <td>
+            <div class="num">121</div>
+            <div class="num-muted">мало трафика</div>
+          </td>
+          <td><span class="badge-red">0%</span></td>
+          <td class="num">880 ₽</td>
+          <td>
+            <div class="num">352</div>
+            <div class="num-muted badge-red" style="display:inline-block">застой!</div>
+          </td>
+          <td>
+            <div style="color:#f59e0b;font-size:14px">★ 4.9</div>
+          </td>
+          <td>
+            <div style="font-weight:600;color:var(--text3)">0%</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="block-title">Заказы по артикулам — динамика</div>
+      <div class="block-sub">шт. по дням</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartArtDyn" aria-label="Заказы по артикулам по дням">Динамика по артикулам</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Сравнение: текущий vs предыдущий период</div>
+      <div class="block-sub">Заказы, шт.</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartCompare" aria-label="Сравнение периодов">Текущий: 290,66,47,20,5,0. Предыдущий: 157,17,29,62,2,1</canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== PAGE: STOCKS ==================== -->
+<div id="page-stocks" class="page content">
+
+  <div class="grid4" style="margin-bottom:20px">
+    <div class="metric" style="--accent-color:#22c55e">
+      <div class="metric-label">Всего на складах</div>
+      <div class="metric-value">746</div>
+      <div class="metric-sub">шт. на 07.06</div>
+    </div>
+    <div class="metric" style="--accent-color:#ef4444">
+      <div class="metric-label">В дефиците</div>
+      <div class="metric-value">2</div>
+      <div class="metric-sub">артикула требуют поставки</div>
+    </div>
+    <div class="metric" style="--accent-color:#f59e0b">
+      <div class="metric-label">В пути к покупателю</div>
+      <div class="metric-value">73</div>
+      <div class="metric-sub">шт. в транзите</div>
+    </div>
+    <div class="metric" style="--accent-color:#a855f7">
+      <div class="metric-label">Стоимость остатков</div>
+      <div class="metric-value">534 458 ₽</div>
+      <div class="metric-sub">суммарно все склады</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="block-title">Динамика остатков по дням</div>
+      <div class="block-sub">шт. по каждому артикулу</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartStocks" aria-label="Остатки по дням">Силиконовые, Ратлины, Балансиры, ПОДСАК, Раттлин</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Остатки по складам на 07.06</div>
+      <div class="block-sub">топ складов по количеству</div>
+      <div style="overflow-x:auto">
+      <table class="wh-table">
+        <thead>
+          <tr>
+            <th>Регион / Склад</th>
+            <th>Остаток</th>
+            <th>Стоимость</th>
+            <th>Оборачив.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="dot dot-green"></span>Екатеринбург</td><td><strong>225</strong></td><td>154 783 ₽</td><td>29д 3ч</td></tr>
+          <tr><td><span class="dot dot-green"></span>Коледино</td><td><strong>101</strong></td><td>83 325 ₽</td><td>>999д ⚠️</td></tr>
+          <tr><td><span class="dot dot-green"></span>Казань</td><td><strong>105</strong></td><td>70 403 ₽</td><td>14д 19ч</td></tr>
+          <tr><td><span class="dot dot-green"></span>Тула</td><td><strong>86</strong></td><td>57 957 ₽</td><td>13д 23ч</td></tr>
+          <tr><td><span class="dot dot-green"></span>Новосемейкино</td><td><strong>77</strong></td><td>47 961 ₽</td><td>19д 17ч</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Электросталь</td><td><strong>51</strong></td><td>40 375 ₽</td><td>52д 0ч</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Владимир WB</td><td><strong>50</strong></td><td>29 993 ₽</td><td>>999д ⚠️</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Краснодар</td><td><strong>37</strong></td><td>44 470 ₽</td><td>37д 0ч</td></tr>
+          <tr><td><span class="dot dot-red"></span>СПб Шушары</td><td><strong>4</strong></td><td>1 888 ₽</td><td>10д 16ч</td></tr>
+          <tr><td><span class="dot dot-red"></span>Волгоград</td><td><strong>7</strong></td><td>3 303 ₽</td><td>>999д ⚠️</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Статус остатков по артикулам</div>
+    <div class="block-sub">анализ достаточности запасов</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px">
+      <div style="background:var(--bg3);border-radius:12px;padding:16px;border:1px solid #22c55e30">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Силиконовые 65мм</div>
+        <div style="font-size:22px;font-weight:700;color:#22c55e">155 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">на 07.06 · продаётся 9/день</div>
+        <div style="margin-top:10px" class="prog-bar"><div class="prog-fill" style="width:78%;background:#22c55e"></div></div>
+        <div style="font-size:11px;color:#22c55e;margin-top:4px">запас ≈ 17 дней</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:12px;padding:16px;border:1px solid #ef444430">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">ПОДСАК складной</div>
+        <div style="font-size:22px;font-weight:700;color:#ef4444">22 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">на 07.06 · продаётся 6/день</div>
+        <div style="margin-top:10px" class="prog-bar"><div class="prog-fill" style="width:15%;background:#ef4444"></div></div>
+        <div style="font-size:11px;color:#ef4444;margin-top:4px">⚠️ запас ≈ 4 дня!</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:12px;padding:16px;border:1px solid #22c55e30">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Раттлин на судака</div>
+        <div style="font-size:22px;font-weight:700;color:#22c55e">95 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">на 07.06 · продаётся 3/день</div>
+        <div style="margin-top:10px" class="prog-bar"><div class="prog-fill" style="width:65%;background:#22c55e"></div></div>
+        <div style="font-size:11px;color:#22c55e;margin-top:4px">запас ≈ 31 день</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:12px;padding:16px;border:1px solid #f59e0b30">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Блесна тейл</div>
+        <div style="font-size:22px;font-weight:700;color:#f59e0b">42 шт. WB</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">на 07.06 · продаётся 36/день</div>
+        <div style="margin-top:10px" class="prog-bar"><div class="prog-fill" style="width:20%;background:#f59e0b"></div></div>
+        <div style="font-size:11px;color:#f59e0b;margin-top:4px">⚠️ запас ≈ 1.2 дня!</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:12px;padding:16px;border:1px solid #8892a430">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Ратлины</div>
+        <div style="font-size:22px;font-weight:700;color:var(--text)">33 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">на 07.06 · продаётся 1/день</div>
+        <div style="margin-top:10px" class="prog-bar"><div class="prog-fill" style="width:55%;background:#8892a4"></div></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px">запас ≈ 33 дня</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:12px;padding:16px;border:1px solid #ef444330">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Набор балансиров</div>
+        <div style="font-size:22px;font-weight:700;color:var(--text)">303 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">на 07.06 · 0 продаж!</div>
+        <div style="margin-top:10px" class="prog-bar"><div class="prog-fill" style="width:100%;background:#ef4444"></div></div>
+        <div style="font-size:11px;color:#ef4444;margin-top:4px">🚨 нет продаж — замороженный товар</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: GEO ==================== -->
+<div id="page-geo" class="page content">
+
+  <div class="grid2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="block-title">Доля регионов в заказах</div>
+      <div class="block-sub">% от всех заказов IGAMA</div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartGeo" aria-label="Доля регионов">Центральный 31.9%, Дальний+Сибирь 13.8%, Приволжский 16.7%, Беларусь 11.6%, Уральский 10.1%, Северо-Западный 8%, Юг+СКФО 6.5%, прочие 1.4%</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Локальность заказов по регионам</div>
+      <div class="block-sub">% локальных заказов (склад и ПВЗ в одном округе)</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+        <div class="geo-item">
+          <div class="geo-name">Центральный <span>100%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:100%;background:#22c55e"></div></div>
+        </div>
+        <div class="geo-item">
+          <div class="geo-name">Юг и Северо-Кавказский <span>88.9%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:88.9%;background:#22c55e"></div></div>
+        </div>
+        <div class="geo-item">
+          <div class="geo-name">Уральский <span>71.4%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:71.4%;background:#4f8ef7"></div></div>
+        </div>
+        <div class="geo-item">
+          <div class="geo-name">Приволжский <span>69.6%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:69.6%;background:#4f8ef7"></div></div>
+        </div>
+        <div class="geo-item">
+          <div class="geo-name">Северо-Западный <span>27.3%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:27.3%;background:#f59e0b"></div></div>
+        </div>
+        <div class="geo-item">
+          <div class="geo-name">Беларусь <span>0%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:2%;background:#ef4444"></div></div>
+        </div>
+        <div class="geo-item">
+          <div class="geo-name">Дальний + Сибирь <span>0%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:2%;background:#ef4444"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Сводная таблица по регионам</div>
+    <div class="block-sub">Доля в заказах, скорость доставки, локальность</div>
+    <table class="art-table">
+      <thead>
+        <tr>
+          <th>Регион</th>
+          <th>Доля заказов</th>
+          <th>Доля WB (весь рынок)</th>
+          <th>Время доставки</th>
+          <th>Локальных, %</th>
+          <th>Позиция</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Центральный</strong></td>
+          <td><span class="badge-green">31.9%</span></td>
+          <td>31.7%</td>
+          <td>1д 7ч ✅</td>
+          <td><span class="badge-green">100%</span></td>
+          <td>🥇 Основной</td>
+        </tr>
+        <tr>
+          <td><strong>Приволжский</strong></td>
+          <td><span class="badge-green">16.7%</span></td>
+          <td>15.2%</td>
+          <td>1д 9ч ✅</td>
+          <td><span class="badge-blue">69.6%</span></td>
+          <td>🥈 Сильный</td>
+        </tr>
+        <tr>
+          <td><strong>Дальний + Сибирь</strong></td>
+          <td><span class="badge-green">13.8%</span></td>
+          <td>14.1%</td>
+          <td>2д 17ч ⚠️</td>
+          <td><span class="badge-red">0%</span></td>
+          <td>📦 Нет склада</td>
+        </tr>
+        <tr>
+          <td><strong>Беларусь</strong></td>
+          <td><span class="badge-amber">11.6%</span></td>
+          <td>3.6%</td>
+          <td>1д 14ч</td>
+          <td><span class="badge-red">0%</span></td>
+          <td>🌍 СНГ</td>
+        </tr>
+        <tr>
+          <td><strong>Уральский</strong></td>
+          <td><span class="badge-amber">10.1%</span></td>
+          <td>7.5%</td>
+          <td>1д 9ч ✅</td>
+          <td><span class="badge-blue">71.4%</span></td>
+          <td>📈 Растёт</td>
+        </tr>
+        <tr>
+          <td><strong>Северо-Западный</strong></td>
+          <td>8.0%</td>
+          <td>8.8%</td>
+          <td>1д 16ч</td>
+          <td><span class="badge-amber">27.3%</span></td>
+          <td>⚡ Нужен склад</td>
+        </tr>
+        <tr>
+          <td><strong>Юг + Северо-Кавказский</strong></td>
+          <td>6.5%</td>
+          <td>17.7%</td>
+          <td>1д 15ч</td>
+          <td><span class="badge-green">88.9%</span></td>
+          <td>📉 Недобор</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== PAGE: ALERTS ==================== -->
+<div id="page-alerts" class="page content">
+
+  <div class="section-title">🚨 Критические проблемы</div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">Блесна тейл — остаток 42 шт. при продажах 36/день → запас &lt;2 дня!</div>
+      <div class="alert-body">Это главный продукт (54.3% выручки). При текущих темпах продаж товар закончится через 1–2 дня. Немедленно оформить поставку на WB. Потери: ~36 заказов/день × 600 ₽ = ~21 600 ₽/день упущенной выручки.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">ПОДСАК складной — остаток 22 шт. при продажах 6/день → запас ≈ 4 дня</div>
+      <div class="alert-body">Второй по выручке продукт (31.7%). Максимальная конверсия в заказ — 32%. Срочно отправить поставку. При выбытии товара — потеря лидирующей позиции и позиций в поиске.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">⚠️ Важные наблюдения</div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Раттлин на судака — падение заказов на 68%: было 62, стало 20</div>
+      <div class="alert-body">При этом переходы стабильны (485 vs 481). Проблема не в трафике, а в конверсии. Возможные причины: конкуренты снизили цену, изменился алгоритм, проблема с карточкой. Рекомендуется: проверить конкурентов, обновить контент карточки, рассмотреть снижение цены на тест.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Северо-Западный регион — только 27.3% локальных заказов</div>
+      <div class="alert-body">8% ваших заказов идут с Северо-Запада, но склада в СПб практически нет (4 шт. на складе Шушары). Доставка 1.5+ дня против 1 дня у конкурентов с местным складом. Поставка в СПб → рост позиций в регионе и сокращение времени доставки.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Коледино и Владимир WB — оборачиваемость &gt;999 дней</div>
+      <div class="alert-body">На этих складах лежит товар, который не продаётся (Набор балансиров, Ратлины). Платите за хранение, а возврата нет. Рассмотреть: вывоз товара, распродажная акция или снижение цены.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">✅ Что работает хорошо</div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Общая выручка выросла на +65% по сравнению с предыдущей неделей</div>
+      <div class="alert-body">320 198 ₽ против ~194 000 ₽ в предыдущем периоде. Блесна тейл показала рост +85% по заказам. Силиконовые приманки — взрывной рост +288% (с 17 до 66 заказов).</div>
+    </div>
+  </div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Процент выкупа 95.4% — отличный показатель качества товара</div>
+      <div class="alert-body">Средний процент выкупа по WB — 60–70%. У IGAMA 95.4% — это говорит о высоком качестве продукта, точных описаниях и правильных фото. Покупатели получают именно то, что ожидали.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Все карточки имеют рейтинг 10/10 и высокие отзывы (4.6–5.0 ★)</div>
+      <div class="alert-body">Рейтинг карточки 10 из 10 по всем активным артикулам. Это влияет на приоритет показов в поиске. Нужно поддерживать этот уровень — не менять фото и описание хаотично.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-icon">💡</div>
+    <div>
+      <div class="alert-title">Потенциал Юга (СКФО): доля WB 17.7%, а ваша доля только 6.5%</div>
+      <div class="alert-body">Краснодарский регион — один из крупнейших рынков WB, но ваше присутствие там слабое. 37 шт. на складе Краснодара при высоком местном спросе. Поставка в Краснодар позволит захватить региональный спрос с быстрой доставкой.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">📋 Приоритетные шаги</div>
+  <div class="card">
+    <table class="art-table">
+      <thead>
+        <tr><th>Приоритет</th><th>Действие</th><th>Срок</th><th>Ожидаемый эффект</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Поставка Блесна тейл на WB</td><td>Сегодня</td><td>Не потерять 54.3% выручки</td></tr>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Поставка ПОДСАК складной</td><td>2–3 дня</td><td>Сохранить позиции в поиске</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Разобраться с Раттлином (цена/карточка)</td><td>3–5 дней</td><td>Вернуть 62 заказа/нед.</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Поставка в СПб Шушары</td><td>Эта неделя</td><td>+8% региональный рост</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Акция на Набор балансиров</td><td>До конца месяца</td><td>Высвободить склад</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Поставка в Краснодар</td><td>2 недели</td><td>Юг — недооценённый рынок</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Отчёт подготовлен агентством <strong>ScaleUP</strong> · ИП Игнатьева Г.Р. · IGAMA · Wildberries · период 31.05–07.06.2026
+</div>
+
+<script>
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+const days=['31.05','01.06','02.06','03.06','04.06','05.06','06.06','07.06'];
+const gridColor='rgba(255,255,255,0.06)';
+const tickColor='rgba(255,255,255,0.35)';
+
+const defOpts={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2330',titleColor:'#f0f2f8',bodyColor:'#8892a4',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:8,padding:10}},
+  scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}}}
+};
+
+// Orders chart
+new Chart(document.getElementById('chartOrders'),{
+  type:'bar',
+  data:{labels:days,datasets:[{label:'Заказы',data:[53,56,51,63,60,59,48,38],backgroundColor:'rgba(79,142,247,0.7)',borderColor:'#4f8ef7',borderWidth:1,borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts}
+});
+
+// Revenue chart
+new Chart(document.getElementById('chartRevenue'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'Выручка ₽',data:[37934,40119,36582,43308,52602,48029,35190,26434],borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.1)',borderWidth:2,fill:true,tension:.35,pointBackgroundColor:'#22c55e',pointRadius:4}]},
+  options:{...defOpts,scales:{...defOpts.scales,y:{...defOpts.scales.y,ticks:{...defOpts.scales.y.ticks,callback:v=>v>=1000?(v/1000).toFixed(0)+'к':v}}}}
+});
+
+// Pie chart
+new Chart(document.getElementById('chartPie'),{
+  type:'doughnut',
+  data:{labels:['Блесна тейл','ПОДСАК','Силиконовые','Раттлин','Ратлины'],datasets:[{data:[54.3,31.7,9.7,3.4,0.9],backgroundColor:['#4f8ef7','#22c55e','#a855f7','#f59e0b','#06b6d4'],borderColor:'#11141a',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2330',titleColor:'#f0f2f8',bodyColor:'#8892a4',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:8,padding:10,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+
+// Funnel days
+new Chart(document.getElementById('chartFunnelDays'),{
+  type:'bar',
+  data:{labels:days,datasets:[
+    {label:'Корзина',data:[226,215,209,197,216,243,246,175],backgroundColor:'rgba(6,182,212,0.6)',borderRadius:4,borderSkipped:false},
+    {label:'Заказы',data:[53,56,51,63,60,59,48,38],backgroundColor:'rgba(34,197,94,0.8)',borderRadius:4,borderSkipped:false}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+// Visits chart
+new Chart(document.getElementById('chartVisits'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'Переходы',data:[1086,1172,1191,1229,1282,1164,1234,907],borderColor:'#a855f7',backgroundColor:'rgba(168,85,247,0.08)',borderWidth:2,fill:true,tension:.35,pointBackgroundColor:'#a855f7',pointRadius:3}]},
+  options:{...defOpts}
+});
+
+// Articles dynamic
+new Chart(document.getElementById('chartArtDyn'),{
+  type:'line',
+  data:{labels:days,datasets:[
+    {label:'Блесна тейл',data:[40,38,42,51,42,38,29,10],borderColor:'#4f8ef7',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Силиконовые',data:[3,10,2,5,4,11,11,20],borderColor:'#22c55e',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'ПОДСАК',data:[5,5,4,4,11,9,5,4],borderColor:'#a855f7',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Раттлин',data:[4,3,3,1,2,1,3,3],borderColor:'#f59e0b',borderWidth:2,fill:false,tension:.3,pointRadius:3}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8}}}}
+});
+
+// Compare periods
+new Chart(document.getElementById('chartCompare'),{
+  type:'bar',
+  data:{labels:['Блесна тейл','Силиконовые','ПОДСАК','Раттлин','Ратлины','Балансиры'],datasets:[
+    {label:'Текущий период',data:[290,66,47,20,5,0],backgroundColor:'rgba(79,142,247,0.75)',borderRadius:5,borderSkipped:false},
+    {label:'Предыдущий период',data:[157,17,29,62,2,1],backgroundColor:'rgba(255,255,255,0.1)',borderRadius:5,borderSkipped:false,borderColor:'rgba(255,255,255,0.2)',borderWidth:1}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+// Stocks chart
+new Chart(document.getElementById('chartStocks'),{
+  type:'line',
+  data:{labels:days,datasets:[
+    {label:'Силиконовые',data:[146,140,196,192,190,180,171,155],borderColor:'#22c55e',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'ПОДСАК',data:[58,54,49,46,36,29,23,22],borderColor:'#ef4444',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Раттлин',data:[50,47,106,104,103,101,98,95],borderColor:'#4f8ef7',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Ратлины',data:[37,37,37,35,34,34,34,33],borderColor:'#8892a4',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Балансиры',data:[223,208,297,303,303,303,303,303],borderColor:'#f59e0b',borderWidth:1.5,fill:false,tension:.3,pointRadius:3,borderDash:[4,4]}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8}}}}
+});
+
+// Geo chart
+new Chart(document.getElementById('chartGeo'),{
+  type:'doughnut',
+  data:{
+    labels:['Центральный','Приволжский','Дальний+Сибирь','Беларусь','Уральский','Северо-Западный','Юг+СКФО','Прочие'],
+    datasets:[{data:[31.9,16.7,13.8,11.6,10.1,8.0,6.5,1.4],backgroundColor:['#4f8ef7','#22c55e','#a855f7','#06b6d4','#f59e0b','#ef4444','#ec4899','#8892a4'],borderColor:'#11141a',borderWidth:2}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:true,position:'right',labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8,padding:8}},tooltip:{backgroundColor:'#1e2330',titleColor:'#f0f2f8',bodyColor:'#8892a4',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:8,padding:10,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+</script>
+</body>
+</html>
