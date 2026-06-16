@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAURA KIDSWEAR · Аналитика Wildberries · 08–16.06.2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0f0e;
+  --bg2:#121615;
+  --bg3:#191e1c;
+  --bg4:#222825;
+  --border:#ffffff10;
+  --border2:#ffffff1c;
+  --text:#f3f5f3;
+  --text2:#92a097;
+  --text3:#56625a;
+  --cream:#e8d9b8;
+  --cream-dim:#e8d9b822;
+  --sage:#9bb89d;
+  --blue:#7fa8d9;
+  --green:#7fc99e;
+  --red:#e8757a;
+  --amber:#dcb05f;
+  --plum:#b894c0;
+  --terracotta:#d29070;
+}
+body{background:var(--bg);background-image:radial-gradient(circle at 12% 0%, #1a2018 0%, transparent 45%),radial-gradient(circle at 90% 6%, #201a14 0%, transparent 40%);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
+
+.header{background:linear-gradient(180deg,#121615,#0d100f);border-bottom:1px solid var(--border);padding:0 36px;display:flex;align-items:center;justify-content:space-between;height:78px;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-mark{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--cream);background:linear-gradient(135deg,#e8d9b8,#9bb89d);font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:#121615}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);font-family:'Playfair Display',serif}
+.logo-sub{font-size:11.5px;color:var(--text2);margin-top:2px;letter-spacing:.3px}
+.header-right{display:flex;align-items:center;gap:14px}
+.period-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px 16px;font-size:12px;color:var(--text2)}
+.period-badge span{color:var(--cream);font-weight:600}
+.wb-badge{background:linear-gradient(135deg,#cb11ab22,#cb11ab10);border:1px solid #cb11ab50;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;color:#e060c8}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;display:flex;gap:2px;overflow-x:auto}
+.tab{padding:16px 20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--cream);border-bottom-color:var(--cream)}
+.tab-emoji{font-size:14px}
+
+.content{padding:32px 36px;max-width:1440px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.card{background:linear-gradient(180deg,var(--bg3),var(--bg2));border:1px solid var(--border);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:border-color .3s}
+.card:hover{border-color:var(--border2)}
+.card-sm{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:18px}
+
+.metric{background:linear-gradient(160deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-color,var(--cream)),transparent)}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.metric-value{font-size:30px;font-weight:700;color:var(--text);margin:8px 0 4px;line-height:1;letter-spacing:-.5px}
+.metric-sub{font-size:12px;color:var(--text2)}
+.metric-delta{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:8px}
+.delta-up{background:#7fc99e1c;color:#9ddbb6}
+.delta-down{background:#e8757a1c;color:#f29a9e}
+.delta-neutral{background:#dcb05f1c;color:#ecc784}
+
+.section-title{font-size:13px;font-weight:600;color:var(--cream);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.block-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px}
+.block-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+
+.chart-wrap{position:relative;width:100%}
+
+.art-table{width:100%;border-collapse:collapse}
+.art-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:600}
+.art-table td{padding:13px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.art-table tr:last-child td{border-bottom:none}
+.art-table tr:hover td{background:var(--bg4)}
+.art-name{font-weight:500;color:var(--text);font-size:13px;margin-bottom:2px}
+.art-category{font-size:11px;color:var(--text3)}
+.art-wb{font-size:11px;color:var(--text3);margin-top:1px}
+.num{font-weight:600;color:var(--text)}
+.num-muted{color:var(--text2);font-size:12px;margin-top:2px}
+.badge-green{background:#7fc99e1c;color:#9ddbb6;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-red{background:#e8757a1c;color:#f29a9e;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-amber{background:#dcb05f1c;color:#ecc784;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-blue{background:#7fa8d91c;color:#aac7ea;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-cream{background:var(--cream-dim);color:var(--cream);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+
+.prog-bar{flex:1;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;background:var(--cream);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+.wh-table{width:100%;border-collapse:collapse}
+.wh-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;text-align:left}
+.wh-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.wh-table tr:last-child td{border-bottom:none}
+.wh-table tr:hover td{background:var(--bg4)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;box-shadow:0 0 8px currentColor}
+.dot-green{background:#7fc99e;color:#7fc99e}
+.dot-amber{background:#dcb05f;color:#dcb05f}
+.dot-red{background:#e8757a;color:#e8757a}
+
+.funnel-step{background:linear-gradient(135deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:transform .2s}
+.funnel-step:hover{transform:translateX(4px)}
+.funnel-arrow{color:var(--text3);font-size:15px;text-align:center;margin:3px 0;font-weight:500}
+.funnel-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.funnel-data{flex:1}
+.funnel-name{font-size:12px;color:var(--text2)}
+.funnel-val{font-size:21px;font-weight:700;color:var(--text)}
+.funnel-conv{font-size:11px;color:var(--text3);margin-top:2px}
+.funnel-bar-wrap{width:110px;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden;flex-shrink:0}
+.funnel-bar-fill{height:100%;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+
+.alert{border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;transition:transform .2s}
+.alert:hover{transform:translateX(3px)}
+.alert-icon{font-size:19px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.alert-body{font-size:12.5px;line-height:1.55}
+.alert-warn{background:linear-gradient(135deg,#dcb05f14,#dcb05f08);border:1px solid #dcb05f30}
+.alert-warn .alert-title{color:#ecc784}
+.alert-warn .alert-body{color:#ecc78499}
+.alert-danger{background:linear-gradient(135deg,#e8757a14,#e8757a08);border:1px solid #e8757a30}
+.alert-danger .alert-title{color:#f29a9e}
+.alert-danger .alert-body{color:#f29a9e99}
+.alert-success{background:linear-gradient(135deg,#7fc99e14,#7fc99e08);border:1px solid #7fc99e30}
+.alert-success .alert-title{color:#9ddbb6}
+.alert-success .alert-body{color:#9ddbb699}
+.alert-info{background:linear-gradient(135deg,#7fa8d914,#7fa8d908);border:1px solid #7fa8d930}
+.alert-info .alert-title{color:#aac7ea}
+.alert-info .alert-body{color:#aac7ea99}
+.alert-cream{background:linear-gradient(135deg,var(--cream-dim),transparent);border:1px solid #e8d9b840}
+.alert-cream .alert-title{color:var(--cream)}
+.alert-cream .alert-body{color:#e8d9b8bb}
+
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:24px 0}
+
+.footer{text-align:center;padding:36px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:44px}
+.footer strong{color:var(--cream)}
+
+.hero{background:linear-gradient(135deg,#1c2219 0%,#121615 60%);border:1px solid var(--border2);border-radius:20px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,#e8d9b822,transparent 70%);pointer-events:none}
+.hero-left h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--text);margin-bottom:6px}
+.hero-left p{font-size:13px;color:var(--text2);max-width:500px;line-height:1.5}
+.hero-right{display:flex;gap:24px;text-align:center}
+.hero-stat{display:flex;flex-direction:column;gap:4px}
+.hero-stat .v{font-size:24px;font-weight:700;color:var(--cream)}
+.hero-stat .l{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+
+.new-badge{display:inline-block;background:linear-gradient(135deg,var(--terracotta),#a8654a);color:#121615;font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px;letter-spacing:.4px;text-transform:uppercase;margin-left:8px}
+.focus-badge{display:inline-block;background:linear-gradient(135deg,var(--sage),#6f9572);color:#121615;font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px;letter-spacing:.4px;text-transform:uppercase;margin-left:8px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.page.active .card,.page.active .metric,.page.active .art-table,.page.active .alert,.page.active .hero{animation:fadeUp .4s ease both}
+.page.active .card:nth-child(2),.page.active .metric:nth-child(2){animation-delay:.05s}
+.page.active .card:nth-child(3),.page.active .metric:nth-child(3){animation-delay:.1s}
+.page.active .card:nth-child(4),.page.active .metric:nth-child(4){animation-delay:.15s}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--cream-dim)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">L</div>
+    <div>
+      <div class="logo-text">ИП Абдуллаева Л.Г. · LAURA KIDSWEAR</div>
+      <div class="logo-sub">Еженедельный отчёт · ScaleUP Agency</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge">Продажи: <span>08.06–14.06</span> · Остатки: <span>10.06–16.06</span></div>
+    <div class="wb-badge">Wildberries</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('overview',this)"><span class="tab-emoji">📊</span>Обзор</div>
+  <div class="tab" onclick="showPage('articles',this)"><span class="tab-emoji">👗</span>Товары</div>
+  <div class="tab" onclick="showPage('batiste',this)"><span class="tab-emoji">🌿</span>Батист в продвижении</div>
+  <div class="tab" onclick="showPage('stocks',this)"><span class="tab-emoji">🏪</span>Остатки и поставки</div>
+  <div class="tab" onclick="showPage('geo',this)"><span class="tab-emoji">🗺</span>География</div>
+  <div class="tab" onclick="showPage('alerts',this)"><span class="tab-emoji">⚠️</span>Рекомендации</div>
+</div>
+
+<!-- ==================== OVERVIEW ==================== -->
+<div id="page-overview" class="page content active">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Неделя 08–14 июня: рост выручки на фоне дефицита остатков</h1>
+      <p>Выручка выросла на +10% несмотря на то, что у половины артикулов остаток 0–3 шт. Это говорит о высоком потенциале спроса, который сдерживается логистикой — отгрузки идут раз в 2-3 недели. Новая карточка батиста от 15.06 пока без статистики продаж — остаток специально держим на нуле до старта продвижения.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">164 158₽</div><div class="l">выручка</div></div>
+      <div class="hero-stat"><div class="v">42</div><div class="l">заказов</div></div>
+      <div class="hero-stat" style="color:#9ddbb6"><div class="v" style="color:#9ddbb6">+10%</div><div class="l">к пред. неделе</div></div>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#e8d9b8">
+      <div class="metric-label">Выручка (заказы)</div>
+      <div class="metric-value">164 158 ₽</div>
+      <div class="metric-sub">за 7 дней, 8 артикулов</div>
+      <div class="metric-delta delta-up">↑ +10% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#7fc99e">
+      <div class="metric-label">Заказов, шт.</div>
+      <div class="metric-value">42</div>
+      <div class="metric-sub">в среднем 6/день</div>
+      <div class="metric-delta delta-up">↑ +11% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#dcb05f">
+      <div class="metric-label">Средняя цена заказа</div>
+      <div class="metric-value">3 909 ₽</div>
+      <div class="metric-sub">премиальный сегмент</div>
+    </div>
+    <div class="metric" style="--accent-color:#e8757a">
+      <div class="metric-label">Средний % выкупа</div>
+      <div class="metric-value">26.2%</div>
+      <div class="metric-sub">требует внимания</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Доля артикулов в выручке</div>
+      <div class="block-sub">8 платьев, лидируют хлопковые праздничные</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartPie" aria-label="Доля артикулов в выручке">920524086 21.7%, 920526252 21.7%, батист 920544232 13.8%, 920515364 12%, 920522034 12%, прочие 18.8%</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Конверсии воронки</div>
+      <div class="block-sub">переходы → корзина → заказ → выкуп</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:6px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Переходы → Корзина</span><span style="font-size:12px;font-weight:600;color:var(--text)">2.6%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:13%;background:#7fa8d9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Корзина → Заказ</span><span style="font-size:12px;font-weight:600;color:var(--text)">21.8%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:44%;background:#9bb89d"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Заказ → Выкуп</span><span style="font-size:12px;font-weight:600;color:#f29a9e">26.2%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:26.2%;background:#e8757a"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Переходов всего</span><span style="font-size:12px;font-weight:600;color:var(--text)">7 291</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:90%;background:#dcb05f"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:var(--cream-dim);border-radius:10px;font-size:12px;color:var(--cream)">
+        💡 Выкуп 26% — низкий для премиум-сегмента. Возможная причина: размер не подошёл (детская одежда) либо долгое ожидание заказа из-за дефицита на складе
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Топ-3 артикула — драйверы выручки</div>
+    <div class="block-sub">61% всей выручки делают 3 модели платья</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px">
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #dcb05f40">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Платье хлопковое праздничное</div>
+        <div style="font-size:22px;font-weight:700;color:var(--cream)">35 541 ₽</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">9 заказов · остаток 5 шт</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #dcb05f40">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Платье для девочки хлопковое</div>
+        <div style="font-size:22px;font-weight:700;color:var(--cream)">35 541 ₽</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">9 заказов · остаток 3 шт</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #9bb89d40">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Платье из батиста <span class="focus-badge">в продвижении</span></div>
+        <div style="font-size:22px;font-weight:700;color:var(--sage)">22 594 ₽</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">6 заказов · остаток 21 шт</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== ARTICLES ==================== -->
+<div id="page-articles" class="page content">
+
+  <div class="card" style="margin-bottom:22px">
+    <div class="block-title">Все артикулы — детальная аналитика</div>
+    <div class="block-sub">Период 08.06–14.06.2026 · сравнение с предыдущей неделей</div>
+    <div style="overflow-x:auto">
+    <table class="art-table">
+      <thead><tr><th>Товар</th><th>Заказы, шт.</th><th>Выручка, ₽</th><th>Выкуп %</th><th>Переходы</th><th>Конв.</th><th>Цена</th><th>Остаток WB</th><th>Доля выручки</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="art-name">Платье хлопковое праздничное</div><div class="art-wb">WB: 920524086</div></td>
+          <td><div class="num">9</div><div class="num-muted">пред: 10</div></td>
+          <td class="num">35 541 ₽</td>
+          <td><span class="badge-amber">75%</span></td>
+          <td class="num">1 367</td><td>20%</td><td>3 949 ₽</td>
+          <td><span class="badge-red">5</span></td>
+          <td><div style="font-weight:600;color:#dcb05f">21.7%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Платье для девочки хлопковое</div><div class="art-wb">WB: 920526252</div></td>
+          <td><div class="num">9</div><div class="num-muted">пред: 8</div></td>
+          <td class="num">35 541 ₽</td>
+          <td><span class="badge-red">25%</span></td>
+          <td class="num">1 451</td><td>20%</td><td>3 949 ₽</td>
+          <td><span class="badge-red">3</span></td>
+          <td><div style="font-weight:600;color:#7fa8d9">21.7%</div></td>
+        </tr>
+        <tr style="background:#9bb89d10">
+          <td><div class="art-name">Платье из батиста <span class="focus-badge">фокус</span></div><div class="art-wb">WB: 920544232</div></td>
+          <td><div class="num">6</div><div class="num-muted">пред: 6</div></td>
+          <td class="num">22 594 ₽</td>
+          <td><span class="badge-amber">75%</span></td>
+          <td class="num">843</td><td>33%</td><td>3 766 ₽</td>
+          <td>21</td>
+          <td><div style="font-weight:600;color:#b894c0">13.8%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Платье для девочки хлопковое</div><div class="art-wb">WB: 920515364</div></td>
+          <td><div class="num">5</div><div class="num-muted">пред: 3 <span class="badge-green">+67%</span></div></td>
+          <td class="num">19 745 ₽</td>
+          <td><span class="badge-amber">67%</span></td>
+          <td class="num">996</td><td>18%</td><td>3 949 ₽</td>
+          <td><span class="badge-red">1</span></td>
+          <td><div style="font-weight:600;color:#e8757a">12%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Платье для девочки хлопковое</div><div class="art-wb">WB: 920522034</div></td>
+          <td><div class="num">5</div><div class="num-muted">пред: 1 <span class="badge-green">+400%</span></div></td>
+          <td class="num">19 745 ₽</td>
+          <td><span class="badge-amber">50%</span></td>
+          <td class="num">646</td><td>36%</td><td>3 949 ₽</td>
+          <td><span class="badge-red">3</span></td>
+          <td><div style="font-weight:600;color:#dcb05f">12%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Платье для девочки хлопковое</div><div class="art-wb">WB: 920529481</div></td>
+          <td><div class="num">3</div><div class="num-muted">пред: 3</div></td>
+          <td class="num">11 847 ₽</td>
+          <td><span class="badge-red">0%</span></td>
+          <td class="num">545</td><td>27%</td><td>3 949 ₽</td>
+          <td><span class="badge-red">0</span></td>
+          <td><div style="font-weight:600;color:var(--text3)">7.2%</div></td>
+        </tr>
+        <tr style="background:#9bb89d10">
+          <td><div class="art-name">Платье из батиста <span class="focus-badge">фокус</span></div><div class="art-wb">WB: 920554815</div></td>
+          <td><div class="num">3</div><div class="num-muted">пред: 1 <span class="badge-green">+200%</span></div></td>
+          <td class="num">11 247 ₽</td>
+          <td><span class="badge-green">100%</span></td>
+          <td class="num">842</td><td>12%</td><td>3 749 ₽</td>
+          <td>32</td>
+          <td><div style="font-weight:600;color:#b894c0">6.9%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Платье для девочки хлопковое</div><div class="art-wb">WB: 920519652</div></td>
+          <td><div class="num">2</div><div class="num-muted">пред: 6 <span class="badge-red">-67%</span></div></td>
+          <td class="num">7 898 ₽</td>
+          <td><span class="badge-red">0%</span></td>
+          <td class="num">601</td><td>33%</td><td>3 949 ₽</td>
+          <td><span class="badge-red">1</span></td>
+          <td><div style="font-weight:600;color:var(--text3)">4.8%</div></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="block-title">Хлопковые vs батист — сравнение выручки</div>
+      <div class="block-sub">₽ за неделю</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartFabricCompare" aria-label="Сравнение хлопок vs батист">Хлопок 130523, Батист 33841</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Переходы по артикулам</div>
+      <div class="block-sub">трафик на карточки, шт.</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartTransitions" aria-label="Переходы по артикулам">1367,1451,843,996,646,545,842,601</canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== BATISTE ==================== -->
+<div id="page-batiste" class="page content">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Батист в активном продвижении <span class="focus-badge">приоритет</span></h1>
+      <p>2 модели из батиста дают 20.7% выручки при остатке в 53 шт. — это самый обеспеченный товар в каталоге. Конверсия в заказ у батиста (920544232) — лучшая среди всех артикулов: 33%. Это правильная точка для усиления рекламного бюджета.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">33 841₽</div><div class="l">выручка батиста</div></div>
+      <div class="hero-stat"><div class="v">9</div><div class="l">заказов</div></div>
+      <div class="hero-stat"><div class="v">53</div><div class="l">шт. в наличии</div></div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Платье из батиста · 920544232</div>
+      <div class="block-sub">основная модель в продвижении</div>
+      <div class="grid4" style="gap:12px">
+        <div class="card-sm"><div style="font-size:11px;color:var(--text3)">Заказы</div><div style="font-size:20px;font-weight:700;margin-top:4px">6</div></div>
+        <div class="card-sm"><div style="font-size:11px;color:var(--text3)">Выручка</div><div style="font-size:20px;font-weight:700;margin-top:4px">22 594₽</div></div>
+        <div class="card-sm"><div style="font-size:11px;color:var(--text3)">Конверсия</div><div style="font-size:20px;font-weight:700;margin-top:4px;color:#9ddbb6">33%</div></div>
+        <div class="card-sm"><div style="font-size:11px;color:var(--text3)">Остаток</div><div style="font-size:20px;font-weight:700;margin-top:4px">21 шт</div></div>
+      </div>
+      <div style="margin-top:16px;padding:14px;background:var(--bg4);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.5">
+        Лучшая конверсия в заказ среди всех 8 артикулов (33%) при относительно невысоком трафике (843 перехода). Это значит, что карточка эффективно закрывает на покупку тех, кто зашёл — можно безопасно увеличивать рекламный бюджет на неё, не опасаясь слить деньги на нецелевой трафик.
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Платье из батиста · 920554815</div>
+      <div class="block-sub">вторая модель, набирает обороты</div>
+      <div class="grid4" style="gap:12px">
+        <div class="card-sm"><div style="font-size:11px;color:var(--text3)">Заказы</div><div style="font-size:20px;font-weight:700;margin-top:4px">3</div></div>
+        <div class="card-sm"><div style="font-size:11px;color:var(--text3)">Выручка</div><div style="font-size:20px;font-weight:700;margin-top:4px">11 247₽</div></div>
+        <div class="card-sm"><div style="font-size:11px;color:var(--text3)">Выкуп</div><div style="font-size:20px;font-weight:700;margin-top:4px;color:#9ddbb6">100%</div></div>
+        <div class="card-sm"><div style="font-size:11px;color:var(--text3)">Остаток</div><div style="font-size:20px;font-weight:700;margin-top:4px">32 шт</div></div>
+      </div>
+      <div style="margin-top:16px;padding:14px;background:var(--bg4);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.5">
+        Заказы выросли в 3 раза к прошлой неделе (1→3). 100% выкуп — отличный сигнал качества. Остаток 32 шт самый высокий в каталоге — товар готов к маслштабированию продвижения без риска дефицита.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Динамика остатков батиста по дням</div>
+    <div class="block-sub">шт., 10–16 июня — стабильно высокий запас в отличие от хлопковых моделей</div>
+    <div class="chart-wrap" style="height:250px">
+      <canvas id="chartBatisteStock" aria-label="Остатки батиста по дням">19,19,19,22,20,21,21 и 34,33,33,33,32,32,32</canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== STOCKS ==================== -->
+<div id="page-stocks" class="page content">
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#e8757a">
+      <div class="metric-label">Артикулов с остатком 0–3 шт.</div>
+      <div class="metric-value">6 из 8</div>
+      <div class="metric-sub">75% каталога на грани дефицита</div>
+    </div>
+    <div class="metric" style="--accent-color:#7fc99e">
+      <div class="metric-label">Самый обеспеченный товар</div>
+      <div class="metric-value">32 шт.</div>
+      <div class="metric-sub">батист 920554815</div>
+    </div>
+    <div class="metric" style="--accent-color:#dcb05f">
+      <div class="metric-label">Цикл поставки</div>
+      <div class="metric-value">2–3 нед.</div>
+      <div class="metric-sub">по словам клиента</div>
+    </div>
+    <div class="metric" style="--accent-color:#d29070">
+      <div class="metric-label">Новая карточка</div>
+      <div class="metric-value">15.06</div>
+      <div class="metric-sub">остаток 0 — старт продвижения позже</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Остатки по артикулам на 16.06</div>
+      <div class="block-sub">видно резкий контраст хлопок vs батист</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartStockByArt" aria-label="Остатки по артикулам">5,3,1,3,0,21,32,1</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Остатки по складам</div>
+      <div class="block-sub">90% товара лежит на одном складе</div>
+      <table class="wh-table">
+        <thead><tr><th>Регион / Склад</th><th>Остаток</th><th>Стоимость</th><th>Оборачив.</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot dot-green"></span>Электросталь</td><td><strong>50</strong></td><td>188 462 ₽</td><td>7д ✓</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Тула</td><td><strong>6</strong></td><td>23 095 ₽</td><td>>999д ⚠️</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Невинномысск</td><td><strong>3</strong></td><td>11 648 ₽</td><td>>999д ⚠️</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Коледино</td><td><strong>3</strong></td><td>11 648 ₽</td><td>>999д ⚠️</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Казань</td><td><strong>2</strong></td><td>7 499 ₽</td><td>>999д ⚠️</td></tr>
+          <tr><td><span class="dot dot-red"></span>Волгоград</td><td><strong>1</strong></td><td>3 949 ₽</td><td>>999д ⚠️</td></tr>
+          <tr><td><span class="dot dot-red"></span>Котовск</td><td><strong>1</strong></td><td>3 749 ₽</td><td>>999д ⚠️</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Критический дефицит по моделям</div>
+    <div class="block-sub">эти артикулы продаются, но скоро закончатся полностью</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px">
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #e8757a50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">920529481</div>
+        <div style="font-size:23px;font-weight:700;color:#e8757a">0 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">3 заказа за неделю при 0 на складе</div>
+        <div style="font-size:11px;color:#f29a9e;margin-top:7px">🚨 продажи идут из старого товара в пути</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #e8757a50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">920515364</div>
+        <div style="font-size:23px;font-weight:700;color:#e8757a">1 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">5 заказов за неделю, рост +67%</div>
+        <div style="font-size:11px;color:#f29a9e;margin-top:7px">🚨 высокий спрос, нет товара</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #e8757a50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">920519652</div>
+        <div style="font-size:23px;font-weight:700;color:#e8757a">1 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">заказы упали с 6 до 2 (-67%)</div>
+        <div style="font-size:11px;color:#f29a9e;margin-top:7px">⚠️ падение продаж из-за нехватки товара</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GEO ==================== -->
+<div id="page-geo" class="page content">
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Распределение остатков по регионам</div>
+      <div class="block-sub">% от общего количества на складах</div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartGeoStock" aria-label="Остатки по регионам">Центральный 60, Южный 4, Приволжский 2</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Локальность заказов по топ-моделям</div>
+      <div class="block-sub">% заказов, доставленных из своего федерального округа</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">920524086</span><span style="font-size:12px;font-weight:600;color:var(--text)">56%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:56%;background:#7fc99e"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">920529481</span><span style="font-size:12px;font-weight:600;color:var(--text)">33%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:33%;background:#7fa8d9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">920526252</span><span style="font-size:12px;font-weight:600;color:var(--text)">33%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:33%;background:#7fa8d9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">920522034</span><span style="font-size:12px;font-weight:600;color:var(--text)">20%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:20%;background:#dcb05f"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">920519652</span><span style="font-size:12px;font-weight:600;color:var(--text)">50%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:50%;background:#9bb89d"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">920544232 (батист)</span><span style="font-size:12px;font-weight:600;color:var(--text)">17%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:17%;background:#b894c0"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">920515364</span><span style="font-size:12px;font-weight:600;color:var(--text)">0%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:2%;background:#e8757a"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Все склады отгрузки</div>
+    <table class="art-table">
+      <thead><tr><th>Регион</th><th>Склад</th><th>Остаток</th><th>Стоимость</th><th>В пути к покупателю</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Центральный</strong></td><td>Электросталь</td><td><span class="badge-green">50</span></td><td>188 462 ₽</td><td>3</td></tr>
+        <tr><td><strong>Центральный</strong></td><td>Тула</td><td>6</td><td>23 095 ₽</td><td>0</td></tr>
+        <tr><td><strong>Центральный</strong></td><td>Коледино</td><td>3</td><td>11 648 ₽</td><td>0</td></tr>
+        <tr><td><strong>Центральный</strong></td><td>Котовск</td><td>1</td><td>3 749 ₽</td><td>0</td></tr>
+        <tr><td><strong>Южный и Северо-Кавказский</strong></td><td>Невинномысск</td><td>3</td><td>11 648 ₽</td><td>0</td></tr>
+        <tr><td><strong>Южный и Северо-Кавказский</strong></td><td>Волгоград</td><td>1</td><td>3 949 ₽</td><td>0</td></tr>
+        <tr><td><strong>Приволжский</strong></td><td>Казань</td><td>2</td><td>7 499 ₽</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== ALERTS ==================== -->
+<div id="page-alerts" class="page content">
+
+  <div class="section-title">🚨 Критические проблемы</div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">6 из 8 артикулов — остаток 0–3 шт., при этом спрос растёт</div>
+      <div class="alert-body">920515364 (+67% заказов), 920522034 (+400% заказов) — спрос явно растёт, но товара почти нет. Цикл поставки 2-3 недели означает, что эти модели физически не успевают пополняться. Каждая распродажа модели до нуля — это потерянная выручка и риск потери позиций в поиске WB на время отсутствия.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">Средний % выкупа всего 26.2% — нужно разобраться в причине</div>
+      <div class="alert-body">Для детской одежды это может объясняться несовпадением размеров (частая причина возврата в категории), либо долгим временем доставки из-за того что товар едет с одного-двух складов. Рекомендуем проверить отзывы и обращения по размерной сетке.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">⚠️ Важные наблюдения</div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">90% остатков лежит на одном складе — Электросталь</div>
+      <div class="alert-body">Это создаёт риск концентрации: при проблемах с этим складом (задержка приёмки, переполнение) пострадает почти весь ассортимент одновременно. Остальные склады (Тула, Невинномысск, Коледино, Казань) держат буквально по 1-6 шт. — этого недостаточно для покрытия региональных заказов с хорошей логистикой.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Новая карточка от 15.06 — статистики пока нет</div>
+      <div class="alert-body">Как и договаривались, остаток держим на нуле до старта активного продвижения. Карточка ещё не попала в стандартные отчёты аналитики WB (нужно 1-2 дня на появление данных). В следующем отчёте подключим её к динамике.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">✅ Что работает хорошо</div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Батист (920544232) — лучшая конверсия в заказ среди всех артикулов: 33%</div>
+      <div class="alert-body">При остатке 21 шт. и адекватном трафике (843 перехода) эта модель эффективно превращает интерес в покупку. Сейчас именно тот момент, чтобы усилить рекламный бюджет на батист — деньги не будут потрачены впустую, конверсия это подтверждает.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Батист 920554815 — выкуп 100%, заказы выросли в 3 раза (1→3)</div>
+      <div class="alert-body">Остаток 32 шт. — самый высокий в каталоге. Товар полностью готов к расширенному продвижению без риска уйти в дефицит, как это произошло с хлопковыми моделями.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-cream">
+    <div class="alert-icon">💡</div>
+    <div>
+      <div class="alert-title">Выручка выросла на +10% несмотря на дефицит товара</div>
+      <div class="alert-body">Это сильный сигнал спроса: даже с нехваткой остатков по большинству моделей, покупатели готовы заказывать и ждать. Если решить логистическую проблему (более частые поставки или увеличение объёма заказа поставщику), потенциал роста выручки заметно выше текущих цифр.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">📋 Приоритетные шаги на следующую неделю</div>
+  <div class="card">
+    <table class="art-table">
+      <thead><tr><th>Приоритет</th><th>Действие</th><th>Срок</th><th>Ожидаемый эффект</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Спланировать поставку моделей с остатком 0-1 шт (3 артикула)</td><td>В рамках цикла 2-3 недели</td><td>Не терять растущий спрос</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Усилить рекламный бюджет на батист 920544232</td><td>Эта неделя</td><td>Лучшая конверсия — низкий риск</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Разобраться в причинах низкого выкупа (26%)</td><td>Эта неделя</td><td>Прямое влияние на прибыль</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Подключить новую карточку (от 15.06) к статистике</td><td>Следующий отчёт</td><td>Контроль старта продвижения</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Рассмотреть распределение товара на доп. склады</td><td>2-3 недели</td><td>Снизить риск концентрации на 1 складе</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Отчёт подготовлен агентством <strong>ScaleUP</strong> · ИП Абдуллаева Л.Г. · LAURA KIDSWEAR · Wildberries · продажи 08.06–14.06, остатки 10.06–16.06.2026
+</div>
+
+<script>
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const gridColor='rgba(255,255,255,0.05)';
+const tickColor='rgba(255,255,255,0.4)';
+
+const defOpts={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#191e1c',titleColor:'#f3f5f3',bodyColor:'#92a097',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12}},
+  scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}}}
+};
+
+new Chart(document.getElementById('chartPie'),{
+  type:'doughnut',
+  data:{labels:['920524086','920526252','Батист 920544232','920515364','920522034','прочие'],datasets:[{data:[21.7,21.7,13.8,12,12,18.8],backgroundColor:['#e8d9b8','#7fa8d9','#9bb89d','#dcb05f','#d29070','#56625a'],borderColor:'#121615',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#191e1c',titleColor:'#f3f5f3',bodyColor:'#92a097',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+
+new Chart(document.getElementById('chartFabricCompare'),{
+  type:'bar',
+  data:{labels:['Хлопковые модели (6 арт.)','Батист (2 арт.)'],datasets:[{label:'Выручка ₽',data:[130523,33841],backgroundColor:['#dcb05f','#9bb89d'],borderRadius:8,borderSkipped:false}]},
+  options:{...defOpts,scales:{...defOpts.scales,y:{...defOpts.scales.y,ticks:{...defOpts.scales.y.ticks,callback:v=>v>=1000?(v/1000).toFixed(0)+'к':v}}}}
+});
+
+new Chart(document.getElementById('chartTransitions'),{
+  type:'bar',
+  data:{labels:['920524086','920526252','920544232','920515364','920522034','920529481','920554815','920519652'],datasets:[{label:'Переходы',data:[1367,1451,843,996,646,545,842,601],backgroundColor:'rgba(232,217,184,0.7)',borderColor:'#e8d9b8',borderWidth:1,borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts,scales:{...defOpts.scales,x:{...defOpts.scales.x,ticks:{...defOpts.scales.x.ticks,maxRotation:45,minRotation:45}}}}
+});
+
+new Chart(document.getElementById('chartBatisteStock'),{
+  type:'line',
+  data:{labels:['10.06','11.06','12.06','13.06','14.06','15.06','16.06'],datasets:[
+    {label:'920544232',data:[19,19,19,22,20,21,21],borderColor:'#9bb89d',backgroundColor:'rgba(155,184,157,0.1)',borderWidth:2,fill:true,tension:.3,pointRadius:4},
+    {label:'920554815',data:[34,33,33,33,32,32,32],borderColor:'#b894c0',backgroundColor:'rgba(184,148,192,0.1)',borderWidth:2,fill:true,tension:.3,pointRadius:4}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+new Chart(document.getElementById('chartStockByArt'),{
+  type:'bar',
+  data:{labels:['920524086','920526252','920515364','920522034','920529481','920544232','920554815','920519652'],datasets:[{label:'Остаток шт.',data:[5,3,1,3,0,21,32,1],backgroundColor:(ctx)=>{const v=ctx.raw;return v>=15?'#7fc99e':v>=5?'#dcb05f':'#e8757a'},borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts,scales:{...defOpts.scales,x:{...defOpts.scales.x,ticks:{...defOpts.scales.x.ticks,maxRotation:45,minRotation:45}}}}
+});
+
+new Chart(document.getElementById('chartGeoStock'),{
+  type:'doughnut',
+  data:{labels:['Центральный','Южный и СК','Приволжский'],datasets:[{data:[60,4,2],backgroundColor:['#e8d9b8','#d29070','#7fa8d9'],borderColor:'#121615',borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:true,position:'right',labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:8,padding:9}},tooltip:defOpts.plugins.tooltip}}
+});
+</script>
+</body>
+</html>
