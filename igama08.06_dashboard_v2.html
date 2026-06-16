@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGAMA · Аналитика Wildberries · 08–14.06.2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#070a12;
+  --bg2:#0d121e;
+  --bg3:#141b2c;
+  --bg4:#1b2438;
+  --border:#ffffff10;
+  --border2:#ffffff1c;
+  --text:#f2f4fa;
+  --text2:#8d96ad;
+  --text3:#525c75;
+  --gold:#e0b042;
+  --gold-dim:#e0b04222;
+  --blue:#4f8ef7;
+  --green:#22c55e;
+  --red:#ef4444;
+  --amber:#f59e0b;
+  --cyan:#22d3ee;
+  --purple:#a855f7;
+}
+body{background:var(--bg);background-image:radial-gradient(circle at 15% 0%, #0d1830 0%, transparent 45%),radial-gradient(circle at 90% 8%, #1a1024 0%, transparent 40%);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
+
+/* HEADER */
+.header{background:linear-gradient(180deg,#0d121e,#0a0e18);border-bottom:1px solid var(--border);padding:0 36px;display:flex;align-items:center;justify-content:space-between;height:78px;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-mark{width:46px;height:46px;border-radius:12px;overflow:hidden;flex-shrink:0;border:1px solid var(--gold);background:#0a0e18}
+.logo-mark img{width:100%;height:100%;object-fit:cover}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);font-family:'Playfair Display',serif}
+.logo-sub{font-size:11.5px;color:var(--text2);margin-top:2px;letter-spacing:.3px}
+.header-right{display:flex;align-items:center;gap:14px}
+.period-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px 16px;font-size:12px;color:var(--text2)}
+.period-badge span{color:var(--gold);font-weight:600}
+.wb-badge{background:linear-gradient(135deg,#cb11ab22,#cb11ab10);border:1px solid #cb11ab50;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;color:#e060c8}
+
+/* TABS */
+.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;display:flex;gap:2px;overflow-x:auto}
+.tab{padding:16px 22px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-emoji{font-size:14px}
+
+/* CONTENT */
+.content{padding:32px 36px;max-width:1440px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+
+/* CARDS */
+.card{background:linear-gradient(180deg,var(--bg3),var(--bg2));border:1px solid var(--border);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:border-color .3s}
+.card:hover{border-color:var(--border2)}
+.card-sm{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:18px}
+
+/* METRIC CARDS */
+.metric{background:linear-gradient(160deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-color,var(--gold)),transparent)}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.metric-value{font-size:30px;font-weight:700;color:var(--text);margin:8px 0 4px;line-height:1;letter-spacing:-.5px}
+.metric-sub{font-size:12px;color:var(--text2)}
+.metric-delta{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:8px}
+.delta-up{background:#22c55e1c;color:#34d877}
+.delta-down{background:#ef44441c;color:#f87171}
+.delta-neutral{background:#f59e0b1c;color:#fbbf52}
+
+/* SECTION TITLES */
+.section-title{font-size:13px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.block-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px}
+.block-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+
+/* CHART WRAPPER */
+.chart-wrap{position:relative;width:100%}
+
+/* ARTICLE TABLE */
+.art-table{width:100%;border-collapse:collapse}
+.art-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:600}
+.art-table td{padding:14px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.art-table tr:last-child td{border-bottom:none}
+.art-table tr:hover td{background:var(--bg4)}
+.art-name{font-weight:500;color:var(--text);font-size:13px;margin-bottom:2px}
+.art-category{font-size:11px;color:var(--text3)}
+.art-wb{font-size:11px;color:var(--text3);margin-top:1px}
+.num{font-weight:600;color:var(--text)}
+.num-muted{color:var(--text2);font-size:12px;margin-top:2px}
+.badge-green{background:#22c55e1c;color:#34d877;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-red{background:#ef44441c;color:#f87171;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-amber{background:#f59e0b1c;color:#fbbf52;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-blue{background:#4f8ef71c;color:#7eaffa;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-gold{background:var(--gold-dim);color:var(--gold);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+
+/* PROGRESS BAR */
+.prog-wrap{display:flex;align-items:center;gap:10px}
+.prog-bar{flex:1;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;background:var(--gold);transition:width 1s cubic-bezier(.4,0,.2,1)}
+.prog-val{font-size:12px;font-weight:600;color:var(--text);min-width:38px;text-align:right}
+
+/* WAREHOUSE TABLE */
+.wh-table{width:100%;border-collapse:collapse}
+.wh-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;text-align:left}
+.wh-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.wh-table tr:last-child td{border-bottom:none}
+.wh-table tr:hover td{background:var(--bg4)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;box-shadow:0 0 8px currentColor}
+.dot-green{background:#22c55e;color:#22c55e}
+.dot-amber{background:#f59e0b;color:#f59e0b}
+.dot-red{background:#ef4444;color:#ef4444}
+
+/* GEO BARS */
+.geo-item{margin-bottom:16px}
+.geo-name{font-size:12px;color:var(--text2);margin-bottom:6px;display:flex;justify-content:space-between}
+.geo-name span{font-weight:600;color:var(--text)}
+
+/* FUNNEL VIZ */
+.funnel-step{background:linear-gradient(135deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:transform .2s}
+.funnel-step:hover{transform:translateX(4px)}
+.funnel-arrow{color:var(--text3);font-size:15px;text-align:center;margin:3px 0;font-weight:500}
+.funnel-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.funnel-data{flex:1}
+.funnel-name{font-size:12px;color:var(--text2)}
+.funnel-val{font-size:21px;font-weight:700;color:var(--text)}
+.funnel-conv{font-size:11px;color:var(--text3);margin-top:2px}
+.funnel-bar-wrap{width:110px;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden;flex-shrink:0}
+.funnel-bar-fill{height:100%;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+
+/* ALERT CARDS */
+.alert{border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;transition:transform .2s}
+.alert:hover{transform:translateX(3px)}
+.alert-icon{font-size:19px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.alert-body{font-size:12.5px;line-height:1.55}
+.alert-warn{background:linear-gradient(135deg,#f59e0b14,#f59e0b08);border:1px solid #f59e0b30}
+.alert-warn .alert-title{color:#fbbf52}
+.alert-warn .alert-body{color:#fbbf5299}
+.alert-danger{background:linear-gradient(135deg,#ef444414,#ef444408);border:1px solid #ef444430}
+.alert-danger .alert-title{color:#f87171}
+.alert-danger .alert-body{color:#f8717199}
+.alert-success{background:linear-gradient(135deg,#22c55e14,#22c55e08);border:1px solid #22c55e30}
+.alert-success .alert-title{color:#34d877}
+.alert-success .alert-body{color:#34d87799}
+.alert-info{background:linear-gradient(135deg,#4f8ef714,#4f8ef708);border:1px solid #4f8ef730}
+.alert-info .alert-title{color:#7eaffa}
+.alert-info .alert-body{color:#7eaffa99}
+.alert-gold{background:linear-gradient(135deg,var(--gold-dim),transparent);border:1px solid #e0b04240}
+.alert-gold .alert-title{color:var(--gold)}
+.alert-gold .alert-body{color:#e0b042bb}
+
+/* SEPARATOR */
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:24px 0}
+
+/* FOOTER */
+.footer{text-align:center;padding:36px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:44px}
+.footer strong{color:var(--gold)}
+
+/* HERO BANNER */
+.hero{background:linear-gradient(135deg,#1a1430 0%,#0d121e 60%);border:1px solid var(--border2);border-radius:20px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,#e0b04222,transparent 70%);pointer-events:none}
+.hero-left h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--text);margin-bottom:6px}
+.hero-left p{font-size:13px;color:var(--text2);max-width:480px;line-height:1.5}
+.hero-right{display:flex;gap:24px;text-align:center}
+.hero-stat{display:flex;flex-direction:column;gap:4px}
+.hero-stat .v{font-size:24px;font-weight:700;color:var(--gold)}
+.hero-stat .l{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glow{0%,100%{box-shadow:0 0 0px var(--red)}50%{box-shadow:0 0 16px var(--red)}}
+.page.active .card,.page.active .metric,.page.active .art-table,.page.active .alert,.page.active .hero{animation:fadeUp .4s ease both}
+.page.active .card:nth-child(2),.page.active .metric:nth-child(2){animation-delay:.05s}
+.page.active .card:nth-child(3),.page.active .metric:nth-child(3){animation-delay:.1s}
+.page.active .card:nth-child(4),.page.active .metric:nth-child(4){animation-delay:.15s}
+.pulse-red{animation:glow 2s infinite}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-dim)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark"><img src="data:image/png;base64,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" alt="ScaleUP"></div>
+    <div>
+      <div class="logo-text">ИП Игнатьева Г.Р. · IGAMA</div>
+      <div class="logo-sub">Еженедельный отчёт · ScaleUP Agency</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge">Период: <span>08.06 — 14.06.2026</span></div>
+    <div class="wb-badge">Wildberries</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('overview',this)"><span class="tab-emoji">📊</span>Обзор</div>
+  <div class="tab" onclick="showPage('funnel',this)"><span class="tab-emoji">🎯</span>Воронка продаж</div>
+  <div class="tab" onclick="showPage('articles',this)"><span class="tab-emoji">📦</span>Товары</div>
+  <div class="tab" onclick="showPage('stocks',this)"><span class="tab-emoji">🏪</span>Остатки</div>
+  <div class="tab" onclick="showPage('geo',this)"><span class="tab-emoji">🗺</span>География</div>
+  <div class="tab" onclick="showPage('compare',this)"><span class="tab-emoji">🔄</span>Сравнение недель</div>
+  <div class="tab" onclick="showPage('alerts',this)"><span class="tab-emoji">⚠️</span>Рекомендации</div>
+</div>
+
+<!-- ==================== PAGE: OVERVIEW ==================== -->
+<div id="page-overview" class="page content active">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Неделя 08–14 июня: спад из-за нехватки остатков</h1>
+      <p>Выручка снизилась на 43% к предыдущей неделе. Главная причина — закончился топовый товар «Блесна тейл» (0 шт. на складе), о чём мы предупреждали в прошлом отчёте. Подробности и план — на вкладке «Рекомендации».</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">183 747₽</div><div class="l">выручка</div></div>
+      <div class="hero-stat"><div class="v">285</div><div class="l">заказов</div></div>
+      <div class="hero-stat" style="color:#f87171"><div class="v" style="color:#f87171">-43%</div><div class="l">к прошлой неделе</div></div>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#e0b042">
+      <div class="metric-label">Выручка (заказы)</div>
+      <div class="metric-value">183 747 ₽</div>
+      <div class="metric-sub">за 7 дней</div>
+      <div class="metric-delta delta-down">↓ -43% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#ef4444">
+      <div class="metric-label">Заказов, шт.</div>
+      <div class="metric-value">285</div>
+      <div class="metric-sub">в среднем 41/день</div>
+      <div class="metric-delta delta-down">↓ -33% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#a855f7">
+      <div class="metric-label">Переходов в карточки</div>
+      <div class="metric-value">6 114</div>
+      <div class="metric-sub">по всем артикулам</div>
+      <div class="metric-delta delta-down">↓ -34% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#22c55e">
+      <div class="metric-label">Средний % выкупа</div>
+      <div class="metric-value">62.9%</div>
+      <div class="metric-sub">упал с 95.4%</div>
+      <div class="metric-delta delta-down">↓ резкое падение</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Динамика заказов по дням</div>
+      <div class="block-sub">шт., все артикулы</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartOrders" aria-label="Заказы по дням">66,58,33,40,25,29,34</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Выручка по дням</div>
+      <div class="block-sub">₽, все артикулы</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartRevenue" aria-label="Выручка по дням">46451,41168,21633,28728,12409,15646,17712</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3" style="margin-bottom:22px">
+    <div class="card">
+      <div class="section-title">Доля артикулов в выручке</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="chartPie" aria-label="Доля артикулов в выручке">Силиконовые 38%, Блесна 24.5%, ПОДСАК 23.5%, Раттлин 11.4%, прочие 2.5%</canvas>
+      </div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#22c55e;display:inline-block"></span>Силиконовые 65мм — 38%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#4f8ef7;display:inline-block"></span>Блесна тейл — 24.5%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#a855f7;display:inline-block"></span>ПОДСАК — 23.5%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#f59e0b;display:inline-block"></span>Раттлин — 11.4%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#22d3ee;display:inline-block"></span>прочие — 2.5%</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Ключевые конверсии</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:6px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+            <span style="font-size:12px;color:var(--text2)">Переходы → Корзина</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text)">18.3%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:18.3%;background:#4f8ef7"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+            <span style="font-size:12px;color:var(--text2)">Переходы → Заказ</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text)">4.7%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:23%;background:#22c55e"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+            <span style="font-size:12px;color:var(--text2)">Средний % выкупа</span>
+            <span style="font-size:12px;font-weight:600;color:#f87171">62.9%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:62.9%;background:#ef4444"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+            <span style="font-size:12px;color:var(--text2)">Отказы (лента заказов)</span>
+            <span style="font-size:12px;font-weight:600;color:#f87171">26 шт.</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:30%;background:#ef4444"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+            <span style="font-size:12px;color:var(--text2)">Создано (в пути к покупателю)</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text)">85 шт.</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:55%;background:#f59e0b"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Рейтинги карточек</div>
+      <div style="display:flex;flex-direction:column;gap:11px;margin-top:6px">
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg4);border-radius:11px;padding:11px 14px">
+          <div style="font-size:12px;color:var(--text2)">Раттлин на судака</div>
+          <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--gold)">★★★★★</span><span style="font-weight:600;font-size:13px">5.0</span></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg4);border-radius:11px;padding:11px 14px">
+          <div style="font-size:12px;color:var(--text2)">Силиконовые 65мм</div>
+          <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--gold)">★★★★★</span><span style="font-weight:600;font-size:13px">4.9</span></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg4);border-radius:11px;padding:11px 14px">
+          <div style="font-size:12px;color:var(--text2)">ПОДСАК складной</div>
+          <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--gold)">★★★★★</span><span style="font-weight:600;font-size:13px">4.9</span></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg4);border-radius:11px;padding:11px 14px">
+          <div style="font-size:12px;color:var(--text2)">Блесна тейл</div>
+          <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--gold)">★★★★★</span><span style="font-weight:600;font-size:13px">4.8</span></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg4);border-radius:11px;padding:11px 14px">
+          <div style="font-size:12px;color:var(--text2)">Ратлины</div>
+          <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--gold)">★★★★★</span><span style="font-weight:600;font-size:13px">4.6</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== PAGE: FUNNEL ==================== -->
+<div id="page-funnel" class="page content">
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Воронка продаж</div>
+      <div class="block-sub">Суммарно по всем артикулам, период 08.06 – 14.06</div>
+
+      <div class="funnel-step" style="border-color:#a855f740">
+        <div class="funnel-icon" style="background:#a855f718">🖱</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Переходов в карточку</div>
+          <div class="funnel-val" style="color:#a855f7">6 114</div>
+          <div class="funnel-conv">все артикулы, -34% к пред. неделе</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:100%;background:#a855f7"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 18.3%</div>
+
+      <div class="funnel-step" style="border-color:#22d3ee40">
+        <div class="funnel-icon" style="background:#22d3ee18">🛒</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Добавили в корзину</div>
+          <div class="funnel-val" style="color:#22d3ee">1 117</div>
+          <div class="funnel-conv">18.3% от переходов</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:18.3%;background:#22d3ee"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 25.5%</div>
+
+      <div class="funnel-step" style="border-color:#22c55e40">
+        <div class="funnel-icon" style="background:#22c55e18">✅</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Заказали, шт.</div>
+          <div class="funnel-val" style="color:#22c55e">285</div>
+          <div class="funnel-conv">4.7% от переходов · 25.5% из корзины</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:4.7%;background:#22c55e"></div></div>
+      </div>
+      <div class="funnel-arrow pulse-red" style="color:#f87171">↓ 62.9% выкуп (было 95.4%)</div>
+
+      <div class="funnel-step" style="border-color:#ef444460">
+        <div class="funnel-icon" style="background:#ef444418">📦</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Выкуплено, шт.</div>
+          <div class="funnel-val" style="color:#ef4444">~179</div>
+          <div class="funnel-conv">62.9% — резкое падение качества выкупа</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:2.9%;background:#ef4444"></div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="card">
+        <div class="block-title">Заказы vs Корзина по дням</div>
+        <div class="block-sub">сравнение активности</div>
+        <div class="chart-wrap" style="height:200px">
+          <canvas id="chartFunnelDays" aria-label="Заказы и корзина по дням">243,66; 220,58; 112,33; 143,40; 119,25; 138,29; 142,34</canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="block-title">Процент выкупа по дням</div>
+        <div class="block-sub">критическое падение к концу недели</div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="chartBuyout" aria-label="Процент выкупа по дням">82,76,59,59,64,67,33</canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid4">
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:9px">Конверсия в корзину</div>
+      <div style="font-size:27px;font-weight:700;color:#22d3ee">18.3%</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:5px">стабильна к прошлой неделе</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:9px">Конверсия в заказ</div>
+      <div style="font-size:27px;font-weight:700;color:#22c55e">4.7%</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:5px">в норме</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:9px">Средний выкуп</div>
+      <div style="font-size:27px;font-weight:700;color:#ef4444">62.9%</div>
+      <div style="font-size:12px;color:#f87171;margin-top:5px">⚠️ было 95.4% на прошлой неделе</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:9px">Средний чек</div>
+      <div style="font-size:27px;font-weight:700;color:var(--gold)">645 ₽</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:5px">183 747 ₽ / 285 шт.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: ARTICLES ==================== -->
+<div id="page-articles" class="page content">
+
+  <div class="card" style="margin-bottom:22px">
+    <div class="block-title">Детальная аналитика по артикулам</div>
+    <div class="block-sub">Период 08.06 – 14.06.2026 · сравнение с предыдущим периодом</div>
+    <div style="overflow-x:auto">
+    <table class="art-table">
+      <thead>
+        <tr>
+          <th>Товар</th><th>Заказы, шт.</th><th>Выручка, ₽</th><th>Выкуп %</th><th>Переходы</th><th>Конв. в заказ</th><th>Ср. цена</th><th>Остаток WB</th><th>Доля выручки</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="art-name">Силиконовые приманки 65мм</div><div class="art-category">Приманки мягкие</div><div class="art-wb">WB: 158311067</div></td>
+          <td><div class="num">148</div><div class="num-muted">пред: 63 <span class="badge-green">+135%</span></div></td>
+          <td><div class="num">69 855 ₽</div><div class="num-muted">пред: 29 736 ₽</div></td>
+          <td><span class="badge-green">90%</span></td>
+          <td><div class="num">2 622</div><div class="num-muted">пред: 1 010</div></td>
+          <td><span class="badge-green">27%</span></td>
+          <td class="num">472 ₽</td>
+          <td><div class="num">35</div><div class="num-muted" style="color:var(--amber)">средний запас</div></td>
+          <td><div style="font-weight:600;color:#22c55e">38%</div></td>
+        </tr>
+        <tr style="background:#ef44440a">
+          <td><div class="art-name">Блесна тейл спиннер</div><div class="art-category">Блесны рыболовные</div><div class="art-wb">WB: 158293481</div></td>
+          <td><div class="num">75</div><div class="num-muted">пред: 290 <span class="badge-red">-74%</span></div></td>
+          <td><div class="num">44 996 ₽</div><div class="num-muted">пред: 173 986 ₽</div></td>
+          <td><span class="badge-green">94%</span></td>
+          <td><div class="num">1 547</div><div class="num-muted">пред: 4 995 <span class="badge-red">-69%</span></div></td>
+          <td><span class="badge-amber">22%</span></td>
+          <td class="num">600 ₽</td>
+          <td><div class="num" style="color:#f87171">0</div><div class="num-muted badge-red" style="display:inline-block">🚨 нет на складе!</div></td>
+          <td><div style="font-weight:600;color:#4f8ef7">24.5%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Раттлин на судака</div><div class="art-category">Раттлины</div><div class="art-wb">WB: 648381505</div></td>
+          <td><div class="num">35</div><div class="num-muted">пред: 20 <span class="badge-green">+75%</span></div></td>
+          <td><div class="num">20 999 ₽</div><div class="num-muted">пред: 10 764 ₽</div></td>
+          <td><span class="badge-green">92%</span></td>
+          <td><div class="num">576</div><div class="num-muted">пред: 485</div></td>
+          <td><span class="badge-green">28%</span></td>
+          <td class="num">600 ₽</td>
+          <td><div class="num">186</div><div class="num-muted" style="color:var(--green)">отличный запас</div></td>
+          <td><div style="font-weight:600;color:#f59e0b">11.4%</div></td>
+        </tr>
+        <tr style="background:#ef44440a">
+          <td><div class="art-name">ПОДСАК складной</div><div class="art-category">Подсачники</div><div class="art-wb">WB: 389870872</div></td>
+          <td><div class="num">20</div><div class="num-muted">пред: 47 <span class="badge-red">-57%</span></div></td>
+          <td><div class="num">43 200 ₽</div><div class="num-muted">пред: 101 521 ₽</div></td>
+          <td><span class="badge-green">94%</span></td>
+          <td><div class="num">1 009</div><div class="num-muted">пред: 1 742 <span class="badge-red">-42%</span></div></td>
+          <td><span class="badge-green">23%</span></td>
+          <td class="num">2 160 ₽</td>
+          <td><div class="num" style="color:#f87171">1</div><div class="num-muted badge-red" style="display:inline-block">🚨 критично!</div></td>
+          <td><div style="font-weight:600;color:#a855f7">23.5%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Ратлины (набор)</div><div class="art-category">Блесны рыболовные</div><div class="art-wb">WB: 195517926</div></td>
+          <td><div class="num">4</div><div class="num-muted">пред: 5 <span class="badge-amber">-20%</span></div></td>
+          <td><div class="num">2 220 ₽</div><div class="num-muted">пред: 2 775 ₽</div></td>
+          <td><span class="badge-green">100%</span></td>
+          <td><div class="num">321</div><div class="num-muted">пред: 836</div></td>
+          <td><span class="badge-amber">19%</span></td>
+          <td class="num">555 ₽</td>
+          <td><div class="num">29</div><div class="num-muted" style="color:var(--green)">норма</div></td>
+          <td><div style="font-weight:600;color:#22d3ee">1.2%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Набор балансиров</div><div class="art-category">Балансиры</div><div class="art-wb">WB: 291136708</div></td>
+          <td><div class="num">3</div><div class="num-muted">пред: 0 <span class="badge-green">оживление</span></div></td>
+          <td><div class="num">2 475 ₽</div><div class="num-muted">пред: 0 ₽</div></td>
+          <td><span class="badge-green">100%</span></td>
+          <td><div class="num">39</div><div class="num-muted">пред: 121</div></td>
+          <td><span class="badge-green">43%</span></td>
+          <td class="num">825 ₽</td>
+          <td><div class="num">314</div><div class="num-muted badge-red" style="display:inline-block">застой</div></td>
+          <td><div style="font-weight:600;color:var(--text3)">1.3%</div></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="block-title">Заказы по артикулам — динамика</div>
+      <div class="block-sub">шт. по дням, виден обвал Блесны тейл после 09.06</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartArtDyn" aria-label="Заказы по артикулам по дням">Динамика по артикулам</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Сравнение: текущий vs предыдущий период</div>
+      <div class="block-sub">Заказы, шт.</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartCompare" aria-label="Сравнение периодов">Текущий: 75,148,20,35,4,3. Предыдущий: 290,63,47,16,5,0</canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== PAGE: STOCKS ==================== -->
+<div id="page-stocks" class="page content">
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#ef4444">
+      <div class="metric-label">Артикулов в дефиците</div>
+      <div class="metric-value">2</div>
+      <div class="metric-sub">Блесна тейл (0) и ПОДСАК (1)</div>
+    </div>
+    <div class="metric" style="--accent-color:#22c55e">
+      <div class="metric-label">Всего на складах</div>
+      <div class="metric-value">598</div>
+      <div class="metric-sub">шт. на 14.06 (было 746)</div>
+    </div>
+    <div class="metric" style="--accent-color:#f59e0b">
+      <div class="metric-label">В пути к покупателю</div>
+      <div class="metric-value">94</div>
+      <div class="metric-sub">шт. в транзите</div>
+    </div>
+    <div class="metric" style="--accent-color:#a855f7">
+      <div class="metric-label">Стоимость остатков</div>
+      <div class="metric-value">405 374 ₽</div>
+      <div class="metric-sub">суммарно все склады</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Динамика остатков по дням</div>
+      <div class="block-sub">шт. по каждому артикулу — видно вымывание Блесны и ПОДСАК</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartStocks" aria-label="Остатки по дням">Силиконовые, Ратлины, Балансиры, ПОДСАК, Раттлин</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Остатки по складам на 14.06</div>
+      <div class="block-sub">топ складов по количеству</div>
+      <div style="overflow-x:auto">
+      <table class="wh-table">
+        <thead><tr><th>Регион / Склад</th><th>Остаток</th><th>Стоимость</th><th>Оборачив.</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot dot-green"></span>Екатеринбург</td><td><strong>169</strong></td><td>127 942 ₽</td><td>44д 15ч</td></tr>
+          <tr><td><span class="dot dot-green"></span>Коледино</td><td><strong>101</strong></td><td>83 325 ₽</td><td>13ч</td></tr>
+          <tr><td><span class="dot dot-green"></span>Казань</td><td><strong>65</strong></td><td>50 023 ₽</td><td>92д 4ч ⚠️</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Тула</td><td><strong>53</strong></td><td>38 415 ₽</td><td>1д 7ч</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Владимир WB</td><td><strong>48</strong></td><td>28 665 ₽</td><td>99д 23ч ⚠️</td></tr>
+          <tr><td><span class="dot dot-green"></span>Невинномысск</td><td><strong>72</strong></td><td>40 374 ₽</td><td>138д 0ч ⚠️</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Новосемейкино</td><td><strong>32</strong></td><td>22 122 ₽</td><td>33д 6ч</td></tr>
+          <tr><td><span class="dot dot-red"></span>Краснодар</td><td><strong>12</strong></td><td>5 663 ₽</td><td>8д 10ч</td></tr>
+          <tr><td><span class="dot dot-red"></span>Электросталь</td><td><strong>12</strong></td><td>6 705 ₽</td><td>82д 6ч ⚠️</td></tr>
+          <tr><td><span class="dot dot-red"></span>Калининград</td><td><strong>1</strong></td><td>2 160 ₽</td><td>>999д ⚠️</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Статус остатков по артикулам</div>
+    <div class="block-sub">анализ достаточности запасов на конец недели</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px">
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #ef444450">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Блесна тейл</div>
+        <div style="font-size:23px;font-weight:700;color:#ef4444">0 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">главный товар (24.5% выручки)</div>
+        <div style="margin-top:11px" class="prog-bar"><div class="prog-fill" style="width:0%;background:#ef4444"></div></div>
+        <div style="font-size:11px;color:#f87171;margin-top:5px">🚨 продажи остановлены</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #ef444450">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">ПОДСАК складной</div>
+        <div style="font-size:23px;font-weight:700;color:#ef4444">1 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">продаётся ~3/день в среднем</div>
+        <div style="margin-top:11px" class="prog-bar"><div class="prog-fill" style="width:3%;background:#ef4444"></div></div>
+        <div style="font-size:11px;color:#f87171;margin-top:5px">🚨 на грани остановки</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #22c55e50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Раттлин на судака</div>
+        <div style="font-size:23px;font-weight:700;color:#22c55e">190 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">продаётся 5/день</div>
+        <div style="margin-top:11px" class="prog-bar"><div class="prog-fill" style="width:85%;background:#22c55e"></div></div>
+        <div style="font-size:11px;color:#22c55e;margin-top:5px">запас ≈ 38 дней</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #f59e0b50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Силиконовые 65мм</div>
+        <div style="font-size:23px;font-weight:700;color:#f59e0b">67 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">продаётся 21/день</div>
+        <div style="margin-top:11px" class="prog-bar"><div class="prog-fill" style="width:35%;background:#f59e0b"></div></div>
+        <div style="font-size:11px;color:#fbbf52;margin-top:5px">⚠️ запас ≈ 3.2 дня</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #8892a450">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Ратлины</div>
+        <div style="font-size:23px;font-weight:700;color:var(--text)">29 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">продаётся 0.6/день</div>
+        <div style="margin-top:11px" class="prog-bar"><div class="prog-fill" style="width:60%;background:#8892a4"></div></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:5px">запас ≈ 48 дней</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #ef444450">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Набор балансиров</div>
+        <div style="font-size:23px;font-weight:700;color:var(--text)">350 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">продаётся 0.4/день</div>
+        <div style="margin-top:11px" class="prog-bar"><div class="prog-fill" style="width:100%;background:#ef4444"></div></div>
+        <div style="font-size:11px;color:#f87171;margin-top:5px">🚨 затоварен, нужна акция</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: GEO ==================== -->
+<div id="page-geo" class="page content">
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Распределение остатков по регионам</div>
+      <div class="block-sub">% от общего количества товара на складах</div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartGeo" aria-label="Доля регионов">Уральский 28%, Центральный 35%, Приволжский 16%, Юг 14%, Северо-Западный 0.2%</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Стоимость остатков по складам</div>
+      <div class="block-sub">₽, топ-8 складов</div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartWhValue" aria-label="Стоимость остатков по складам">Екатеринбург 127942, Коледино 83325, Казань 50023</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Сводная таблица по регионам</div>
+    <div class="block-sub">Остатки, оборачиваемость, движение товара</div>
+    <table class="art-table">
+      <thead>
+        <tr><th>Регион</th><th>Остаток, шт.</th><th>Стоимость</th><th>В пути к покуп.</th><th>Лучший склад</th><th>Статус</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Уральский</strong></td><td><span class="badge-green">169</span></td><td>127 942 ₽</td><td>4 шт.</td><td>Екатеринбург</td><td>🥇 Лидер</td>
+        </tr>
+        <tr>
+          <td><strong>Центральный</strong></td><td><span class="badge-green">214</span></td><td>157 110 ₽</td><td>3 шт.</td><td>Коледино</td><td>📦 Стабилен</td>
+        </tr>
+        <tr>
+          <td><strong>Приволжский</strong></td><td><span class="badge-amber">97</span></td><td>72 145 ₽</td><td>20 шт.</td><td>Казань</td><td>📈 Норма</td>
+        </tr>
+        <tr>
+          <td><strong>Юг и Северо-Кавказский</strong></td><td><span class="badge-amber">84</span></td><td>46 037 ₽</td><td>1 шт.</td><td>Невинномысск</td><td>⚠️ Низкая оборачиваемость</td>
+        </tr>
+        <tr>
+          <td><strong>Северо-Западный</strong></td><td><span class="badge-red">1</span></td><td>2 160 ₽</td><td>0 шт.</td><td>Калининград</td><td>🚨 Почти пусто</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== PAGE: COMPARE ==================== -->
+<div id="page-compare" class="page content">
+
+  <div class="hero" style="margin-bottom:22px">
+    <div class="hero-left">
+      <h1>Сравнение недель: 31.05–07.06 vs 08.06–14.06</h1>
+      <p>Прошлая неделя была рекордной — выручка +65%. Эта неделя — спад из-за нехватки остатков, который мы предсказали ещё в прошлом отчёте.</p>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#e0b042">
+      <div class="metric-label">Выручка</div>
+      <div class="metric-value">183 747 ₽</div>
+      <div class="metric-sub">было 320 198 ₽</div>
+      <div class="metric-delta delta-down">↓ -43%</div>
+    </div>
+    <div class="metric" style="--accent-color:#ef4444">
+      <div class="metric-label">Заказы</div>
+      <div class="metric-value">285</div>
+      <div class="metric-sub">было 428</div>
+      <div class="metric-delta delta-down">↓ -33%</div>
+    </div>
+    <div class="metric" style="--accent-color:#a855f7">
+      <div class="metric-label">Переходы</div>
+      <div class="metric-value">6 114</div>
+      <div class="metric-sub">было 9 265</div>
+      <div class="metric-delta delta-down">↓ -34%</div>
+    </div>
+    <div class="metric" style="--accent-color:#ef4444">
+      <div class="metric-label">% выкупа</div>
+      <div class="metric-value">62.9%</div>
+      <div class="metric-sub">было 95.4%</div>
+      <div class="metric-delta delta-down">↓ -32.5 п.п.</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Выручка по дням: неделя к неделе</div>
+      <div class="block-sub">₽, сопоставление по дням недели</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartWeekCompare" aria-label="Выручка неделя к неделе">Сравнение недель</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Остатки Блесны тейл — обвал к нулю</div>
+      <div class="block-sub">шт., 14 дней — видно момент исчерпания запаса</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartBlesnaStock" aria-label="Остатки Блесны тейл за 2 недели">42→0</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Что мы предупреждали в прошлом отчёте — и что случилось</div>
+    <table class="art-table">
+      <thead><tr><th>Прогноз (отчёт 31.05–07.06)</th><th>Что произошло (08.06–14.06)</th><th>Результат</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>«Блесна тейл — остаток 42 шт., продажи 36/день → запас &lt;2 дня. Срочно поставка»</td>
+          <td>Остаток дошёл до 0. Заказы упали с 290 до 75 (-74%). Переходы упали на 69%</td>
+          <td><span class="badge-red">подтвердилось</span></td>
+        </tr>
+        <tr>
+          <td>«ПОДСАК складной — остаток 22 шт., запас ≈4 дня. Срочно поставка»</td>
+          <td>Остаток дошёл до 1 шт. Заказы упали с 47 до 20 (-57%)</td>
+          <td><span class="badge-red">подтвердилось</span></td>
+        </tr>
+        <tr>
+          <td>«Раттлин на судака — нужно разобраться с конверсией»</td>
+          <td>Заказы восстановились: 20 → 35 (+75%). Конверсия выросла до 28%</td>
+          <td><span class="badge-green">исправлено</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== PAGE: ALERTS ==================== -->
+<div id="page-alerts" class="page content">
+
+  <div class="section-title">🚨 Критические проблемы</div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">Блесна тейл — 0 шт. на складе. Продажи остановлены</div>
+      <div class="alert-body">Главный товар прошлой недели (54% выручки) полностью закончился. Заказы упали с 290 до 75 шт. (-74%), переходы — на 69%. Прямые потери за неделю: ~129 000 ₽ выручки. Это произошло ровно так, как мы предупреждали в прошлом отчёте. Нужна экстренная поставка на склад WB в течение 1–2 дней.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">ПОДСАК складной — остаток 1 шт. Критическая нехватка</div>
+      <div class="alert-body">Заказы упали с 47 до 20 шт. (-57%). Это второй по выручке товар. Если не пополнить склад в ближайшие 1–2 дня, продажи остановятся полностью, как с Блесной.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">Силиконовые 65мм — запас всего ≈3 дня при росте продаж</div>
+      <div class="alert-body">Товар вырос на +135% по заказам (63→148), но остаток упал с 163 до 67 шт. При текущем темпе продаж (21/день) запаса хватит на 3 дня. Это следующий кандидат на обвал — нужно опередить ситуацию и поставить товар заранее, не дожидаясь нуля на складе.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">⚠️ Важные наблюдения</div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Процент выкупа упал с 95.4% до 62.9% — это аномалия</div>
+      <div class="alert-body">Резкое падение качества выкупа за одну неделю нетипично для стабильного бизнеса. Часть заказов в статусе «Создан» (85 шт.) ещё не выкуплена и может улучшить итоговую цифру, но 26 отказов — тревожный сигнал. Возможные причины: длительная доставка из-за отсутствия товара на близких складах, недовольство покупателей долгим ожиданием.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Набор балансиров — 350 шт. на складе, продажи почти нулевые</div>
+      <div class="alert-body">Товар замёрз: за 2 недели продано всего 3 шт. при остатке 350 шт. Платите за хранение без оборота. Решение: распродажная акция, участие в WB-промо, либо снижение цены для ускорения оборота.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Невинномысск и Казань — оборачиваемость свыше 90 дней</div>
+      <div class="alert-body">Товар на этих складах продаётся очень медленно. Если тренд продолжится — рассмотреть перераспределение остатков на более активные склады (Екатеринбург, Коледино).</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">✅ Что сработало хорошо</div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Силиконовые приманки 65мм — рост заказов на +135% (63→148)</div>
+      <div class="alert-body">Стали главным источником выручки этой недели (38% от общей). Высокая конверсия 27% и стабильный рейтинг 4.9 ★. Это растущий продукт — нужно поддерживать остатки на нём в приоритете.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Раттлин на судака восстановился: заказы выросли на +75% (20→35)</div>
+      <div class="alert-body">После провала на прошлой неделе товар вернулся к росту. Конверсия в заказ выросла до 28% — лучший показатель среди всех артикулов. Запас 186 шт. — на 38 дней вперёд, можно не беспокоиться.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-gold">
+    <div class="alert-icon">💡</div>
+    <div>
+      <div class="alert-title">Наш прогноз из прошлого отчёта подтвердился на 100%</div>
+      <div class="alert-body">Оба товара, по которым мы предупреждали о критическом остатке (Блесна тейл и ПОДСАК), действительно закончились и вызвали падение выручки. Это подчёркивает ценность еженедельного контроля остатков — он позволяет действовать на 5–7 дней раньше, чем проблема становится критической.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">📋 Приоритетные шаги на следующую неделю</div>
+  <div class="card">
+    <table class="art-table">
+      <thead><tr><th>Приоритет</th><th>Действие</th><th>Срок</th><th>Ожидаемый эффект</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Экстренная поставка Блесна тейл</td><td>Сегодня</td><td>Вернуть 24.5% выручки</td></tr>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Экстренная поставка ПОДСАК (остаток 1 шт.)</td><td>1–2 дня</td><td>Не потерять второй по доходности товар</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Опережающая поставка Силиконовых 65мм (запас 3 дня)</td><td>2–3 дня</td><td>Не повторить обвал Блесны</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Разобраться с падением % выкупа</td><td>Эта неделя</td><td>Вернуть выкуп к 90%+</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Акция на Набор балансиров (350 шт. застой)</td><td>До конца месяца</td><td>Высвободить склад и деньги</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Перераспределить остатки из Невинномысска</td><td>2 недели</td><td>Снизить оборачиваемость</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Отчёт подготовлен агентством <strong>ScaleUP</strong> · ИП Игнатьева Г.Р. · IGAMA · Wildberries · период 08.06–14.06.2026
+</div>
+
+<script>
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const days=['08.06','09.06','10.06','11.06','12.06','13.06','14.06'];
+const gridColor='rgba(255,255,255,0.05)';
+const tickColor='rgba(255,255,255,0.4)';
+
+const defOpts={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#141b2c',titleColor:'#f2f4fa',bodyColor:'#8d96ad',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12}},
+  scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}}}
+};
+
+new Chart(document.getElementById('chartOrders'),{
+  type:'bar',
+  data:{labels:days,datasets:[{label:'Заказы',data:[66,58,33,40,25,29,34],backgroundColor:'rgba(224,176,66,0.7)',borderColor:'#e0b042',borderWidth:1,borderRadius:7,borderSkipped:false}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartRevenue'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'Выручка ₽',data:[46451,41168,21633,28728,12409,15646,17712],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.1)',borderWidth:2,fill:true,tension:.35,pointBackgroundColor:'#ef4444',pointRadius:4}]},
+  options:{...defOpts,scales:{...defOpts.scales,y:{...defOpts.scales.y,ticks:{...defOpts.scales.y.ticks,callback:v=>v>=1000?(v/1000).toFixed(0)+'к':v}}}}
+});
+
+new Chart(document.getElementById('chartPie'),{
+  type:'doughnut',
+  data:{labels:['Силиконовые','Блесна тейл','ПОДСАК','Раттлин','прочие'],datasets:[{data:[38,24.5,23.5,11.4,2.5],backgroundColor:['#22c55e','#4f8ef7','#a855f7','#f59e0b','#22d3ee'],borderColor:'#0d121e',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#141b2c',titleColor:'#f2f4fa',bodyColor:'#8d96ad',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+
+new Chart(document.getElementById('chartFunnelDays'),{
+  type:'bar',
+  data:{labels:days,datasets:[
+    {label:'Корзина',data:[243,220,112,143,119,138,142],backgroundColor:'rgba(34,211,238,0.55)',borderRadius:5,borderSkipped:false},
+    {label:'Заказы',data:[66,58,33,40,25,29,34],backgroundColor:'rgba(34,197,94,0.8)',borderRadius:5,borderSkipped:false}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+new Chart(document.getElementById('chartBuyout'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'% выкупа',data:[82,76,59,59,64,67,33],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.1)',borderWidth:2,fill:true,tension:.35,pointBackgroundColor:'#ef4444',pointRadius:4}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartArtDyn'),{
+  type:'line',
+  data:{labels:days,datasets:[
+    {label:'Силиконовые',data:[33,20,1,4,1,8,8],borderColor:'#22c55e',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Блесна тейл',data:[33,20,1,4,1,8,8].map((v,i)=>[21,23,24,24,22,13,21][i]),borderColor:'#4f8ef7',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'ПОДСАК',data:[6,6,3,5,0,0,0],borderColor:'#a855f7',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Раттлин',data:[4,8,4,7,1,6,5],borderColor:'#f59e0b',borderWidth:2,fill:false,tension:.3,pointRadius:3}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8}}}}
+});
+
+new Chart(document.getElementById('chartCompare'),{
+  type:'bar',
+  data:{labels:['Блесна тейл','Силиконовые','ПОДСАК','Раттлин','Ратлины','Балансиры'],datasets:[
+    {label:'Текущая неделя',data:[75,148,20,35,4,3],backgroundColor:'rgba(224,176,66,0.75)',borderRadius:6,borderSkipped:false},
+    {label:'Прошлая неделя',data:[290,66,47,20,5,0],backgroundColor:'rgba(255,255,255,0.1)',borderRadius:6,borderSkipped:false,borderColor:'rgba(255,255,255,0.2)',borderWidth:1}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+new Chart(document.getElementById('chartStocks'),{
+  type:'line',
+  data:{labels:days,datasets:[
+    {label:'Силиконовые',data:[163,143,114,92,95,82,67],borderColor:'#22c55e',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'ПОДСАК',data:[17,12,9,3,1,1,1],borderColor:'#ef4444',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Раттлин',data:[171,161,159,151,200,194,190],borderColor:'#4f8ef7',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Ратлины',data:[32,31,31,31,31,29,29],borderColor:'#8892a4',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+    {label:'Балансиры',data:[351,352,351,351,351,350,350],borderColor:'#f59e0b',borderWidth:1.5,fill:false,tension:.3,pointRadius:3,borderDash:[4,4]}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8}}}}
+});
+
+new Chart(document.getElementById('chartGeo'),{
+  type:'doughnut',
+  data:{
+    labels:['Центральный','Уральский','Приволжский','Юг+СКФО','Северо-Западный'],
+    datasets:[{data:[214,169,97,84,1],backgroundColor:['#4f8ef7','#22c55e','#a855f7','#f59e0b','#ef4444'],borderColor:'#0d121e',borderWidth:2}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:true,position:'right',labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8,padding:9}},tooltip:{backgroundColor:'#141b2c',titleColor:'#f2f4fa',bodyColor:'#8d96ad',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12}}}
+});
+
+new Chart(document.getElementById('chartWhValue'),{
+  type:'bar',
+  data:{labels:['Екатеринбург','Коледино','Казань','Тула','Владимир','Невинномысск','Новосемейкино','Краснодар'],
+  datasets:[{label:'Стоимость ₽',data:[127942,83325,50023,38415,28665,40374,22122,5663],backgroundColor:'rgba(224,176,66,0.7)',borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts,indexAxis:'y',scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'к':v}},y:{grid:{display:false},ticks:{color:tickColor,font:{size:11}}}}}
+});
+
+new Chart(document.getElementById('chartWeekCompare'),{
+  type:'line',
+  data:{labels:['День 1','День 2','День 3','День 4','День 5','День 6','День 7'],datasets:[
+    {label:'31.05–07.06',data:[37934,40119,36582,43308,52602,48029,35190],borderColor:'#22c55e',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
+    {label:'08.06–14.06',data:[46451,41168,21633,28728,12409,15646,17712],borderColor:'#ef4444',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3,borderDash:[5,5]}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+new Chart(document.getElementById('chartBlesnaStock'),{
+  type:'line',
+  data:{labels:['31.05','01.06','02.06','03.06','04.06','05.06','06.06','07.06','08.06','09.06','10.06','11.06','12.06','13.06','14.06'],
+  datasets:[{label:'Остаток Блесна тейл, шт.',data:[null,null,null,null,null,null,null,42,null,null,null,null,null,null,0],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.1)',borderWidth:3,fill:true,tension:.2,pointRadius:5,pointBackgroundColor:'#ef4444',spanGaps:true}]},
+  options:{...defOpts}
+});
+</script>
+</body>
+</html>
