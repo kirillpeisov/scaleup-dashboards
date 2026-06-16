@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lady Di · Аналитика Wildberries · 08–14.06.2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d0c10;
+  --bg2:#131217;
+  --bg3:#1a181f;
+  --bg4:#232029;
+  --border:#ffffff10;
+  --border2:#ffffff1c;
+  --text:#f3f2f5;
+  --text2:#938da0;
+  --text3:#585264;
+  --mauve:#c08fa8;
+  --mauve-dim:#c08fa822;
+  --blue:#7f9ad9;
+  --green:#7fc99e;
+  --red:#e8757a;
+  --amber:#dcb05f;
+  --slate:#7a7a92;
+}
+body{background:var(--bg);background-image:radial-gradient(circle at 12% 0%, #1e1622 0%, transparent 45%),radial-gradient(circle at 90% 6%, #161a26 0%, transparent 40%);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
+
+.header{background:linear-gradient(180deg,#131217,#0e0d11);border-bottom:1px solid var(--border);padding:0 36px;display:flex;align-items:center;justify-content:space-between;height:78px;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-mark{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--mauve);background:linear-gradient(135deg,#c08fa8,#7a7a92);font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:#131217}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);font-family:'Playfair Display',serif}
+.logo-sub{font-size:11.5px;color:var(--text2);margin-top:2px;letter-spacing:.3px}
+.header-right{display:flex;align-items:center;gap:14px}
+.period-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px 16px;font-size:12px;color:var(--text2)}
+.period-badge span{color:var(--mauve);font-weight:600}
+.wb-badge{background:linear-gradient(135deg,#cb11ab22,#cb11ab10);border:1px solid #cb11ab50;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;color:#e060c8}
+.status-badge{background:linear-gradient(135deg,#e8757a22,#e8757a10);border:1px solid #e8757a50;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;color:#f29a9e}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;display:flex;gap:2px;overflow-x:auto}
+.tab{padding:16px 20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--mauve);border-bottom-color:var(--mauve)}
+.tab-emoji{font-size:14px}
+
+.content{padding:32px 36px;max-width:1440px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.card{background:linear-gradient(180deg,var(--bg3),var(--bg2));border:1px solid var(--border);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:border-color .3s}
+.card:hover{border-color:var(--border2)}
+.card-sm{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:18px}
+
+.metric{background:linear-gradient(160deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-color,var(--mauve)),transparent)}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.metric-value{font-size:30px;font-weight:700;color:var(--text);margin:8px 0 4px;line-height:1;letter-spacing:-.5px}
+.metric-sub{font-size:12px;color:var(--text2)}
+.metric-delta{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:8px}
+.delta-up{background:#7fc99e1c;color:#9ddbb6}
+.delta-down{background:#e8757a1c;color:#f29a9e}
+.delta-neutral{background:#dcb05f1c;color:#ecc784}
+
+.section-title{font-size:13px;font-weight:600;color:var(--mauve);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.block-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px}
+.block-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+
+.chart-wrap{position:relative;width:100%}
+
+.art-table{width:100%;border-collapse:collapse}
+.art-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:600}
+.art-table td{padding:13px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.art-table tr:last-child td{border-bottom:none}
+.art-table tr:hover td{background:var(--bg4)}
+.art-name{font-weight:500;color:var(--text);font-size:13px;margin-bottom:2px}
+.art-wb{font-size:11px;color:var(--text3);margin-top:1px}
+.num{font-weight:600;color:var(--text)}
+.num-muted{color:var(--text2);font-size:12px;margin-top:2px}
+.badge-green{background:#7fc99e1c;color:#9ddbb6;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-red{background:#e8757a1c;color:#f29a9e;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-amber{background:#dcb05f1c;color:#ecc784;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-blue{background:#7f9ad91c;color:#a9bdea;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-mauve{background:var(--mauve-dim);color:var(--mauve);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+
+.prog-bar{flex:1;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;background:var(--mauve);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+.wh-table{width:100%;border-collapse:collapse}
+.wh-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;text-align:left}
+.wh-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.wh-table tr:last-child td{border-bottom:none}
+.wh-table tr:hover td{background:var(--bg4)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;box-shadow:0 0 8px currentColor}
+.dot-green{background:#7fc99e;color:#7fc99e}
+.dot-amber{background:#dcb05f;color:#dcb05f}
+.dot-red{background:#e8757a;color:#e8757a}
+.dot-mauve{background:#c08fa8;color:#c08fa8}
+
+.alert{border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;transition:transform .2s}
+.alert:hover{transform:translateX(3px)}
+.alert-icon{font-size:19px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.alert-body{font-size:12.5px;line-height:1.55}
+.alert-warn{background:linear-gradient(135deg,#dcb05f14,#dcb05f08);border:1px solid #dcb05f30}
+.alert-warn .alert-title{color:#ecc784}
+.alert-warn .alert-body{color:#ecc78499}
+.alert-danger{background:linear-gradient(135deg,#e8757a14,#e8757a08);border:1px solid #e8757a30}
+.alert-danger .alert-title{color:#f29a9e}
+.alert-danger .alert-body{color:#f29a9e99}
+.alert-success{background:linear-gradient(135deg,#7fc99e14,#7fc99e08);border:1px solid #7fc99e30}
+.alert-success .alert-title{color:#9ddbb6}
+.alert-success .alert-body{color:#9ddbb699}
+.alert-info{background:linear-gradient(135deg,#7f9ad914,#7f9ad908);border:1px solid #7f9ad930}
+.alert-info .alert-title{color:#a9bdea}
+.alert-info .alert-body{color:#a9bdea99}
+.alert-mauve{background:linear-gradient(135deg,var(--mauve-dim),transparent);border:1px solid #c08fa840}
+.alert-mauve .alert-title{color:var(--mauve)}
+.alert-mauve .alert-body{color:#c08fa8bb}
+
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:24px 0}
+
+.footer{text-align:center;padding:36px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:44px}
+.footer strong{color:var(--mauve)}
+
+.hero{background:linear-gradient(135deg,#211a26 0%,#131217 60%);border:1px solid var(--border2);border-radius:20px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,#c08fa822,transparent 70%);pointer-events:none}
+.hero-left h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--text);margin-bottom:6px}
+.hero-left p{font-size:13px;color:var(--text2);max-width:520px;line-height:1.5}
+.hero-right{display:flex;gap:24px;text-align:center}
+.hero-stat{display:flex;flex-direction:column;gap:4px}
+.hero-stat .v{font-size:24px;font-weight:700;color:var(--mauve)}
+.hero-stat .l{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+
+.fbs-badge{display:inline-block;background:linear-gradient(135deg,var(--blue),#5577b8);color:#131217;font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px;letter-spacing:.4px;text-transform:uppercase;margin-left:8px}
+.closing-badge{display:inline-block;background:linear-gradient(135deg,var(--red),#b85a5e);color:#131217;font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px;letter-spacing:.4px;text-transform:uppercase;margin-left:8px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.page.active .card,.page.active .metric,.page.active .art-table,.page.active .alert,.page.active .hero{animation:fadeUp .4s ease both}
+.page.active .card:nth-child(2),.page.active .metric:nth-child(2){animation-delay:.05s}
+.page.active .card:nth-child(3),.page.active .metric:nth-child(3){animation-delay:.1s}
+.page.active .card:nth-child(4),.page.active .metric:nth-child(4){animation-delay:.15s}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--mauve-dim)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">LD</div>
+    <div>
+      <div class="logo-text">ИП Гуленкина Д.Д. · Lady Di</div>
+      <div class="logo-sub">Еженедельный отчёт · ScaleUP Agency</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge">Период: <span>08.06 — 14.06.2026</span></div>
+    <div class="status-badge">⚠ Закрытие WB, переход на ФБС</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('overview',this)"><span class="tab-emoji">📊</span>Обзор</div>
+  <div class="tab" onclick="showPage('transition',this)"><span class="tab-emoji">🔄</span>Переход на ФБС</div>
+  <div class="tab" onclick="showPage('articles',this)"><span class="tab-emoji">👜</span>Товары</div>
+  <div class="tab" onclick="showPage('stocks',this)"><span class="tab-emoji">🏪</span>Остатки</div>
+  <div class="tab" onclick="showPage('geo',this)"><span class="tab-emoji">🗺</span>География</div>
+  <div class="tab" onclick="showPage('alerts',this)"><span class="tab-emoji">⚠️</span>Рекомендации</div>
+</div>
+
+<!-- ==================== OVERVIEW ==================== -->
+<div id="page-overview" class="page content active">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Неделя закрытия склада WB <span class="closing-badge">сворачивание FBO</span></h1>
+      <p>Выручка снизилась на -12% — это ожидаемо в рамках перехода на модель ФБС (продажа со своего склада). Каталог из 32 артикулов: только 10 активно продаются, у 22 цена обнулена — явный признак вывода из оборота на WB-складах. Основной объём товара (553 шт., 1.12 млн ₽) теперь учитывается как «Маркетплейс» — это и есть будущий ФБС-остаток.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">59 370₽</div><div class="l">выручка</div></div>
+      <div class="hero-stat"><div class="v">26</div><div class="l">заказов</div></div>
+      <div class="hero-stat" style="color:#f29a9e"><div class="v" style="color:#f29a9e">-12%</div><div class="l">к пред. неделе</div></div>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#c08fa8">
+      <div class="metric-label">Выручка (заказы)</div>
+      <div class="metric-value">59 370 ₽</div>
+      <div class="metric-sub">было 67 112 ₽</div>
+      <div class="metric-delta delta-down">↓ -12% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#7a7a92">
+      <div class="metric-label">Заказов, шт.</div>
+      <div class="metric-value">26</div>
+      <div class="metric-sub">без изменений к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#7f9ad9">
+      <div class="metric-label">Активных артикулов</div>
+      <div class="metric-value">10 из 32</div>
+      <div class="metric-sub">22 без цены — выводятся из продажи</div>
+    </div>
+    <div class="metric" style="--accent-color:#dcb05f">
+      <div class="metric-label">Товар «на маркетплейсе» (ФБС)</div>
+      <div class="metric-value">553 шт.</div>
+      <div class="metric-sub">1.12 млн ₽ — будущий ФБС-остаток</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Динамика выручки за 2 недели</div>
+      <div class="block-sub">видно стабильное сокращение объёма продаж</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartRevTrend" aria-label="Динамика выручки">67112,59370</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Структура каталога</div>
+      <div class="block-sub">сколько артикулов в каком состоянии</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartCatalogState" aria-label="Структура каталога">Активные 10, Без цены/выводятся 22</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Топ-3 активных товара</div>
+    <div class="block-sub">эти позиции пока приносят основную выручку</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px">
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #c08fa840">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Умная швабра с отжимом</div>
+        <div style="font-size:22px;font-weight:700;color:var(--mauve)">25 432 ₽</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">42.8% выручки · остаток WB = 0</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #7f9ad940">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Сумка через плечо олива</div>
+        <div style="font-size:22px;font-weight:700;color:#7f9ad9">8 845 ₽</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">14.9% выручки · остаток 2 шт</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #dcb05f40">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Сумка через плечо коричневая</div>
+        <div style="font-size:22px;font-weight:700;color:var(--amber)">7 076 ₽</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">11.9% выручки · остаток 0</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== TRANSITION TO FBS ==================== -->
+<div id="page-transition" class="page content">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Что значит переход на ФБС <span class="fbs-badge">FBS</span></h1>
+      <p>ФБС (фулфилмент продавца) означает, что товар хранится не на складе Wildberries, а у самого продавца, и собирается под заказ. В отличие от FBO (со склада WB), это снижает расходы на хранение, но требует от продавца быстрой отправки заказов и контроля своих остатков.</p>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Где сейчас находится товар</div>
+      <div class="block-sub">553 шт. на «Маркетплейс» против остатков на классических складах WB</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartFbsVsFbo" aria-label="ФБС против FBO остатков">Маркетплейс 553, Склады WB 23</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Что это означает для бизнеса</div>
+      <div class="block-sub">плюсы и риски перехода</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px">
+        <div style="background:var(--bg4);border-radius:12px;padding:14px;border-left:3px solid var(--green)">
+          <div style="font-size:12px;font-weight:600;color:#9ddbb6;margin-bottom:4px">+ Экономия на хранении</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5">Не платите WB за размещение на складе — товар хранится у вас</div>
+        </div>
+        <div style="background:var(--bg4);border-radius:12px;padding:14px;border-left:3px solid var(--green)">
+          <div style="font-size:12px;font-weight:600;color:#9ddbb6;margin-bottom:4px">+ Полный контроль над запасами</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5">Не нужно гадать, сколько товара осталось на каждом складе WB</div>
+        </div>
+        <div style="background:var(--bg4);border-radius:12px;padding:14px;border-left:3px solid var(--red)">
+          <div style="font-size:12px;font-weight:600;color:#f29a9e;margin-bottom:4px">− Дольше доставка</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5">Заказ собирается из одной точки, а не из распределённой сети складов — время доставки в регионы увеличится</div>
+        </div>
+        <div style="background:var(--bg4);border-radius:12px;padding:14px;border-left:3px solid var(--amber)">
+          <div style="font-size:12px;font-weight:600;color:#ecc784;margin-bottom:4px">! Требуется быстрая отгрузка</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5">WB штрафует за просрочку отправки заказа по ФБС — нужна дисциплина в сборке заказов</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Каталог по состоянию: что активно, что закрывается</div>
+    <div class="block-sub">22 из 32 артикулов имеют нулевую цену — признак снятия с продажи на WB-складах</div>
+    <table class="art-table">
+      <thead><tr><th>Категория</th><th>Кол-во артикулов</th><th>Статус</th><th>Комментарий</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Активно продаются</strong></td><td><span class="badge-green">10</span></td><td>Цена указана, есть заказы</td><td>дают всю текущую выручку</td></tr>
+        <tr><td><strong>Без цены, без заказов</strong></td><td><span class="badge-red">22</span></td><td>Выведены из продажи</td><td>готовятся к переходу на ФБС-каталог</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ==================== ARTICLES ==================== -->
+<div id="page-articles" class="page content">
+
+  <div class="card" style="margin-bottom:22px">
+    <div class="block-title">Активные артикулы — детальная аналитика</div>
+    <div class="block-sub">Период 08.06–14.06.2026 · только товары с продажами</div>
+    <div style="overflow-x:auto">
+    <table class="art-table">
+      <thead><tr><th>Товар</th><th>Заказы, шт.</th><th>Выручка, ₽</th><th>Выкуп %</th><th>Переходы</th><th>Конв.</th><th>Цена</th><th>Остаток WB</th><th>Доля</th></tr></thead>
+      <tbody>
+        <tr style="background:#c08fa810">
+          <td><div class="art-name">Умная швабра с отжимом</div><div class="art-wb">WB: 730808169</div></td>
+          <td><div class="num">8</div><div class="num-muted">пред: 11</div></td>
+          <td class="num">25 432 ₽</td><td><span class="badge-amber">67%</span></td>
+          <td class="num">465</td><td>11%</td><td>3 179 ₽</td>
+          <td><span class="badge-red">0</span></td>
+          <td><div style="font-weight:600;color:var(--mauve)">42.8%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка через плечо олива</div><div class="art-wb">WB: 672375784</div></td>
+          <td><div class="num">5</div><div class="num-muted">пред: 3 <span class="badge-green">+67%</span></div></td>
+          <td class="num">8 845 ₽</td><td><span class="badge-amber">50%</span></td>
+          <td class="num">521</td><td>18%</td><td>1 769 ₽</td>
+          <td><span class="badge-red">2</span></td>
+          <td><div style="font-weight:600;color:#7f9ad9">14.9%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка через плечо коричневая</div><div class="art-wb">WB: 672375783</div></td>
+          <td><div class="num">4</div><div class="num-muted">пред: 4</div></td>
+          <td class="num">7 076 ₽</td><td><span class="badge-red">0%</span></td>
+          <td class="num">633</td><td>10%</td><td>1 769 ₽</td>
+          <td><span class="badge-red">0</span></td>
+          <td><div style="font-weight:600;color:var(--amber)">11.9%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Ланч-бокс бежевый</div><div class="art-wb">WB: 676802522</div></td>
+          <td><div class="num">2</div><div class="num-muted">пред: 0</div></td>
+          <td class="num">3 478 ₽</td><td><span class="badge-green">100%</span></td>
+          <td class="num">37</td><td><span class="badge-green">100%</span></td><td>1 739 ₽</td>
+          <td><span class="badge-red">0</span></td>
+          <td><div style="font-weight:600;color:var(--text3)">5.9%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Умная швабра (вариант 2)</div><div class="art-wb">WB: 672409793</div></td>
+          <td><div class="num">1</div><div class="num-muted">пред: 3 <span class="badge-red">-67%</span></div></td>
+          <td class="num">3 179 ₽</td><td><span class="badge-green">100%</span></td>
+          <td class="num">29</td><td>50%</td><td>3 179 ₽</td>
+          <td><span class="badge-red">0</span></td>
+          <td><div style="font-weight:600;color:var(--text3)">5.4%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка кросс-боди чёрная мини</div><div class="art-wb">WB: 676930323</div></td>
+          <td><div class="num">2</div><div class="num-muted">пред: 1</div></td>
+          <td class="num">3 168 ₽</td><td><span class="badge-red">0%</span></td>
+          <td class="num">151</td><td>13%</td><td>1 584 ₽</td>
+          <td>3</td>
+          <td><div style="font-weight:600;color:var(--text3)">5.3%</div></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="block-title">Распределение выручки: активные vs выводимые</div>
+      <div class="block-sub">₽ за неделю</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartActiveVsClosing" aria-label="Активные против выводимых">59370 vs 0</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Переходы по активным товарам</div>
+      <div class="block-sub">трафик на карточки, шт.</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartTransitionsArt" aria-label="Переходы по товарам">465,521,633,37,29,151</canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== STOCKS ==================== -->
+<div id="page-stocks" class="page content">
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#c08fa8">
+      <div class="metric-label">На «Маркетплейс» (ФБС)</div>
+      <div class="metric-value">553 шт.</div>
+      <div class="metric-sub">1 120 938 ₽ — основной товарный запас</div>
+    </div>
+    <div class="metric" style="--accent-color:#7a7a92">
+      <div class="metric-label">На складах WB (FBO)</div>
+      <div class="metric-value">23 шт.</div>
+      <div class="metric-sub">остатки вымываются, не пополняются</div>
+    </div>
+    <div class="metric" style="--accent-color:#dcb05f">
+      <div class="metric-label">Оборачиваемость ФБС-остатка</div>
+      <div class="metric-value">63 дня</div>
+      <div class="metric-sub">медленная при текущих продажах</div>
+    </div>
+    <div class="metric" style="--accent-color:#e8757a">
+      <div class="metric-label">Складов WB с товаром</div>
+      <div class="metric-value">12</div>
+      <div class="metric-sub">по 1-7 шт. на каждом — остатки тают</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Остатки на складах WB по топ-артикулам</div>
+      <div class="block-sub">видно, что активные товары уже почти на нуле</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartActiveStock" aria-label="Остатки активных товаров">0,2,0,0,0,3</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Остатки по складам WB (FBO)</div>
+      <div class="block-sub">мелкими партиями на 12 складах</div>
+      <table class="wh-table">
+        <thead><tr><th>Регион / Склад</th><th>Остаток</th><th>Стоимость</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot dot-mauve"></span>Маркетплейс (ФБС)</td><td><strong>553</strong></td><td>1 120 938 ₽</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Екатеринбург</td><td><strong>7</strong></td><td>13 915 ₽</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Коледино</td><td><strong>6</strong></td><td>13 987 ₽</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Краснодар</td><td><strong>3</strong></td><td>10 978 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Электросталь</td><td><strong>2</strong></td><td>3 769 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Воронеж WB</td><td><strong>2</strong></td><td>5 429 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Сарапул WB</td><td><strong>2</strong></td><td>7 319 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Невинномысск</td><td><strong>2</strong></td><td>3 761 ₽</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Самые обеспеченные позиции в «спящем» каталоге</div>
+    <div class="block-sub">эти товары имеют запас 17-47 шт., но цена обнулена — кандидаты на возврат в продажу через ФБС</div>
+    <table class="art-table">
+      <thead><tr><th>Товар</th><th>Остаток на 14.06</th><th>Статус</th></tr></thead>
+      <tbody>
+        <tr><td>Ланч-бокс с отделениями</td><td><span class="badge-green">47 шт.</span></td><td><span class="badge-red">цена 0</span></td></tr>
+        <tr><td>Ланч-бокс с отделениями (2-й вариант)</td><td><span class="badge-green">43 шт.</span></td><td><span class="badge-red">цена 0</span></td></tr>
+        <tr><td>Умная швабра (запас на возобновление)</td><td><span class="badge-green">27 шт.</span></td><td><span class="badge-amber">частично активна</span></td></tr>
+        <tr><td>Сумка через плечо малиновая (×2 модели)</td><td><span class="badge-green">19-20 шт.</span></td><td><span class="badge-red">цена 0</span></td></tr>
+        <tr><td>Сумка кросс-боди коричневая</td><td><span class="badge-green">20 шт.</span></td><td><span class="badge-red">цена 0</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== GEO ==================== -->
+<div id="page-geo" class="page content">
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Доля регионов в заказах</div>
+      <div class="block-sub">% от всех заказов магазина</div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartGeoOrders" aria-label="Доля регионов">Центральный 53.8, Приволжский 11.5, Уральский 11.5, Юг 11.5, Дальний+Сибирь 7.7, СЗ 3.8</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Локальность заказов по регионам</div>
+      <div class="block-sub">% заказов, доставленных из своего федерального округа</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Центральный</span><span style="font-size:12px;font-weight:600;color:var(--text)">92.9%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:92.9%;background:#7fc99e"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Приволжский</span><span style="font-size:12px;font-weight:600;color:var(--text)">33.3%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:33.3%;background:#7f9ad9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Уральский</span><span style="font-size:12px;font-weight:600;color:var(--text)">33.3%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:33.3%;background:#7f9ad9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Южный и Северо-Кавказский</span><span style="font-size:12px;font-weight:600;color:var(--text)">0%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:2%;background:#e8757a"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Дальневосточный и Сибирский</span><span style="font-size:12px;font-weight:600;color:var(--text)">0%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:2%;background:#e8757a"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Северо-Западный</span><span style="font-size:12px;font-weight:600;color:var(--text)">0%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:2%;background:#e8757a"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:var(--mauve-dim);border-radius:10px;font-size:12px;color:var(--mauve)">
+        💡 При переходе на ФБС локальность доставки в Центральном округе сохранится высокой, но в отдалённые регионы время доставки вырастет — это нужно объяснить покупателям заранее в карточке товара
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Сводная таблица по регионам</div>
+    <table class="art-table">
+      <thead><tr><th>Регион</th><th>Доля заказов</th><th>Доля WB (рынок)</th><th>Время доставки</th><th>Прогноз после ФБС</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Центральный</strong></td><td><span class="badge-green">53.8%</span></td><td>31.9%</td><td>2д 9ч</td><td><span class="badge-green">без изменений</span></td></tr>
+        <tr><td><strong>Приволжский</strong></td><td>11.5%</td><td>15.4%</td><td>1д 13ч</td><td><span class="badge-amber">доставка дольше</span></td></tr>
+        <tr><td><strong>Уральский</strong></td><td>11.5%</td><td>7.4%</td><td>2д 20ч</td><td><span class="badge-amber">доставка дольше</span></td></tr>
+        <tr><td><strong>Южный и Северо-Кавказский</strong></td><td>11.5%</td><td>17.8%</td><td>2д 23ч</td><td><span class="badge-red">риск падения заказов</span></td></tr>
+        <tr><td><strong>Дальний + Сибирь</strong></td><td>7.7%</td><td>13.7%</td><td>1д 14ч</td><td><span class="badge-red">риск падения заказов</span></td></tr>
+        <tr><td><strong>Северо-Западный</strong></td><td>3.8%</td><td>8.7%</td><td>3д 12ч</td><td><span class="badge-red">риск падения заказов</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== ALERTS ==================== -->
+<div id="page-alerts" class="page content">
+
+  <div class="section-title">🚨 Ключевая ситуация — переход на ФБС</div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">22 из 32 артикулов выведены из продажи на складах WB — закрытие FBO подтверждено цифрами</div>
+      <div class="alert-body">Цена обнулена, заказов нет, переходы минимальны. Это системный сигнал сворачивания модели FBO (продажа со склада WB) в пользу ФБС (продажа со своего склада). Выручка уже снизилась на -12% — это прямое следствие сокращения активного ассортимента.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">Основной товар (швабра, 42.8% выручки) — остаток на WB-складах уже 0</div>
+      <div class="alert-body">Продажи идут из остатков в пути или из старых заказов. Если переход на ФБС не завершится в ближайшие дни, этот товар может полностью выпасть из продажи на 1-2 недели — критический разрыв в самой выручкообразующей позиции.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">⚠️ Важные наблюдения</div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">553 шт. товара (1.12 млн ₽) лежит на «Маркетплейс» с оборачиваемостью 63 дня</div>
+      <div class="alert-body">Это будущий ФБС-остаток. Оборачиваемость 63 дня — довольно медленно, особенно учитывая, что часть этого товара относится к артикулам без активных заказов. После переключения на ФБС стоит провести ревизию: какие позиции реально продавать, а какие списать или распродать со скидкой.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Регионы Юг, Дальний Восток, Северо-Запад — под риском при переходе на ФБС</div>
+      <div class="alert-body">Сейчас эти регионы и так не обслуживаются локально (0% локальных заказов), а с ФБС время доставки увеличится ещё сильнее. Без своего склада в этих регионах доля заказов оттуда может упасть.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Ланч-боксы (47 и 43 шт. в запасе) — выведены из продажи, но запас высокий</div>
+      <div class="alert-body">Это хорошие кандидаты на быстрый возврат в продажу через ФБС-схему — товар уже есть, просто нужно восстановить карточки и цену.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">✅ Что стабильно</div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Количество заказов не изменилось (26 = 26) при сокращении каталога</div>
+      <div class="alert-body">Несмотря на закрытие 22 артикулов, базовый спрос на оставшиеся 10 товаров устойчив. Это значит, что покупатели лояльны к конкретным моделям, а не к ассортименту в целом — хороший знак для будущего ФБС-магазина с меньшим, но стабильным каталогом.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-mauve">
+    <div class="alert-icon">💡</div>
+    <div>
+      <div class="alert-title">Центральный округ — 53.8% всех заказов при доле рынка WB 31.9%</div>
+      <div class="alert-body">Магазин сильно перевешен в сторону Центрального региона — это хорошая новость для перехода на ФБС: если склад продавца расположен в Центральной России, основной объём заказов будет обслуживаться быстро и без потерь.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">📋 План действий на переходный период</div>
+  <div class="card">
+    <table class="art-table">
+      <thead><tr><th>Приоритет</th><th>Действие</th><th>Срок</th><th>Ожидаемый эффект</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Восстановить продажу швабры через ФБС (0 остатка на WB)</td><td>Эта неделя</td><td>Не терять 42.8% выручки</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Провести ревизию 22 закрытых артикулов — что возвращать в продажу</td><td>1-2 недели</td><td>Решить судьбу 1.12 млн ₽ товара</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Вернуть в продажу ланч-боксы (90 шт. в запасе)</td><td>1 неделя</td><td>Быстрый возврат оборота</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Указать в карточках увеличенные сроки доставки для отдалённых регионов</td><td>При запуске ФБС</td><td>Избежать негативных отзывов</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Зафиксировать новую модель работы в договоре с агентством</td><td>До конца месяца</td><td>Прозрачность дальнейшей отчётности</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Отчёт подготовлен агентством <strong>ScaleUP</strong> · ИП Гуленкина Д.Д. · Lady Di · Wildberries · период 08.06–14.06.2026
+</div>
+
+<script>
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const gridColor='rgba(255,255,255,0.05)';
+const tickColor='rgba(255,255,255,0.4)';
+
+const defOpts={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a181f',titleColor:'#f3f2f5',bodyColor:'#938da0',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12}},
+  scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}}}
+};
+
+new Chart(document.getElementById('chartRevTrend'),{
+  type:'line',
+  data:{labels:['01.06–07.06','08.06–14.06'],datasets:[{label:'Выручка ₽',data:[67112,59370],borderColor:'#e8757a',backgroundColor:'rgba(232,117,122,0.1)',borderWidth:3,fill:true,tension:.2,pointRadius:6,pointBackgroundColor:'#e8757a'}]},
+  options:{...defOpts,scales:{...defOpts.scales,y:{...defOpts.scales.y,ticks:{...defOpts.scales.y.ticks,callback:v=>v>=1000?(v/1000).toFixed(0)+'к':v}}}}
+});
+
+new Chart(document.getElementById('chartCatalogState'),{
+  type:'doughnut',
+  data:{labels:['Активные','Выводятся (цена 0)'],datasets:[{data:[10,22],backgroundColor:['#7fc99e','#e8757a'],borderColor:'#131217',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10,padding:12}},tooltip:defOpts.plugins.tooltip}}
+});
+
+new Chart(document.getElementById('chartFbsVsFbo'),{
+  type:'bar',
+  data:{labels:['Маркетплейс (ФБС)','Склады WB (FBO)'],datasets:[{label:'Остаток шт.',data:[553,23],backgroundColor:['#c08fa8','#7a7a92'],borderRadius:8,borderSkipped:false}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartActiveVsClosing'),{
+  type:'bar',
+  data:{labels:['Активные товары','Выводимые товары'],datasets:[{label:'Выручка ₽',data:[59370,0],backgroundColor:['#c08fa8','#585264'],borderRadius:8,borderSkipped:false}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartTransitionsArt'),{
+  type:'bar',
+  data:{labels:['Швабра','Сумка олива','Сумка корич.','Ланч-бокс','Швабра 2','Кросс-боди'],datasets:[{label:'Переходы',data:[465,521,633,37,29,151],backgroundColor:'rgba(192,143,168,0.7)',borderColor:'#c08fa8',borderWidth:1,borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts,scales:{...defOpts.scales,x:{...defOpts.scales.x,ticks:{...defOpts.scales.x.ticks,maxRotation:30,minRotation:0}}}}
+});
+
+new Chart(document.getElementById('chartActiveStock'),{
+  type:'bar',
+  data:{labels:['Швабра','Сумка олива','Сумка корич.','Ланч-бокс','Швабра 2','Кросс-боди'],datasets:[{label:'Остаток WB шт.',data:[0,2,0,0,0,3],backgroundColor:(ctx)=>{const v=ctx.raw;return v===0?'#e8757a':'#dcb05f'},borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts,scales:{...defOpts.scales,x:{...defOpts.scales.x,ticks:{...defOpts.scales.x.ticks,maxRotation:30,minRotation:0}}}}
+});
+
+new Chart(document.getElementById('chartGeoOrders'),{
+  type:'doughnut',
+  data:{labels:['Центральный','Приволжский','Уральский','Юг и СКФО','Дальний+Сибирь','Северо-Западный'],datasets:[{data:[53.8,11.5,11.5,11.5,7.7,3.8],backgroundColor:['#c08fa8','#7f9ad9','#dcb05f','#7a7a92','#e8757a','#7fc99e'],borderColor:'#131217',borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:true,position:'right',labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8,padding:8}},tooltip:{backgroundColor:'#1a181f',titleColor:'#f3f2f5',bodyColor:'#938da0',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+</script>
+</body>
+</html>
