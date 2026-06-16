@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Альфа · Аналитика Wildberries · 08–14.06.2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e12;
+  --bg2:#0f1419;
+  --bg3:#151c22;
+  --bg4:#1d262e;
+  --border:#ffffff10;
+  --border2:#ffffff1c;
+  --text:#f0f4f6;
+  --text2:#869099;
+  --text3:#4f5a64;
+  --orange:#e8923f;
+  --orange-dim:#e8923f22;
+  --blue:#5fa8d9;
+  --green:#6fc98e;
+  --red:#e87575;
+  --amber:#e0a857;
+  --steel:#7a92a3;
+}
+body{background:var(--bg);background-image:radial-gradient(circle at 12% 0%, #14202a 0%, transparent 45%),radial-gradient(circle at 92% 6%, #1c1410 0%, transparent 40%);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
+
+.header{background:linear-gradient(180deg,#0f1419,#0b0f12);border-bottom:1px solid var(--border);padding:0 36px;display:flex;align-items:center;justify-content:space-between;height:78px;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-mark{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--orange);background:linear-gradient(135deg,#e8923f,#7a92a3);font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:#0f1419}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);font-family:'Playfair Display',serif}
+.logo-sub{font-size:11.5px;color:var(--text2);margin-top:2px;letter-spacing:.3px}
+.header-right{display:flex;align-items:center;gap:14px}
+.period-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px 16px;font-size:12px;color:var(--text2)}
+.period-badge span{color:var(--orange);font-weight:600}
+.wb-badge{background:linear-gradient(135deg,#cb11ab22,#cb11ab10);border:1px solid #cb11ab50;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;color:#e060c8}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;display:flex;gap:2px;overflow-x:auto}
+.tab{padding:16px 20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.tab-emoji{font-size:14px}
+
+.content{padding:32px 36px;max-width:1440px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.card{background:linear-gradient(180deg,var(--bg3),var(--bg2));border:1px solid var(--border);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:border-color .3s}
+.card:hover{border-color:var(--border2)}
+.card-sm{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:18px}
+
+.metric{background:linear-gradient(160deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-color,var(--orange)),transparent)}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.metric-value{font-size:30px;font-weight:700;color:var(--text);margin:8px 0 4px;line-height:1;letter-spacing:-.5px}
+.metric-sub{font-size:12px;color:var(--text2)}
+.metric-delta{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:8px}
+.delta-up{background:#6fc98e1c;color:#94dba9}
+.delta-down{background:#e875751c;color:#f29a9a}
+.delta-neutral{background:#e0a8571c;color:#ecc784}
+
+.section-title{font-size:13px;font-weight:600;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.block-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px}
+.block-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+
+.chart-wrap{position:relative;width:100%}
+
+.art-table{width:100%;border-collapse:collapse}
+.art-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:600}
+.art-table td{padding:13px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.art-table tr:last-child td{border-bottom:none}
+.art-table tr:hover td{background:var(--bg4)}
+.art-name{font-weight:500;color:var(--text);font-size:13px;margin-bottom:2px}
+.art-wb{font-size:11px;color:var(--text3);margin-top:1px}
+.num{font-weight:600;color:var(--text)}
+.num-muted{color:var(--text2);font-size:12px;margin-top:2px}
+.badge-green{background:#6fc98e1c;color:#94dba9;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-red{background:#e875751c;color:#f29a9a;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-amber{background:#e0a8571c;color:#ecc784;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-blue{background:#5fa8d91c;color:#9cc7ea;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-orange{background:var(--orange-dim);color:var(--orange);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+
+.prog-bar{flex:1;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;background:var(--orange);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+.wh-table{width:100%;border-collapse:collapse}
+.wh-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;text-align:left}
+.wh-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.wh-table tr:last-child td{border-bottom:none}
+.wh-table tr:hover td{background:var(--bg4)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;box-shadow:0 0 8px currentColor}
+.dot-green{background:#6fc98e;color:#6fc98e}
+.dot-amber{background:#e0a857;color:#e0a857}
+.dot-red{background:#e87575;color:#e87575}
+
+.funnel-step{background:linear-gradient(135deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:transform .2s}
+.funnel-step:hover{transform:translateX(4px)}
+.funnel-arrow{color:var(--text3);font-size:15px;text-align:center;margin:3px 0;font-weight:500}
+.funnel-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.funnel-data{flex:1}
+.funnel-name{font-size:12px;color:var(--text2)}
+.funnel-val{font-size:21px;font-weight:700;color:var(--text)}
+.funnel-conv{font-size:11px;color:var(--text3);margin-top:2px}
+.funnel-bar-wrap{width:110px;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden;flex-shrink:0}
+.funnel-bar-fill{height:100%;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+
+.alert{border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;transition:transform .2s}
+.alert:hover{transform:translateX(3px)}
+.alert-icon{font-size:19px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.alert-body{font-size:12.5px;line-height:1.55}
+.alert-warn{background:linear-gradient(135deg,#e0a85714,#e0a85708);border:1px solid #e0a85730}
+.alert-warn .alert-title{color:#ecc784}
+.alert-warn .alert-body{color:#ecc78499}
+.alert-danger{background:linear-gradient(135deg,#e8757514,#e8757508);border:1px solid #e8757530}
+.alert-danger .alert-title{color:#f29a9a}
+.alert-danger .alert-body{color:#f29a9a99}
+.alert-success{background:linear-gradient(135deg,#6fc98e14,#6fc98e08);border:1px solid #6fc98e30}
+.alert-success .alert-title{color:#94dba9}
+.alert-success .alert-body{color:#94dba999}
+.alert-info{background:linear-gradient(135deg,#5fa8d914,#5fa8d908);border:1px solid #5fa8d930}
+.alert-info .alert-title{color:#9cc7ea}
+.alert-info .alert-body{color:#9cc7ea99}
+.alert-orange{background:linear-gradient(135deg,var(--orange-dim),transparent);border:1px solid #e8923f40}
+.alert-orange .alert-title{color:var(--orange)}
+.alert-orange .alert-body{color:#e8923fbb}
+
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:24px 0}
+
+.footer{text-align:center;padding:36px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:44px}
+.footer strong{color:var(--orange)}
+
+.hero{background:linear-gradient(135deg,#1a2530 0%,#0f1419 60%);border:1px solid var(--border2);border-radius:20px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,#e8923f22,transparent 70%);pointer-events:none}
+.hero-left h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--text);margin-bottom:6px}
+.hero-left p{font-size:13px;color:var(--text2);max-width:500px;line-height:1.5}
+.hero-right{display:flex;gap:24px;text-align:center}
+.hero-stat{display:flex;flex-direction:column;gap:4px}
+.hero-stat .v{font-size:24px;font-weight:700;color:var(--orange)}
+.hero-stat .l{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+
+.ship-badge{display:inline-block;background:linear-gradient(135deg,var(--green),#4a9c6a);color:#0f1419;font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px;letter-spacing:.4px;text-transform:uppercase;margin-left:8px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glow{0%,100%{box-shadow:0 0 0px var(--red)}50%{box-shadow:0 0 16px var(--red)}}
+.page.active .card,.page.active .metric,.page.active .art-table,.page.active .alert,.page.active .hero{animation:fadeUp .4s ease both}
+.page.active .card:nth-child(2),.page.active .metric:nth-child(2){animation-delay:.05s}
+.page.active .card:nth-child(3),.page.active .metric:nth-child(3){animation-delay:.1s}
+.page.active .card:nth-child(4),.page.active .metric:nth-child(4){animation-delay:.15s}
+.pulse-red{animation:glow 2s infinite}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--orange-dim)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">A</div>
+    <div>
+      <div class="logo-text">ИП Ланцанов С.Ш. · Альфа</div>
+      <div class="logo-sub">Еженедельный отчёт · ScaleUP Agency</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge">Период: <span>08.06 — 14.06.2026</span></div>
+    <div class="wb-badge">Wildberries</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('overview',this)"><span class="tab-emoji">📊</span>Обзор</div>
+  <div class="tab" onclick="showPage('stocks',this)"><span class="tab-emoji">🏪</span>Остатки и поставка</div>
+  <div class="tab" onclick="showPage('funnel',this)"><span class="tab-emoji">🎯</span>Воронка продаж</div>
+  <div class="tab" onclick="showPage('geo',this)"><span class="tab-emoji">🗺</span>География</div>
+  <div class="tab" onclick="showPage('alerts',this)"><span class="tab-emoji">⚠️</span>Рекомендации</div>
+</div>
+
+<!-- ==================== OVERVIEW ==================== -->
+<div id="page-overview" class="page content active">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Неделя 08–14 июня: рост на фоне почти полного исчерпания остатков <span class="ship-badge">отгрузка завтра</span></h1>
+      <p>Выручка выросла на +5%, заказы на +6% — несмотря на то, что главный товар (80% выручки) дошёл до 1 шт. на складе. Завтра запланирована отгрузка — критически важный момент, чтобы не уйти в простой продаж, как это уже случалось у других клиентов с похожей ситуацией.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">50 960₽</div><div class="l">выручка</div></div>
+      <div class="hero-stat"><div class="v">52</div><div class="l">заказов</div></div>
+      <div class="hero-stat" style="color:#94dba9"><div class="v" style="color:#94dba9">+5%</div><div class="l">к пред. неделе</div></div>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#e8923f">
+      <div class="metric-label">Выручка (заказы)</div>
+      <div class="metric-value">50 960 ₽</div>
+      <div class="metric-sub">за 7 дней, 2 артикула</div>
+      <div class="metric-delta delta-up">↑ +5% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#6fc98e">
+      <div class="metric-label">Заказов, шт.</div>
+      <div class="metric-value">52</div>
+      <div class="metric-sub">в среднем 7/день</div>
+      <div class="metric-delta delta-up">↑ +6% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#5fa8d9">
+      <div class="metric-label">Переходов в карточки</div>
+      <div class="metric-value">1 047</div>
+      <div class="metric-sub">средняя конверсия 5%</div>
+      <div class="metric-delta delta-up">↑ +29% к пред. неделе</div>
+    </div>
+    <div class="metric" style="--accent-color:#e87575">
+      <div class="metric-label">Главный товар на складе</div>
+      <div class="metric-value">1 шт.</div>
+      <div class="metric-sub">было 32 шт. на 08.06</div>
+      <div class="metric-delta delta-down">🚨 критично</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Соотношение двух товаров в выручке</div>
+      <div class="block-sub">маленький каталог, основной фокус на 1 модели</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartPie" aria-label="Доля артикулов в выручке">Кемпинговый фонарь 80.2%, Новая модель 19.8%</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Ключевые показатели</div>
+      <div class="block-sub">средний % выкупа и конверсии</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:6px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Средний % выкупа</span><span style="font-size:12px;font-weight:600;color:var(--text)">53.8%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:53.8%;background:#6fc98e"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Конверсия в корзину</span><span style="font-size:12px;font-weight:600;color:var(--text)">16%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:16%;background:#5fa8d9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Конверсия в заказ (топ-товар)</span><span style="font-size:12px;font-weight:600;color:var(--text)">35%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:35%;background:#e8923f"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Рейтинг карточек</span><span style="font-size:12px;font-weight:600;color:var(--text)">4.9–5.0 ★</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:98%;background:#e0a857"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:var(--orange-dim);border-radius:10px;font-size:12px;color:var(--orange)">
+        💡 Конверсия в заказ 35% — очень высокий показатель для такого трафика. Это значит, что у товара нет проблем со спросом, есть проблема только с остатками
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Топ-товар приближается к нулю</div>
+    <div class="block-sub">кемпинговый фонарь — 80% всей выручки магазина</div>
+    <div class="chart-wrap" style="height:220px">
+      <canvas id="chartStockDecline" aria-label="Падение остатка">32,29,18,15,11,9,1</canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== STOCKS ==================== -->
+<div id="page-stocks" class="page content">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Завтра поставка <span class="ship-badge">критично важно</span></h1>
+      <p>Главный товар — кемпинговый фонарь (артикул 768257607) — упал с 32 до 1 шт. за неделю при продажах 44 заказа/неделю (≈6.3/день). Это 80% всей выручки магазина. Без завтрашней поставки продажи остановятся уже сегодня-завтра.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat" style="color:#f29a9a"><div class="v" style="color:#f29a9a">1 шт.</div><div class="l">остаток сейчас</div></div>
+      <div class="hero-stat"><div class="v">6.3</div><div class="l">продаж/день</div></div>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#e87575">
+      <div class="metric-label">Кемпинговый фонарь (768257607)</div>
+      <div class="metric-value">1 шт.</div>
+      <div class="metric-sub">было 32 шт. на 08.06</div>
+    </div>
+    <div class="metric" style="--accent-color:#6fc98e">
+      <div class="metric-label">Новая модель (937244231)</div>
+      <div class="metric-value">34 шт.</div>
+      <div class="metric-sub">стабильный остаток</div>
+    </div>
+    <div class="metric" style="--accent-color:#e0a857">
+      <div class="metric-label">Стоимость остатков</div>
+      <div class="metric-value">45 556 ₽</div>
+      <div class="metric-sub">суммарно оба товара</div>
+    </div>
+    <div class="metric" style="--accent-color:#5fa8d9">
+      <div class="metric-label">Оборачиваемость на Туле</div>
+      <div class="metric-value">44 дня</div>
+      <div class="metric-sub">основной склад хранения</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Динамика остатков по дням</div>
+      <div class="block-sub">шт., оба артикула</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartStocksDynamics" aria-label="Остатки по дням">32→1 и 39→33</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Остатки по складам</div>
+      <div class="block-sub">на 14.06.2026</div>
+      <table class="wh-table">
+        <thead><tr><th>Регион / Склад</th><th>Остаток</th><th>Стоимость</th><th>Оборачив.</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot dot-amber"></span>Тула</td><td><strong>34</strong></td><td>42 476 ₽</td><td>44д 0ч ⚠️</td></tr>
+          <tr><td><span class="dot dot-red"></span>Электросталь</td><td><strong>1</strong></td><td>910 ₽</td><td>4ч ✓ продаётся быстро</td></tr>
+          <tr><td><span class="dot dot-red"></span>Рязань (Тюшевское)</td><td><strong>1</strong></td><td>910 ₽</td><td>>999д</td></tr>
+          <tr><td><span class="dot dot-red"></span>Коледино</td><td><strong>1</strong></td><td>1 260 ₽</td><td>>999д</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:16px;padding:14px;background:var(--orange-dim);border-radius:12px;font-size:12px;color:var(--orange);line-height:1.5">
+        Тула держит остаток в основном новой модели (937244231), не топового фонаря. Это значит, что после завтрашней поставки нужно проследить, чтобы товар распределился и на другие склады, а не лежал в одной точке.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Прогноз: что будет, если поставка задержится</div>
+    <div class="block-sub">расчёт на основе текущей скорости продаж</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px">
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #6fc98e50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Если поставка пришла завтра</div>
+        <div style="font-size:20px;font-weight:700;color:#6fc98e">Продажи не прерываются</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:7px">сохраняется текущий темп ~44 заказа/неделю</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #e0a85750">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Задержка на 2-3 дня</div>
+        <div style="font-size:20px;font-weight:700;color:#ecc784">Потеря позиций в поиске</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:7px">WB снижает видимость карточки при нулевом остатке</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #e8757550">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Задержка более недели</div>
+        <div style="font-size:20px;font-weight:700;color:#f29a9a">Потеря ~40 000₽ выручки</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:7px">80% магазина останавливается</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FUNNEL ==================== -->
+<div id="page-funnel" class="page content">
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Воронка продаж</div>
+      <div class="block-sub">Суммарно по обоим артикулам, период 08.06 – 14.06</div>
+
+      <div class="funnel-step" style="border-color:#5fa8d940">
+        <div class="funnel-icon" style="background:#5fa8d918">🖱</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Переходов в карточку</div>
+          <div class="funnel-val" style="color:#5fa8d9">1 047</div>
+          <div class="funnel-conv">+29% к пред. неделе</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:100%;background:#5fa8d9"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 16%</div>
+
+      <div class="funnel-step" style="border-color:#7a92a340">
+        <div class="funnel-icon" style="background:#7a92a318">🛒</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Добавили в корзину</div>
+          <div class="funnel-val" style="color:#7a92a3">167</div>
+          <div class="funnel-conv">16% от переходов</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:16%;background:#7a92a3"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 31%</div>
+
+      <div class="funnel-step" style="border-color:#6fc98e40">
+        <div class="funnel-icon" style="background:#6fc98e18">✅</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Заказали, шт.</div>
+          <div class="funnel-val" style="color:#6fc98e">52</div>
+          <div class="funnel-conv">5% от переходов · 31% из корзины</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:5%;background:#6fc98e"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 53.8% выкуп</div>
+
+      <div class="funnel-step" style="border-color:#e0a85760">
+        <div class="funnel-icon" style="background:#e0a85718">📦</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Выкуплено, шт.</div>
+          <div class="funnel-val" style="color:#e0a857">~28</div>
+          <div class="funnel-conv">53.8% — средний для категории показатель</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:2.7%;background:#e0a857"></div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="card">
+        <div class="block-title">Сравнение товаров по конверсии</div>
+        <div class="block-sub">переходы → заказ, %</div>
+        <div class="chart-wrap" style="height:200px">
+          <canvas id="chartConvCompare" aria-label="Сравнение конверсий">Топ-товар 35%, Новая модель 20%</canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="block-title">Переходы по товарам</div>
+        <div class="block-sub">сравнение текущего и прошлого периода</div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="chartVisitsCompare" aria-label="Переходы текущий vs прошлый">778 vs 598, 269 vs 216</canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Сравнение артикулов</div>
+    <table class="art-table">
+      <thead><tr><th>Товар</th><th>Заказы, шт.</th><th>Выручка, ₽</th><th>Выкуп %</th><th>Переходы</th><th>Конв.</th><th>Цена</th><th>Остаток</th><th>Доля выручки</th></tr></thead>
+      <tbody>
+        <tr style="background:#e8923f10">
+          <td><div class="art-name">Кемпинговый фонарь светодиодный</div><div class="art-wb">WB: 768257607</div></td>
+          <td><div class="num">44</div><div class="num-muted">пред: 47</div></td>
+          <td class="num">40 880 ₽</td>
+          <td><span class="badge-green">89%</span></td>
+          <td class="num">778</td><td><span class="badge-green">35%</span></td><td>929 ₽</td>
+          <td><span class="badge-red">1</span></td>
+          <td><div style="font-weight:600;color:#e8923f">80.2%</div></td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Кемпинговый фонарь (новая модель)</div><div class="art-wb">WB: 937244231</div></td>
+          <td><div class="num">8</div><div class="num-muted">пред: 2 <span class="badge-green">+300%</span></div></td>
+          <td class="num">10 080 ₽</td>
+          <td><span class="badge-amber">75%</span></td>
+          <td class="num">269</td><td>20%</td><td>1 260 ₽</td>
+          <td>34</td>
+          <td><div style="font-weight:600;color:#5fa8d9">19.8%</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== GEO ==================== -->
+<div id="page-geo" class="page content">
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Доля регионов в заказах</div>
+      <div class="block-sub">% от всех заказов магазина</div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartGeoOrders" aria-label="Доля регионов в заказах">Центральный 34.6, Приволжский 19.2, Юг и СКФО 19.2, Дальний+Сибирь 15.4, СЗ 7.7, Уральский 3.8</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Время доставки по регионам</div>
+      <div class="block-sub">только Центральный обслуживается локально</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Центральный (локально)</span><span style="font-size:12px;font-weight:600;color:var(--text)">1д 6ч</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:25%;background:#6fc98e"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Приволжский</span><span style="font-size:12px;font-weight:600;color:var(--text)">1д 18ч</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:35%;background:#5fa8d9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Северо-Западный</span><span style="font-size:12px;font-weight:600;color:var(--text)">2д 0ч</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:40%;background:#e0a857"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Уральский</span><span style="font-size:12px;font-weight:600;color:var(--text)">2д 4ч</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:42%;background:#e0a857"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Южный и Северо-Кавказский</span><span style="font-size:12px;font-weight:600;color:var(--text)">2д 14ч</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:50%;background:#e87575"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Дальневосточный и Сибирский</span><span style="font-size:12px;font-weight:600;color:var(--text)">4д 2ч</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:80%;background:#e87575"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Сводная таблица по регионам</div>
+    <table class="art-table">
+      <thead><tr><th>Регион</th><th>Доля заказов</th><th>Доля WB (рынок)</th><th>Локальность</th><th>Доставка</th><th>Комментарий</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Центральный</strong></td><td><span class="badge-green">34.6%</span></td><td>31.9%</td><td><span class="badge-green">100%</span></td><td>1д 6ч ✓</td><td>🥇 единственный со складом</td></tr>
+        <tr><td><strong>Приволжский</strong></td><td><span class="badge-amber">19.2%</span></td><td>15.4%</td><td><span class="badge-red">0%</span></td><td>1д 18ч</td><td>выше доли рынка</td></tr>
+        <tr><td><strong>Юг и Северо-Кавказский</strong></td><td><span class="badge-amber">19.2%</span></td><td>17.8%</td><td><span class="badge-red">0%</span></td><td>2д 14ч</td><td>чуть выше доли рынка</td></tr>
+        <tr><td><strong>Дальний + Сибирь</strong></td><td>15.4%</td><td>13.7%</td><td><span class="badge-red">0%</span></td><td>4д 2ч ⚠️</td><td>долгая доставка, нет склада</td></tr>
+        <tr><td><strong>Северо-Западный</strong></td><td>7.7%</td><td>8.8%</td><td><span class="badge-red">0%</span></td><td>2д 0ч</td><td>недобор</td></tr>
+        <tr><td><strong>Уральский</strong></td><td>3.8%</td><td>7.4%</td><td><span class="badge-red">0%</span></td><td>2д 4ч</td><td>сильный недобор от потенциала</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== ALERTS ==================== -->
+<div id="page-alerts" class="page content">
+
+  <div class="section-title">🚨 Критические проблемы</div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">Кемпинговый фонарь (768257607) — остаток 1 шт. при 80% выручки магазина</div>
+      <div class="alert-body">Падение с 32 до 1 шт. за неделю, продажи ~6.3 заказа/день. Завтрашняя поставка — критически важное событие: при задержке хотя бы на 2-3 дня товар уйдёт в полный дефицит, WB снизит видимость карточки в поиске, и магазин потеряет основной источник выручки. Контролировать факт поставки лично.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">⚠️ Важные наблюдения</div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Весь товар физически лежит на одном складе — Тула</div>
+      <div class="alert-body">34 шт. (почти весь остаток обоих артикулов) сосредоточено в Туле. Остальные регионы (Приволжский, Юг, Дальний Восток, Урал) обслуживаются не локально — отсюда доставка 2-4 дня вместо 1. Если объёмы вырастут, стоит рассмотреть распределение остатков на 2-3 склада в разных регионах.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Уральский регион — доля заказов в 2 раза ниже доли рынка WB (3.8% vs 7.4%)</div>
+      <div class="alert-body">Это говорит о недостаточной видимости товара в этом регионе — либо из-за долгой доставки (2д 4ч), либо из-за нехватки локального продвижения. Потенциал роста есть.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">✅ Что работает хорошо</div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Выручка выросла на +5% несмотря на критический дефицит товара</div>
+      <div class="alert-body">Это сильный сигнал спроса: даже с остатком, падающим до нуля, магазин продолжает расти. Конверсия в заказ на топ-товаре — 35%, это очень высокий показатель. Проблема не в продукте и не в спросе, а исключительно в логистике поставок.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Новая модель фонаря (937244231) показала рост заказов на +300% (2→8)</div>
+      <div class="alert-body">При остатке 34 шт. товар стабильно набирает обороты. Рейтинг 5.0 ★. Это хороший второй источник выручки, который может частично подхватить спрос, пока решается вопрос с поставкой основной модели.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-orange">
+    <div class="alert-icon">💡</div>
+    <div>
+      <div class="alert-title">Рейтинги обоих товаров на максимуме (4.9–5.0 ★)</div>
+      <div class="alert-body">Качество продукта и карточек не вызывает вопросов у покупателей. Весь фокус внимания должен быть на логистике: своевременность поставок и распределение остатков по складам — единственное, что сейчас ограничивает рост.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">📋 Приоритетные шаги на следующую неделю</div>
+  <div class="card">
+    <table class="art-table">
+      <thead><tr><th>Приоритет</th><th>Действие</th><th>Срок</th><th>Ожидаемый эффект</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Подтвердить и проконтролировать завтрашнюю поставку</td><td>Завтра</td><td>Не потерять 80% выручки</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>После поставки распределить остаток на 2-3 склада</td><td>1 неделя</td><td>Снизить время доставки в регионы</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Усилить продвижение в Уральском регионе</td><td>2-3 недели</td><td>Закрыть разрыв с долей рынка WB</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Поддержать рост новой модели рекламой</td><td>1-2 недели</td><td>Диверсификация выручки</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Отчёт подготовлен агентством <strong>ScaleUP</strong> · ИП Ланцанов С.Ш. · Альфа · Wildberries · период 08.06–14.06.2026
+</div>
+
+<script>
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const days=['08.06','09.06','10.06','11.06','12.06','13.06','14.06'];
+const gridColor='rgba(255,255,255,0.05)';
+const tickColor='rgba(255,255,255,0.4)';
+
+const defOpts={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#151c22',titleColor:'#f0f4f6',bodyColor:'#869099',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12}},
+  scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}}}
+};
+
+new Chart(document.getElementById('chartPie'),{
+  type:'doughnut',
+  data:{labels:['Кемпинговый фонарь','Новая модель'],datasets:[{data:[80.2,19.8],backgroundColor:['#e8923f','#5fa8d9'],borderColor:'#0f1419',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10,padding:12}},tooltip:{backgroundColor:'#151c22',titleColor:'#f0f4f6',bodyColor:'#869099',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+
+new Chart(document.getElementById('chartStockDecline'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'Остаток, шт.',data:[32,29,18,15,11,9,1],borderColor:'#e87575',backgroundColor:'rgba(232,117,117,0.12)',borderWidth:3,fill:true,tension:.3,pointRadius:5,pointBackgroundColor:'#e87575'}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartStocksDynamics'),{
+  type:'line',
+  data:{labels:days,datasets:[
+    {label:'Кемпинговый фонарь (768257607)',data:[32,29,18,15,11,9,1],borderColor:'#e8923f',backgroundColor:'rgba(232,146,63,0.1)',borderWidth:2,fill:true,tension:.3,pointRadius:4},
+    {label:'Новая модель (937244231)',data:[39,38,35,35,33,33,33],borderColor:'#5fa8d9',backgroundColor:'rgba(95,168,217,0.08)',borderWidth:2,fill:true,tension:.3,pointRadius:4}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+new Chart(document.getElementById('chartConvCompare'),{
+  type:'bar',
+  data:{labels:['Кемпинговый фонарь','Новая модель'],datasets:[{label:'Конверсия в заказ %',data:[35,20],backgroundColor:['#e8923f','#5fa8d9'],borderRadius:8,borderSkipped:false}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartVisitsCompare'),{
+  type:'bar',
+  data:{labels:['Кемпинговый фонарь','Новая модель'],datasets:[
+    {label:'Текущий период',data:[778,269],backgroundColor:'rgba(232,146,63,0.75)',borderRadius:6,borderSkipped:false},
+    {label:'Прошлый период',data:[598,216],backgroundColor:'rgba(255,255,255,0.1)',borderRadius:6,borderSkipped:false,borderColor:'rgba(255,255,255,0.2)',borderWidth:1}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+new Chart(document.getElementById('chartGeoOrders'),{
+  type:'doughnut',
+  data:{labels:['Центральный','Приволжский','Юг и СКФО','Дальний+Сибирь','Северо-Западный','Уральский'],datasets:[{data:[34.6,19.2,19.2,15.4,7.7,3.8],backgroundColor:['#e8923f','#5fa8d9','#7a92a3','#e0a857','#6fc98e','#e87575'],borderColor:'#0f1419',borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:true,position:'right',labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8,padding:8}},tooltip:{backgroundColor:'#151c22',titleColor:'#f0f4f6',bodyColor:'#869099',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+</script>
+</body>
+</html>
