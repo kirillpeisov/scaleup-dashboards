@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ladka · Аналитика Wildberries · 08–14.06.2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0e0a10;
+  --bg2:#160f18;
+  --bg3:#1e1521;
+  --bg4:#271b2a;
+  --border:#ffffff10;
+  --border2:#ffffff1c;
+  --text:#f5f1f3;
+  --text2:#a292a0;
+  --text3:#665a63;
+  --rose:#e8a0b0;
+  --rose-dim:#e8a0b022;
+  --gold:#d4a857;
+  --blue:#7fa8d9;
+  --green:#7fc99e;
+  --red:#e8757a;
+  --amber:#e0a857;
+  --plum:#a87fb8;
+  --teal:#6fb8c0;
+}
+body{background:var(--bg);background-image:radial-gradient(circle at 10% 0%, #281522 0%, transparent 45%),radial-gradient(circle at 92% 6%, #1a1024 0%, transparent 40%);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
+
+.header{background:linear-gradient(180deg,#160f18,#100b12);border-bottom:1px solid var(--border);padding:0 36px;display:flex;align-items:center;justify-content:space-between;height:78px;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-mark{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--rose);background:linear-gradient(135deg,#e8a0b0,#d4a857);font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:#160f18}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);font-family:'Playfair Display',serif}
+.logo-sub{font-size:11.5px;color:var(--text2);margin-top:2px;letter-spacing:.3px}
+.header-right{display:flex;align-items:center;gap:14px}
+.period-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px 16px;font-size:12px;color:var(--text2)}
+.period-badge span{color:var(--rose);font-weight:600}
+.wb-badge{background:linear-gradient(135deg,#cb11ab22,#cb11ab10);border:1px solid #cb11ab50;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;color:#e060c8}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;display:flex;gap:2px;overflow-x:auto}
+.tab{padding:16px 20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--rose);border-bottom-color:var(--rose)}
+.tab-emoji{font-size:14px}
+
+.content{padding:32px 36px;max-width:1440px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.card{background:linear-gradient(180deg,var(--bg3),var(--bg2));border:1px solid var(--border);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:border-color .3s}
+.card:hover{border-color:var(--border2)}
+.card-sm{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:18px}
+
+.metric{background:linear-gradient(160deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-color,var(--rose)),transparent)}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.metric-value{font-size:30px;font-weight:700;color:var(--text);margin:8px 0 4px;line-height:1;letter-spacing:-.5px}
+.metric-sub{font-size:12px;color:var(--text2)}
+.metric-delta{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:8px}
+.delta-up{background:#7fc99e1c;color:#9ddbb6}
+.delta-down{background:#e8757a1c;color:#f29a9e}
+.delta-neutral{background:#e0a8571c;color:#ecc183}
+
+.section-title{font-size:13px;font-weight:600;color:var(--rose);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.block-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px}
+.block-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+
+.chart-wrap{position:relative;width:100%}
+
+.art-table{width:100%;border-collapse:collapse}
+.art-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:600}
+.art-table td{padding:13px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.art-table tr:last-child td{border-bottom:none}
+.art-table tr:hover td{background:var(--bg4)}
+.art-name{font-weight:500;color:var(--text);font-size:13px;margin-bottom:2px}
+.art-category{font-size:11px;color:var(--text3)}
+.art-wb{font-size:11px;color:var(--text3);margin-top:1px}
+.num{font-weight:600;color:var(--text)}
+.num-muted{color:var(--text2);font-size:12px;margin-top:2px}
+.badge-green{background:#7fc99e1c;color:#9ddbb6;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-red{background:#e8757a1c;color:#f29a9e;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-amber{background:#e0a8571c;color:#ecc183;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-blue{background:#7fa8d91c;color:#aac7ea;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-rose{background:var(--rose-dim);color:var(--rose);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+
+.prog-bar{flex:1;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;background:var(--rose);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+.wh-table{width:100%;border-collapse:collapse}
+.wh-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;text-align:left}
+.wh-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.wh-table tr:last-child td{border-bottom:none}
+.wh-table tr:hover td{background:var(--bg4)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;box-shadow:0 0 8px currentColor}
+.dot-green{background:#7fc99e;color:#7fc99e}
+.dot-amber{background:#e0a857;color:#e0a857}
+.dot-red{background:#e8757a;color:#e8757a}
+
+.funnel-step{background:linear-gradient(135deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:transform .2s}
+.funnel-step:hover{transform:translateX(4px)}
+.funnel-arrow{color:var(--text3);font-size:15px;text-align:center;margin:3px 0;font-weight:500}
+.funnel-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.funnel-data{flex:1}
+.funnel-name{font-size:12px;color:var(--text2)}
+.funnel-val{font-size:21px;font-weight:700;color:var(--text)}
+.funnel-conv{font-size:11px;color:var(--text3);margin-top:2px}
+.funnel-bar-wrap{width:110px;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden;flex-shrink:0}
+.funnel-bar-fill{height:100%;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+
+.alert{border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;transition:transform .2s}
+.alert:hover{transform:translateX(3px)}
+.alert-icon{font-size:19px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.alert-body{font-size:12.5px;line-height:1.55}
+.alert-warn{background:linear-gradient(135deg,#e0a85714,#e0a85708);border:1px solid #e0a85730}
+.alert-warn .alert-title{color:#ecc183}
+.alert-warn .alert-body{color:#ecc18399}
+.alert-danger{background:linear-gradient(135deg,#e8757a14,#e8757a08);border:1px solid #e8757a30}
+.alert-danger .alert-title{color:#f29a9e}
+.alert-danger .alert-body{color:#f29a9e99}
+.alert-success{background:linear-gradient(135deg,#7fc99e14,#7fc99e08);border:1px solid #7fc99e30}
+.alert-success .alert-title{color:#9ddbb6}
+.alert-success .alert-body{color:#9ddbb699}
+.alert-info{background:linear-gradient(135deg,#7fa8d914,#7fa8d908);border:1px solid #7fa8d930}
+.alert-info .alert-title{color:#aac7ea}
+.alert-info .alert-body{color:#aac7ea99}
+.alert-rose{background:linear-gradient(135deg,var(--rose-dim),transparent);border:1px solid #e8a0b040}
+.alert-rose .alert-title{color:var(--rose)}
+.alert-rose .alert-body{color:#e8a0b0bb}
+
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:24px 0}
+
+.footer{text-align:center;padding:36px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:44px}
+.footer strong{color:var(--rose)}
+
+.hero{background:linear-gradient(135deg,#2a1828 0%,#160f18 60%);border:1px solid var(--border2);border-radius:20px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,#e8a0b022,transparent 70%);pointer-events:none}
+.hero-left h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--text);margin-bottom:6px}
+.hero-left p{font-size:13px;color:var(--text2);max-width:500px;line-height:1.5}
+.hero-right{display:flex;gap:24px;text-align:center}
+.hero-stat{display:flex;flex-direction:column;gap:4px}
+.hero-stat .v{font-size:24px;font-weight:700;color:var(--rose)}
+.hero-stat .l{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+
+.new-badge{display:inline-block;background:linear-gradient(135deg,var(--gold),#b8884a);color:#1a1024;font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px;letter-spacing:.4px;text-transform:uppercase;margin-left:8px}
+
+.persona-card{background:var(--bg4);border-radius:14px;padding:18px;text-align:center;border:1px solid var(--border)}
+.persona-card .big{font-size:26px;font-weight:700;color:var(--rose);margin-bottom:4px}
+.persona-card .lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.page.active .card,.page.active .metric,.page.active .art-table,.page.active .alert,.page.active .hero,.page.active .persona-card{animation:fadeUp .4s ease both}
+.page.active .card:nth-child(2),.page.active .metric:nth-child(2){animation-delay:.05s}
+.page.active .card:nth-child(3),.page.active .metric:nth-child(3){animation-delay:.1s}
+.page.active .card:nth-child(4),.page.active .metric:nth-child(4){animation-delay:.15s}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--rose-dim)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">L</div>
+    <div>
+      <div class="logo-text">ИП Будников И.А. · ladka</div>
+      <div class="logo-sub">Еженедельный отчёт · ScaleUP Agency</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge">Период: <span>08.06 — 14.06.2026</span></div>
+    <div class="wb-badge">Wildberries</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('overview',this)"><span class="tab-emoji">📊</span>Обзор</div>
+  <div class="tab" onclick="showPage('newproduct',this)"><span class="tab-emoji">✨</span>Новинка</div>
+  <div class="tab" onclick="showPage('funnel',this)"><span class="tab-emoji">🎯</span>Воронка</div>
+  <div class="tab" onclick="showPage('articles',this)"><span class="tab-emoji">📦</span>Товары</div>
+  <div class="tab" onclick="showPage('audience',this)"><span class="tab-emoji">👤</span>Портрет покупателя</div>
+  <div class="tab" onclick="showPage('stocks',this)"><span class="tab-emoji">🏪</span>Остатки</div>
+  <div class="tab" onclick="showPage('alerts',this)"><span class="tab-emoji">⚠️</span>Рекомендации</div>
+</div>
+
+<!-- ==================== OVERVIEW ==================== -->
+<div id="page-overview" class="page content active">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Неделя 08–14 июня: запущена новинка «Ласточки»</h1>
+      <p>61 уникальный покупатель, средний чек 1 695 ₽. Каталог из 63 артикулов даёт длинный хвост продаж — основную выручку приносят 10–15 топовых позиций. Новинка артикул 1098635136 уже принесла первые заказы с конверсией 100% в выкуп.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">88 326₽</div><div class="l">выручка</div></div>
+      <div class="hero-stat"><div class="v">49</div><div class="l">заказов</div></div>
+      <div class="hero-stat"><div class="v">61</div><div class="l">покупателей</div></div>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#e8a0b0">
+      <div class="metric-label">Выручка (заказы)</div>
+      <div class="metric-value">88 326 ₽</div>
+      <div class="metric-sub">за 7 дней, 63 артикула</div>
+    </div>
+    <div class="metric" style="--accent-color:#7fc99e">
+      <div class="metric-label">Заказов, шт.</div>
+      <div class="metric-value">49</div>
+      <div class="metric-sub">в среднем 7/день</div>
+    </div>
+    <div class="metric" style="--accent-color:#a87fb8">
+      <div class="metric-label">Переходов в карточки</div>
+      <div class="metric-value">7 930</div>
+      <div class="metric-sub">CTR 11.0%</div>
+    </div>
+    <div class="metric" style="--accent-color:#e8757a">
+      <div class="metric-label">Средний % выкупа</div>
+      <div class="metric-value">12.1%</div>
+      <div class="metric-sub">очень низкий показатель</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Динамика заказов по дням</div>
+      <div class="block-sub">шт., все артикулы</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartOrders" aria-label="Заказы по дням">5,9,13,4,7,5,6</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Выручка по дням</div>
+      <div class="block-sub">₽, все артикулы</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartRevenue" aria-label="Выручка по дням">7560,14343,24520,7245,14170,7788,12700</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3" style="margin-bottom:22px">
+    <div class="card">
+      <div class="section-title">Топ-5 артикулов по выручке</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="chartPie" aria-label="Доля артикулов в выручке">Серьги керамика 8.8%, Брошь набор 6.4%, Птички серьги 6%, Серьги керамика 5.9%, Ласточки 5.2%</canvas>
+      </div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#e8a0b0;display:inline-block"></span>Серьги керамика — 8.8%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#7fa8d9;display:inline-block"></span>Набор брошей — 6.4%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#a87fb8;display:inline-block"></span>Серьги Птички — 6%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#e0a857;display:inline-block"></span>Серьги керамика — 5.9%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#6fb8c0;display:inline-block"></span>Ласточки (новинка) — 5.2%</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Ключевые конверсии</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:6px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Переходы → Корзина</span><span style="font-size:12px;font-weight:600;color:var(--text)">3.7%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:18.5%;background:#7fa8d9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Переходы → Заказ (CRO)</span><span style="font-size:12px;font-weight:600;color:var(--text)">0.62%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:6%;background:#7fc99e"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Корзина → Заказ</span><span style="font-size:12px;font-weight:600;color:var(--text)">16.6%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:33%;background:#a87fb8"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">Средний % выкупа</span><span style="font-size:12px;font-weight:600;color:#f29a9e">12.1%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:12.1%;background:#e8757a"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:12px;color:var(--text2)">CTR общий</span><span style="font-size:12px;font-weight:600;color:var(--text)">11.04%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:55%;background:#e0a857"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Покупатель за неделю</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px">
+        <div class="persona-card"><div class="big">97%</div><div class="lbl">женщины</div></div>
+        <div class="persona-card"><div class="big">36-41</div><div class="lbl">средний возраст</div></div>
+        <div class="persona-card"><div class="big">1 695₽</div><div class="lbl">средний чек</div></div>
+        <div class="persona-card"><div class="big">48%</div><div class="lbl">Центральный округ</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== NEW PRODUCT ==================== -->
+<div id="page-newproduct" class="page content">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Фарфоровые серьги «Ласточки» <span class="new-badge">новинка</span></h1>
+      <p>Артикул 1098635136 · WB · цена 2 800 ₽. Запущен на этой неделе. Уже 2 заказа на сумму 5 600 ₽ с конверсией выкупа 100%. Динамика показов растёт по экспоненте — карточка набирает обороты в выдаче.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">5 600₽</div><div class="l">выручка</div></div>
+      <div class="hero-stat"><div class="v">2</div><div class="l">заказа</div></div>
+      <div class="hero-stat" style="color:#9ddbb6"><div class="v" style="color:#9ddbb6">100%</div><div class="l">выкуп</div></div>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#d4a857">
+      <div class="metric-label">Показов карточки</div>
+      <div class="metric-value">2 927</div>
+      <div class="metric-sub">за неделю запуска</div>
+    </div>
+    <div class="metric" style="--accent-color:#6fb8c0">
+      <div class="metric-label">Переходов в карточку</div>
+      <div class="metric-value">555</div>
+      <div class="metric-sub">CTR 18.96% — выше среднего!</div>
+    </div>
+    <div class="metric" style="--accent-color:#7fa8d9">
+      <div class="metric-label">Добавлений в корзину</div>
+      <div class="metric-value">6</div>
+      <div class="metric-sub">конверсия 1.08%</div>
+    </div>
+    <div class="metric" style="--accent-color:#7fc99e">
+      <div class="metric-label">Конверсия в заказ</div>
+      <div class="metric-value">33.3%</div>
+      <div class="metric-sub">очень высокая для новинки</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Рост показов и переходов по дням</div>
+      <div class="block-sub">видно ускорение алгоритма WB к концу недели</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartNewProductGrowth" aria-label="Рост показов новинки">14,219,144,115,295,1076,1064</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">CTR по дням</div>
+      <div class="block-sub">% переход / показ — высокий интерес в первые дни</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartNewProductCTR" aria-label="CTR новинки по дням">207,41,33,76,23,10,12</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="block-title">Остатки новинки на складах</div>
+      <div class="block-sub">на 14.06.2026</div>
+      <table class="wh-table">
+        <thead><tr><th>Склад</th><th>08.06</th><th>14.06</th><th>Статус</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot dot-green"></span>СПБ Шушары</td><td>5</td><td>5</td><td><span class="badge-green">не тронут</span></td></tr>
+          <tr><td><span class="dot dot-amber"></span>Электросталь</td><td>10</td><td>8</td><td><span class="badge-amber">продано 2</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:16px;padding:14px;background:var(--bg4);border-radius:12px">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Суммарный остаток</div>
+        <div style="font-size:22px;font-weight:700;color:var(--rose)">13 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">на 2 складах — нужно расширять географию</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Что делать с новинкой дальше</div>
+      <div class="block-sub">план на следующую неделю</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose);font-weight:700">1.</span><span style="font-size:13px;color:var(--text2);line-height:1.5">Расширить присутствие на складах — сейчас товар только в СПб и Электростали, нет в Москве/Урале/Сибири</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose);font-weight:700">2.</span><span style="font-size:13px;color:var(--text2);line-height:1.5">CTR 19% — это сильный сигнал, что визуал карточки попадает в аудиторию. Не менять фото без необходимости</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose);font-weight:700">3.</span><span style="font-size:13px;color:var(--text2);line-height:1.5">100% выкуп на старте — отличный знак качества товара и описания, поддерживать этот уровень сервиса</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose);font-weight:700">4.</span><span style="font-size:13px;color:var(--text2);line-height:1.5">Рассмотреть участие в акциях WB для разгона органического трафика на новой карточке</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== FUNNEL ==================== -->
+<div id="page-funnel" class="page content">
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Воронка продаж</div>
+      <div class="block-sub">Суммарно по всем 63 артикулам, период 08.06 – 14.06</div>
+
+      <div class="funnel-step" style="border-color:#d4a85740">
+        <div class="funnel-icon" style="background:#d4a85718">👁</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Показы карточек</div>
+          <div class="funnel-val" style="color:#d4a857">71 818</div>
+          <div class="funnel-conv">все артикулы</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:100%;background:#d4a857"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 11.04% CTR</div>
+
+      <div class="funnel-step" style="border-color:#a87fb840">
+        <div class="funnel-icon" style="background:#a87fb818">🖱</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Переходов в карточку</div>
+          <div class="funnel-val" style="color:#a87fb8">7 930</div>
+          <div class="funnel-conv">11.04% от показов</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:11%;background:#a87fb8"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 3.73%</div>
+
+      <div class="funnel-step" style="border-color:#6fb8c040">
+        <div class="funnel-icon" style="background:#6fb8c018">🛒</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Добавили в корзину</div>
+          <div class="funnel-val" style="color:#6fb8c0">296</div>
+          <div class="funnel-conv">3.73% от переходов</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:4%;background:#6fb8c0"></div></div>
+      </div>
+      <div class="funnel-arrow">↓ 16.55%</div>
+
+      <div class="funnel-step" style="border-color:#7fc99e40">
+        <div class="funnel-icon" style="background:#7fc99e18">✅</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Заказали, шт.</div>
+          <div class="funnel-val" style="color:#7fc99e">49</div>
+          <div class="funnel-conv">0.62% от переходов · 16.55% из корзины</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:1%;background:#7fc99e"></div></div>
+      </div>
+      <div class="funnel-arrow" style="color:#f29a9e">↓ 12.1% выкуп — крайне низкий</div>
+
+      <div class="funnel-step" style="border-color:#e8757a60">
+        <div class="funnel-icon" style="background:#e8757a18">📦</div>
+        <div class="funnel-data">
+          <div class="funnel-name">Выкуплено, шт.</div>
+          <div class="funnel-val" style="color:#e8757a">~6</div>
+          <div class="funnel-conv">12.1% — требует разбора причин отказов</div>
+        </div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:0.1%;background:#e8757a"></div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="card">
+        <div class="block-title">Заказы vs Корзина по дням</div>
+        <div class="block-sub">сравнение активности</div>
+        <div class="chart-wrap" style="height:200px">
+          <canvas id="chartFunnelDays" aria-label="Заказы и корзина по дням">31,5; 40,9; 59,13; 28,4; 45,7; 46,5; 47,6</canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="block-title">Процент выкупа по дням</div>
+        <div class="block-sub">очень низкий и нестабильный показатель</div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="chartBuyout" aria-label="Процент выкупа по дням">5,25,20,10,20,0,5</canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Откуда приходят покупатели — точки входа</div>
+    <div class="block-sub">Раздел и способ обнаружения карточки</div>
+    <table class="art-table">
+      <thead><tr><th>Точка входа</th><th>Показы</th><th>Переходы</th><th>CTR</th><th>В корзину</th><th>Заказы</th><th>Конв. в заказ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Поисковая выдача</strong></td><td>81 061</td><td>5 986</td><td><span class="badge-green">7%</span></td><td>217</td><td>23</td><td>11%</td></tr>
+        <tr><td><strong>Подборки и рекомендации</strong></td><td>34 977</td><td>4 631</td><td><span class="badge-green">13%</span></td><td>113</td><td>15</td><td>13%</td></tr>
+        <tr><td><strong>Поиск по тегам</strong></td><td>14 370</td><td>1 181</td><td><span class="badge-amber">8%</span></td><td>29</td><td>3</td><td>10%</td></tr>
+        <tr><td><strong>Кнопка «Похожие»</strong></td><td>4 330</td><td>740</td><td><span class="badge-green">17%</span></td><td>32</td><td>0</td><td>0%</td></tr>
+        <tr><td><strong>Бренд и его категории</strong></td><td>5 717</td><td>236</td><td><span class="badge-amber">4%</span></td><td>14</td><td>2</td><td>14%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== ARTICLES ==================== -->
+<div id="page-articles" class="page content">
+
+  <div class="card" style="margin-bottom:22px">
+    <div class="block-title">Топ-15 артикулов по выручке</div>
+    <div class="block-sub">Период 08.06 – 14.06.2026 · из 63 артикулов в каталоге</div>
+    <div style="overflow-x:auto">
+    <table class="art-table">
+      <thead><tr><th>Товар</th><th>Заказы, шт.</th><th>Выручка, ₽</th><th>Выкуп %</th><th>Переходы</th><th>Конв.</th><th>Цена</th><th>Остаток</th><th>Рейтинг</th></tr></thead>
+      <tbody>
+        <tr><td><div class="art-name">Серьги керамика ручной работы</div><div class="art-wb">WB: 28322457</div></td><td><div class="num">6</div><div class="num-muted">пред: 3</div></td><td class="num">9 540 ₽</td><td><span class="badge-amber">67%</span></td><td class="num">925</td><td>11%</td><td>1 590 ₽</td><td><span class="badge-red">4</span></td><td>★4.8</td></tr>
+        <tr><td><div class="art-name">Набор стильных брошей</div><div class="art-wb">WB: 21301019</div></td><td><div class="num">3</div><div class="num-muted">пред: 1</div></td><td class="num">6 960 ₽</td><td><span class="badge-red">0%</span></td><td class="num">234</td><td>14%</td><td>2 320 ₽</td><td>50</td><td>★4.8</td></tr>
+        <tr><td><div class="art-name">Серьги-пусеты «Птички»</div><div class="art-wb">WB: 476844674</div></td><td><div class="num">3</div><div class="num-muted">пред: 3</div></td><td class="num">6 525 ₽</td><td><span class="badge-amber">50%</span></td><td class="num">322</td><td>38%</td><td>2 175 ₽</td><td>14</td><td>★4.7</td></tr>
+        <tr><td><div class="art-name">Серьги керамика ручная работа</div><div class="art-wb">WB: 34244171</div></td><td><div class="num">4</div><div class="num-muted">пред: 2</div></td><td class="num">6 360 ₽</td><td><span class="badge-red">0%</span></td><td class="num">515</td><td>13%</td><td>1 590 ₽</td><td><span class="badge-red">4</span></td><td>★4.7</td></tr>
+        <tr style="background:#d4a85710"><td><div class="art-name">Серьги «Ласточки» <span class="new-badge">новинка</span></div><div class="art-wb">WB: 1098635136</div></td><td><div class="num">2</div><div class="num-muted">пред: 0</div></td><td class="num">5 600 ₽</td><td><span class="badge-green">100%</span></td><td class="num">555</td><td>33%</td><td>2 800 ₽</td><td>13</td><td>★5.0</td></tr>
+        <tr><td><div class="art-name">Брошь авторская фарфоровая</div><div class="art-wb">WB: 103780075</div></td><td><div class="num">3</div><div class="num-muted">пред: 0</div></td><td class="num">4 800 ₽</td><td><span class="badge-green">100%</span></td><td class="num">361</td><td>17%</td><td>1 600 ₽</td><td>24</td><td>★5.0</td></tr>
+        <tr><td><div class="art-name">Керамические серьги ручной работы</div><div class="art-wb">WB: 419664091</div></td><td><div class="num">3</div><div class="num-muted">пред: 1</div></td><td class="num">4 779 ₽</td><td><span class="badge-green">100%</span></td><td class="num">808</td><td>10%</td><td>1 593 ₽</td><td>20</td><td>★5.0</td></tr>
+        <tr><td><div class="art-name">Керамические серьги «П»</div><div class="art-wb">WB: 34147869</div></td><td><div class="num">2</div><div class="num-muted">пред: 2</div></td><td class="num">4 640 ₽</td><td><span class="badge-amber">50%</span></td><td class="num">573</td><td>20%</td><td>2 320 ₽</td><td><span class="badge-red">8</span></td><td>★4.9</td></tr>
+        <tr><td><div class="art-name">Набор брошей «Птицы»</div><div class="art-wb">WB: 239734445</div></td><td><div class="num">2</div><div class="num-muted">пред: 3</div></td><td class="num">4 640 ₽</td><td><span class="badge-green">100%</span></td><td class="num">134</td><td>15%</td><td>2 320 ₽</td><td>20</td><td>★5.0</td></tr>
+        <tr><td><div class="art-name">Брошь «Птичка» оригинальная</div><div class="art-wb">WB: 21289448</div></td><td><div class="num">5</div><div class="num-muted">пред: 10 <span class="badge-red">-50%</span></div></td><td class="num">3 850 ₽</td><td><span class="badge-amber">75%</span></td><td class="num">476</td><td>20%</td><td>770 ₽</td><td><span class="badge-red">2</span></td><td>★4.8</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Распределение выручки по артикулам</div>
+      <div class="block-sub">длинный хвост — 63 позиции, основная масса даёт мало</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartLongTail" aria-label="Распределение выручки">Топ-10 артикулов и хвост</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Артикулы без единого заказа за 2 недели</div>
+      <div class="block-sub">кандидаты на пересмотр или снятие с продажи</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;max-height:250px;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg4);border-radius:8px;font-size:12px"><span style="color:var(--text2)">Брошь бижутерия «Птички»</span><span class="badge-red">0 показов</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg4);border-radius:8px;font-size:12px"><span style="color:var(--text2)">Набор для творчества (×3)</span><span class="badge-red">0 показов</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg4);border-radius:8px;font-size:12px"><span style="color:var(--text2)">Чокер, подвеска, серьги</span><span class="badge-amber">62 перех., 0 заказов</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg4);border-radius:8px;font-size:12px"><span style="color:var(--text2)">Керамические серьги «П»</span><span class="badge-amber">704 перех., 0 заказов</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg4);border-radius:8px;font-size:12px"><span style="color:var(--text2)">Серьги фарфоровые чёрные</span><span class="badge-amber">631 перех., 0 заказов</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg4);border-radius:8px;font-size:12px"><span style="color:var(--text2)">Керамические серьги (П027210)</span><span class="badge-amber">830 перех., 0 заказов</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AUDIENCE ==================== -->
+<div id="page-audience" class="page content">
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#e8a0b0">
+      <div class="metric-label">Покупателей за неделю</div>
+      <div class="metric-value">61</div>
+      <div class="metric-sub">уникальных людей</div>
+    </div>
+    <div class="metric" style="--accent-color:#d4a857">
+      <div class="metric-label">Средний чек</div>
+      <div class="metric-value">1 695 ₽</div>
+      <div class="metric-sub">среди всех покупателей</div>
+    </div>
+    <div class="metric" style="--accent-color:#a87fb8">
+      <div class="metric-label">Доля женщин</div>
+      <div class="metric-value">97%</div>
+      <div class="metric-sub">59 из 61 покупателя</div>
+    </div>
+    <div class="metric" style="--accent-color:#7fa8d9">
+      <div class="metric-label">Топ-возраст</div>
+      <div class="metric-value">36–41</div>
+      <div class="metric-sub">16 покупателей (26%)</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Возрастная структура аудитории</div>
+      <div class="block-sub">количество покупателей по группам</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartAge" aria-label="Возраст покупателей">36-41:16, 42-47:13, 48-53:12, 30-35:8, 24-29:6, 18-23:2, 54-59:2, 60+:2</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Средний чек по возрастной группе</div>
+      <div class="block-sub">₽ — самые щедрые покупатели 18-23 и 48-53</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartCheckByAge" aria-label="Средний чек по возрасту">2560, 2007, 1796, 1750, 1590, 1535, 1337, 1113</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3" style="margin-bottom:22px">
+    <div class="card">
+      <div class="section-title">География покупателей</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="chartGeoBuyers" aria-label="География покупателей">Центральный 29, СЗ 8, Приволжский 6, Сибирский 6, Уральский 6, Южный 4</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Платформа покупки</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="chartPlatform" aria-label="Платформа">Android 31, IOS 18, Web 9</canvas>
+      </div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#7fc99e;display:inline-block"></span>Android — 51%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#7fa8d9;display:inline-block"></span>iOS — 30%</div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:3px;background:#e0a857;display:inline-block"></span>Web — 15%</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Семейное положение</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">В отношениях, с детьми</span><span style="font-size:12px;font-weight:600;color:var(--text)">35 (57%)</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:57%;background:#e8a0b0"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Не в отношениях, с детьми</span><span style="font-size:12px;font-weight:600;color:var(--text)">23 (38%)</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:38%;background:#7fa8d9"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text2)">Не в отношениях, без детей</span><span style="font-size:12px;font-weight:600;color:var(--text)">3 (5%)</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:5%;background:#a87fb8"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:var(--rose-dim);border-radius:10px;font-size:12px;color:var(--rose)">
+        💡 95% покупателей — родители. Упаковка и тексты карточек могут говорить языком "подарок себе" или "подарок близкому"
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Средний чек по региону</div>
+    <table class="art-table">
+      <thead><tr><th>Регион</th><th>Покупателей</th><th>Средний чек</th><th>Комментарий</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Уральский</strong></td><td>6</td><td class="num">1 975 ₽</td><td><span class="badge-green">самый высокий чек</span></td></tr>
+        <tr><td><strong>Сибирский</strong></td><td>6</td><td class="num">1 948 ₽</td><td><span class="badge-green">высокий чек</span></td></tr>
+        <tr><td><strong>Приволжский</strong></td><td>6</td><td class="num">1 796 ₽</td><td>выше среднего</td></tr>
+        <tr><td><strong>Северо-Западный</strong></td><td>8</td><td class="num">1 767 ₽</td><td>выше среднего</td></tr>
+        <tr><td><strong>Южный</strong></td><td>4</td><td class="num">1 636 ₽</td><td>средний</td></tr>
+        <tr><td><strong>Центральный</strong></td><td>29</td><td class="num">1 564 ₽</td><td><span class="badge-amber">больше всего покупателей, но средний чек ниже</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== STOCKS ==================== -->
+<div id="page-stocks" class="page content">
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#7fc99e">
+      <div class="metric-label">Всего на складах</div>
+      <div class="metric-value">956</div>
+      <div class="metric-sub">шт. на 14.06 (было 996)</div>
+    </div>
+    <div class="metric" style="--accent-color:#e8757a">
+      <div class="metric-label">Артикулов с критич. остатком</div>
+      <div class="metric-value">5+</div>
+      <div class="metric-sub">остаток ≤4 шт. среди топ-продаж</div>
+    </div>
+    <div class="metric" style="--accent-color:#d4a857">
+      <div class="metric-label">Стоимость остатков</div>
+      <div class="metric-value">1.62 млн ₽</div>
+      <div class="metric-sub">на основных складах</div>
+    </div>
+    <div class="metric" style="--accent-color:#a87fb8">
+      <div class="metric-label">Уникальных артикулов в наличии</div>
+      <div class="metric-value">61</div>
+      <div class="metric-sub">из 63 в каталоге</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Динамика общих остатков</div>
+      <div class="block-sub">шт., суммарно по всем артикулам</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartTotalStock" aria-label="Динамика остатков">996,985,974,966,960,961,956</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Остатки по складам</div>
+      <div class="block-sub">топ складов по количеству на 14.06</div>
+      <table class="wh-table">
+        <thead><tr><th>Регион / Склад</th><th>Остаток</th><th>Стоимость</th><th>Оборачив.</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot dot-amber"></span>Екатеринбург</td><td><strong>283</strong></td><td>502 178 ₽</td><td>63д ⚠️</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Электросталь</td><td><strong>259</strong></td><td>441 144 ₽</td><td>47д 11ч ⚠️</td></tr>
+          <tr><td><span class="dot dot-green"></span>СПБ Шушары</td><td><strong>107</strong></td><td>176 305 ₽</td><td>42д</td></tr>
+          <tr><td><span class="dot dot-green"></span>Сарапул WB</td><td><strong>73</strong></td><td>142 873 ₽</td><td>36д 10ч</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Коледино</td><td><strong>62</strong></td><td>123 939 ₽</td><td>>999д ⚠️</td></tr>
+          <tr><td><span class="dot dot-green"></span>Тула</td><td><strong>57</strong></td><td>122 971 ₽</td><td>7д ✓</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Невинномысск</td><td><strong>27</strong></td><td>51 605 ₽</td><td>21д</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Владимир WB</td><td><strong>25</strong></td><td>61 698 ₽</td><td>>999д ⚠️</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Топовые товары с критическим остатком</div>
+    <div class="block-sub">высокий спрос, но запасы на исходе</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px">
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #e8757a50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Серьги керамика (28322457)</div>
+        <div style="font-size:23px;font-weight:700;color:#e8757a">4 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">топ-1 по выручке, продано 6 за неделю</div>
+        <div style="font-size:11px;color:#f29a9e;margin-top:7px">⚠️ запас на 4-5 дней</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #e8757a50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Серьги керамика (34244171)</div>
+        <div style="font-size:23px;font-weight:700;color:#e8757a">4 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">продано 4 за неделю</div>
+        <div style="font-size:11px;color:#f29a9e;margin-top:7px">⚠️ запас на неделю</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border:1px solid #e8757a50">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:9px">Брошь «Птичка» (21289448)</div>
+        <div style="font-size:23px;font-weight:700;color:#e8757a">2 шт.</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">продано 5 за неделю, упало с 10</div>
+        <div style="font-size:11px;color:#f29a9e;margin-top:7px">🚨 критично, запас 2-3 дня</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ALERTS ==================== -->
+<div id="page-alerts" class="page content">
+
+  <div class="section-title">🚨 Критические проблемы</div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">Средний % выкупа всего 12.1% — критически низкий показатель</div>
+      <div class="alert-body">Для сравнения: у клиентов с нормальным циклом выкуп держится на уровне 60-95%. У ladka он крайне низкий — это означает, что большая часть заказов отменяется или не выкупается на ПВЗ. Нужно срочно разобраться: возможные причины — долгая доставка хрупких изделий (керамика, фарфор бьётся), несовпадение ожиданий по фото/реальному виду, либо проблема с упаковкой.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div>
+      <div class="alert-title">Брошь «Птичка» (21289448) — заказы упали с 10 до 5, остаток 2 шт.</div>
+      <div class="alert-body">Топ-10 товар, но остаток критический. При продолжении продаж закончится в течение нескольких дней. Нужна срочная поставка.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">⚠️ Важные наблюдения</div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Длинный хвост — 63 артикула, но 6+ из них без единого показа</div>
+      <div class="alert-body">Несколько товаров (наборы для творчества, отдельные броши) вообще не получают трафика. Это «мёртвый» каталог, который занимает место в карточке бренда, но не работает. Стоит рассмотреть снятие неактивных позиций или их обновление с новыми фото/описанием.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Несколько товаров с высоким трафиком, но 0 заказов</div>
+      <div class="alert-body">«Керамические серьги П» (704 перехода, 0 заказов), «Серьги фарфоровые чёрные» (631 переход, 0 заказов), «Керамические серьги» (830 переходов, 0 заказов). Это значит, что карточки привлекают внимание, но не конвертируют — нужно проверить цену, фото или описание на этих позициях.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-icon">🟡</div>
+    <div>
+      <div class="alert-title">Низкая оборачиваемость на крупных складах (Екатеринбург, Электросталь)</div>
+      <div class="alert-body">63 и 47 дней соответственно — это медленно для товара такой ценовой категории. На этих складах лежит больше 500 шт. товара на сумму почти 1 млн ₽. Часть из них может быть неактивными артикулами — стоит свериться.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">✅ Что работает хорошо</div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Новинка «Ласточки» показывает отличный старт</div>
+      <div class="alert-body">CTR 18.96% (почти в 2 раза выше среднего по магазину), конверсия в заказ 33%, выкуп 100%. Это говорит о том, что карточка сделана качественно и товар попадает в запрос аудитории. Нужно расширять остатки на других складах, пока идёт разгон.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">Высокий CTR из поисковой выдачи и подборок (7-13%)</div>
+      <div class="alert-body">Карточки хорошо привлекают внимание в выдаче. Основная проблема не в видимости товара, а в конвертации интереса в заказ и последующем выкупе.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-rose">
+    <div class="alert-icon">💡</div>
+    <div>
+      <div class="alert-title">Портрет покупателя — чёткий и узкий: женщины 36-41, с детьми, Центральный округ</div>
+      <div class="alert-body">95% аудитории — родители. Это сильный сигнал для коммуникации: ladka может позиционироваться как бренд "украшение для себя" или "подарок". Уральский и Сибирский регионы дают самый высокий средний чек (1 950-1 975 ₽) при меньшем объёме — туда можно точечно усилить продвижение.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="section-title">📋 Приоритетные шаги на следующую неделю</div>
+  <div class="card">
+    <table class="art-table">
+      <thead><tr><th>Приоритет</th><th>Действие</th><th>Срок</th><th>Ожидаемый эффект</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Разобраться с причиной низкого выкупа (12%)</td><td>Эта неделя</td><td>Прямое влияние на прибыль</td></tr>
+        <tr><td><span class="badge-red">🚨 Срочно</span></td><td>Поставка брошь «Птичка» (21289448), остаток 2 шт.</td><td>2-3 дня</td><td>Не потерять топ-товар</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Расширить склады для новинки «Ласточки»</td><td>1 неделя</td><td>Поддержать рост новинки</td></tr>
+        <tr><td><span class="badge-amber">⚡ Важно</span></td><td>Проверить карточки с высоким трафиком, но 0 заказов</td><td>1 неделя</td><td>Вернуть упущенные продажи</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Снять или обновить 6+ артикулов без показов</td><td>2 недели</td><td>Очистить каталог</td></tr>
+        <tr><td><span class="badge-blue">📌 Рекомендуем</span></td><td>Усилить продвижение в Уральском/Сибирском регионе</td><td>2-3 недели</td><td>Выше средний чек</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Отчёт подготовлен агентством <strong>ScaleUP</strong> · ИП Будников И.А. · ladka · Wildberries · период 08.06–14.06.2026
+</div>
+
+<script>
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const days=['08.06','09.06','10.06','11.06','12.06','13.06','14.06'];
+const gridColor='rgba(255,255,255,0.05)';
+const tickColor='rgba(255,255,255,0.4)';
+
+const defOpts={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e1521',titleColor:'#f5f1f3',bodyColor:'#a292a0',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12}},
+  scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}}}
+};
+
+new Chart(document.getElementById('chartOrders'),{
+  type:'bar',
+  data:{labels:days,datasets:[{label:'Заказы',data:[5,9,13,4,7,5,6],backgroundColor:'rgba(232,160,176,0.7)',borderColor:'#e8a0b0',borderWidth:1,borderRadius:7,borderSkipped:false}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartRevenue'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'Выручка ₽',data:[7560,14343,24520,7245,14170,7788,12700],borderColor:'#7fc99e',backgroundColor:'rgba(127,201,158,0.1)',borderWidth:2,fill:true,tension:.35,pointBackgroundColor:'#7fc99e',pointRadius:4}]},
+  options:{...defOpts,scales:{...defOpts.scales,y:{...defOpts.scales.y,ticks:{...defOpts.scales.y.ticks,callback:v=>v>=1000?(v/1000).toFixed(0)+'к':v}}}}
+});
+
+new Chart(document.getElementById('chartPie'),{
+  type:'doughnut',
+  data:{labels:['Серьги керамика','Набор брошей','Серьги Птички','Серьги керамика','Ласточки'],datasets:[{data:[8.8,6.4,6,5.9,5.2],backgroundColor:['#e8a0b0','#7fa8d9','#a87fb8','#e0a857','#6fb8c0'],borderColor:'#160f18',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e1521',titleColor:'#f5f1f3',bodyColor:'#a292a0',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+
+new Chart(document.getElementById('chartNewProductGrowth'),{
+  type:'bar',
+  data:{labels:days,datasets:[
+    {label:'Показы',data:[14,219,144,115,295,1076,1064],backgroundColor:'rgba(212,168,87,0.65)',borderRadius:5,borderSkipped:false,yAxisID:'y'},
+    {label:'Переходы',data:[29,90,47,87,68,111,123],backgroundColor:'rgba(111,184,192,0.85)',borderRadius:5,borderSkipped:false,yAxisID:'y1'}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}},tooltip:defOpts.plugins.tooltip},
+    scales:{
+      x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},
+      y:{position:'left',grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},
+      y1:{position:'right',grid:{display:false},ticks:{color:tickColor,font:{size:11}}}
+    }}
+});
+
+new Chart(document.getElementById('chartNewProductCTR'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'CTR %',data:[207.14,41.10,32.64,75.65,23.05,10.32,11.56],borderColor:'#d4a857',backgroundColor:'rgba(212,168,87,0.1)',borderWidth:2,fill:true,tension:.35,pointBackgroundColor:'#d4a857',pointRadius:4}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartFunnelDays'),{
+  type:'bar',
+  data:{labels:days,datasets:[
+    {label:'Корзина',data:[31,40,59,28,45,46,47],backgroundColor:'rgba(111,184,192,0.55)',borderRadius:5,borderSkipped:false},
+    {label:'Заказы',data:[5,9,13,4,7,5,6],backgroundColor:'rgba(127,201,158,0.8)',borderRadius:5,borderSkipped:false}
+  ]},
+  options:{...defOpts,plugins:{...defOpts.plugins,legend:{display:true,labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10}}}}
+});
+
+new Chart(document.getElementById('chartBuyout'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'% выкупа',data:[5,25,20,10,20,0,5],borderColor:'#e8757a',backgroundColor:'rgba(232,117,122,0.1)',borderWidth:2,fill:true,tension:.35,pointBackgroundColor:'#e8757a',pointRadius:4}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartLongTail'),{
+  type:'bar',
+  data:{labels:['Топ 1-5','Топ 6-10','Топ 11-20','Топ 21-63 (хвост)'],datasets:[{label:'Доля выручки %',data:[32.3,18.4,28.5,20.8],backgroundColor:['#e8a0b0','#7fa8d9','#a87fb8','#665a63'],borderRadius:7,borderSkipped:false}]},
+  options:{...defOpts}
+});
+
+new Chart(document.getElementById('chartAge'),{
+  type:'bar',
+  data:{labels:['36-41','42-47','48-53','30-35','24-29','18-23','54-59','60+'],datasets:[{label:'Покупателей',data:[16,13,12,8,6,2,2,2],backgroundColor:'rgba(232,160,176,0.7)',borderColor:'#e8a0b0',borderWidth:1,borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts,indexAxis:'y',scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},y:{grid:{display:false},ticks:{color:tickColor,font:{size:11}}}}}
+});
+
+new Chart(document.getElementById('chartCheckByAge'),{
+  type:'bar',
+  data:{labels:['18-23','48-53','24-29','36-41','54-59','42-47','30-35','60+'],datasets:[{label:'Средний чек ₽',data:[2560,2007,1796,1750,1590,1535,1337,1113],backgroundColor:'rgba(212,168,87,0.7)',borderColor:'#d4a857',borderWidth:1,borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts,scales:{...defOpts.scales,y:{...defOpts.scales.y,ticks:{...defOpts.scales.y.ticks,callback:v=>v+'₽'}}}}
+});
+
+new Chart(document.getElementById('chartGeoBuyers'),{
+  type:'doughnut',
+  data:{labels:['Центральный','Северо-Западный','Приволжский','Сибирский','Уральский','Южный'],datasets:[{data:[29,8,6,6,6,4],backgroundColor:['#e8a0b0','#7fa8d9','#a87fb8','#6fb8c0','#7fc99e','#e0a857'],borderColor:'#160f18',borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:true,position:'right',labels:{color:tickColor,font:{size:10},usePointStyle:true,pointStyleWidth:8,padding:8}},tooltip:defOpts.plugins.tooltip}}
+});
+
+new Chart(document.getElementById('chartPlatform'),{
+  type:'doughnut',
+  data:{labels:['Android','iOS','Web'],datasets:[{data:[31,18,9],backgroundColor:['#7fc99e','#7fa8d9','#e0a857'],borderColor:'#160f18',borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false},tooltip:defOpts.plugins.tooltip}}
+});
+
+new Chart(document.getElementById('chartTotalStock'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'Остаток, шт.',data:[996,985,974,966,960,961,956],borderColor:'#7fc99e',backgroundColor:'rgba(127,201,158,0.1)',borderWidth:2,fill:true,tension:.3,pointBackgroundColor:'#7fc99e',pointRadius:4}]},
+  options:{...defOpts}
+});
+</script>
+</body>
+</html>
