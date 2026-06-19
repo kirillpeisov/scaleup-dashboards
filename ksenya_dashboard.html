@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ksenya Gold · Аудит магазина · Q2 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0b0a08;
+  --bg2:#13110e;
+  --bg3:#1b1813;
+  --bg4:#252118;
+  --border:#ffffff10;
+  --border2:#ffffff1c;
+  --text:#f5f1e8;
+  --text2:#a09787;
+  --text3:#5e5849;
+  --gold:#d4a857;
+  --gold-dim:#d4a85722;
+  --champagne:#e8d4b0;
+  --blue:#7fa8d9;
+  --green:#7fc99e;
+  --red:#e8757a;
+  --amber:#e0a857;
+  --bronze:#b8865a;
+}
+body{background:var(--bg);background-image:radial-gradient(circle at 12% 0%, #211a0e 0%, transparent 45%),radial-gradient(circle at 90% 6%, #1a140c 0%, transparent 40%);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
+
+.header{background:linear-gradient(180deg,#13110e,#0c0a07);border-bottom:1px solid var(--border);padding:0 36px;display:flex;align-items:center;justify-content:space-between;height:78px;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-mark{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--gold);background:linear-gradient(135deg,#d4a857,#b8865a);font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:#13110e}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);font-family:'Playfair Display',serif}
+.logo-sub{font-size:11.5px;color:var(--text2);margin-top:2px;letter-spacing:.3px}
+.header-right{display:flex;align-items:center;gap:14px}
+.period-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px 16px;font-size:12px;color:var(--text2)}
+.period-badge span{color:var(--gold);font-weight:600}
+.audit-badge{background:linear-gradient(135deg,#d4a85722,#d4a85710);border:1px solid #d4a85750;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;color:var(--gold)}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 36px;display:flex;gap:2px;overflow-x:auto}
+.tab{padding:16px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-emoji{font-size:14px}
+
+.content{padding:32px 36px;max-width:1440px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+.card{background:linear-gradient(180deg,var(--bg3),var(--bg2));border:1px solid var(--border);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:border-color .3s}
+.card:hover{border-color:var(--border2)}
+.card-sm{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:18px}
+
+.metric{background:linear-gradient(160deg,var(--bg4),var(--bg3));border:1px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-color,var(--gold)),transparent)}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.metric-value{font-size:30px;font-weight:700;color:var(--text);margin:8px 0 4px;line-height:1;letter-spacing:-.5px}
+.metric-sub{font-size:12px;color:var(--text2)}
+
+.section-title{font-size:13px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.block-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px}
+.block-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+
+.chart-wrap{position:relative;width:100%}
+
+.art-table{width:100%;border-collapse:collapse}
+.art-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:600}
+.art-table td{padding:13px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.art-table tr:last-child td{border-bottom:none}
+.art-table tr:hover td{background:var(--bg4)}
+.art-name{font-weight:500;color:var(--text);font-size:13px;margin-bottom:2px}
+.art-wb{font-size:11px;color:var(--text3);margin-top:1px}
+.num{font-weight:600;color:var(--text)}
+.num-muted{color:var(--text2);font-size:12px;margin-top:2px}
+.badge-green{background:#7fc99e1c;color:#9ddbb6;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-red{background:#e8757a1c;color:#f29a9a;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-amber{background:#e0a8571c;color:#ecc784;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-blue{background:#7fa8d91c;color:#a9bdea;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-gold{background:var(--gold-dim);color:var(--gold);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge-dead{background:#5e58491c;color:#a09787;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600;text-decoration:line-through}
+
+.prog-bar{flex:1;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;background:var(--gold);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+.wh-table{width:100%;border-collapse:collapse}
+.wh-table th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;text-align:left}
+.wh-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.wh-table tr:last-child td{border-bottom:none}
+.wh-table tr:hover td{background:var(--bg4)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;box-shadow:0 0 8px currentColor}
+.dot-green{background:#7fc99e;color:#7fc99e}
+.dot-amber{background:#e0a857;color:#e0a857}
+.dot-red{background:#e8757a;color:#e8757a}
+
+.alert{border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;transition:transform .2s}
+.alert:hover{transform:translateX(3px)}
+.alert-icon{font-size:19px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.alert-body{font-size:12.5px;line-height:1.55}
+.alert-warn{background:linear-gradient(135deg,#e0a85714,#e0a85708);border:1px solid #e0a85730}
+.alert-warn .alert-title{color:#ecc784}
+.alert-warn .alert-body{color:#ecc78499}
+.alert-danger{background:linear-gradient(135deg,#e8757a14,#e8757a08);border:1px solid #e8757a30}
+.alert-danger .alert-title{color:#f29a9a}
+.alert-danger .alert-body{color:#f29a9a99}
+.alert-success{background:linear-gradient(135deg,#7fc99e14,#7fc99e08);border:1px solid #7fc99e30}
+.alert-success .alert-title{color:#9ddbb6}
+.alert-success .alert-body{color:#9ddbb699}
+.alert-info{background:linear-gradient(135deg,#7fa8d914,#7fa8d908);border:1px solid #7fa8d930}
+.alert-info .alert-title{color:#a9bdea}
+.alert-info .alert-body{color:#a9bdea99}
+.alert-gold{background:linear-gradient(135deg,var(--gold-dim),transparent);border:1px solid #d4a85740}
+.alert-gold .alert-title{color:var(--gold)}
+.alert-gold .alert-body{color:#d4a857bb}
+
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:24px 0}
+
+.footer{text-align:center;padding:36px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:44px}
+.footer strong{color:var(--gold)}
+
+.hero{background:linear-gradient(135deg,#251f15 0%,#13110e 60%);border:1px solid var(--border2);border-radius:20px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,#d4a85722,transparent 70%);pointer-events:none}
+.hero-left h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--text);margin-bottom:6px}
+.hero-left p{font-size:13px;color:var(--text2);max-width:550px;line-height:1.5}
+.hero-right{display:flex;gap:24px;text-align:center}
+.hero-stat{display:flex;flex-direction:column;gap:4px}
+.hero-stat .v{font-size:24px;font-weight:700;color:var(--gold)}
+.hero-stat .l{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+
+.audit-card{background:var(--bg4);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:6px;border-left:3px solid var(--status-color,var(--gold))}
+.audit-card .acl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.audit-card .acv{font-size:18px;font-weight:700;color:var(--text);margin-top:4px}
+.audit-card .acd{font-size:12px;color:var(--text2);line-height:1.5;margin-top:6px}
+
+.seo-block{background:var(--bg4);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px}
+.seo-block .seo-issue{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.seo-block .seo-issue:last-child{border-bottom:none}
+.seo-block .seo-num{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--red);color:#13110e;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.seo-block .seo-text{flex:1;font-size:12.5px;line-height:1.55;color:var(--text2)}
+.seo-block .seo-text strong{color:var(--text);font-weight:600}
+
+.plan-step{background:var(--bg4);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;display:flex;gap:16px;transition:transform .2s,border-color .2s}
+.plan-step:hover{transform:translateX(4px);border-color:var(--gold)}
+.plan-num{flex-shrink:0;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--bronze));color:#13110e;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif}
+.plan-content{flex:1}
+.plan-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.plan-desc{font-size:12.5px;color:var(--text2);line-height:1.55}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.page.active .card,.page.active .metric,.page.active .art-table,.page.active .alert,.page.active .hero,.page.active .audit-card,.page.active .plan-step{animation:fadeUp .4s ease both}
+.page.active .card:nth-child(2),.page.active .metric:nth-child(2){animation-delay:.05s}
+.page.active .card:nth-child(3),.page.active .metric:nth-child(3){animation-delay:.1s}
+.page.active .card:nth-child(4),.page.active .metric:nth-child(4){animation-delay:.15s}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-dim)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">K</div>
+    <div>
+      <div class="logo-text">ИП Бекжасарова О.В. · Ksenya Gold</div>
+      <div class="logo-sub">Аудит магазина · ScaleUP Agency</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge">Период: <span>19.03 — 19.06.2026</span> (квартал)</div>
+    <div class="audit-badge">📋 Стартовый аудит</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('overview',this)"><span class="tab-emoji">📊</span>Обзор</div>
+  <div class="tab" onclick="showPage('audit',this)"><span class="tab-emoji">🔍</span>Аудит кабинета</div>
+  <div class="tab" onclick="showPage('articles',this)"><span class="tab-emoji">👜</span>Товары</div>
+  <div class="tab" onclick="showPage('seo',this)"><span class="tab-emoji">🔤</span>SEO-разбор</div>
+  <div class="tab" onclick="showPage('stocks',this)"><span class="tab-emoji">🏪</span>Остатки и распродажа</div>
+  <div class="tab" onclick="showPage('plan',this)"><span class="tab-emoji">🎯</span>Что мы предлагаем</div>
+</div>
+
+<!-- ==================== OVERVIEW ==================== -->
+<div id="page-overview" class="page content active">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Магазин работает на 18% мощности</h1>
+      <p>За квартал 19.03–19.06: из 11 артикулов в каталоге продают только 2 — это 70.9% и 29.1% всей выручки. Остальные 9 товаров «мертвые»: цена 0 ₽, заказов нет, но 964 перехода трафика уходит впустую. Реклама не запускалась — все продажи идут на органике. Выкуп всего 45.2% — каждый второй заказ отменяется.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">163 857₽</div><div class="l">оборот за квартал</div></div>
+      <div class="hero-stat"><div class="v">57</div><div class="l">заказов</div></div>
+      <div class="hero-stat" style="color:#f29a9a"><div class="v" style="color:#f29a9a">~26</div><div class="l">фактически выкуплено</div></div>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-bottom:22px">
+    <div class="metric" style="--accent-color:#d4a857">
+      <div class="metric-label">Выручка за квартал</div>
+      <div class="metric-value">163 857 ₽</div>
+      <div class="metric-sub">в среднем ~54 600 ₽/месяц</div>
+    </div>
+    <div class="metric" style="--accent-color:#7fa8d9">
+      <div class="metric-label">Заказов</div>
+      <div class="metric-value">57</div>
+      <div class="metric-sub">~19 в месяц · ~4-5 в неделю</div>
+    </div>
+    <div class="metric" style="--accent-color:#e8757a">
+      <div class="metric-label">Средний % выкупа</div>
+      <div class="metric-value">45.2%</div>
+      <div class="metric-sub">критически низкий показатель</div>
+    </div>
+    <div class="metric" style="--accent-color:#e0a857">
+      <div class="metric-label">Реализованная выручка</div>
+      <div class="metric-value">~74 631 ₽</div>
+      <div class="metric-sub">после вычета невыкупов</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Структура каталога</div>
+      <div class="block-sub">из 11 артикулов работают только 2 — это 18% магазина</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartCatalogState" aria-label="Структура каталога">Работают 2, Мертвые 9</canvas>
+      </div>
+      <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:var(--bg4);border-radius:10px;padding:12px"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Активные</div><div style="font-size:18px;font-weight:700;color:#9ddbb6;margin-top:4px">2 артикула</div><div style="font-size:11px;color:var(--text2);margin-top:2px">100% выручки</div></div>
+        <div style="background:var(--bg4);border-radius:10px;padding:12px"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Мертвые</div><div style="font-size:18px;font-weight:700;color:#f29a9a;margin-top:4px">9 артикулов</div><div style="font-size:11px;color:var(--text2);margin-top:2px">964 пустых перехода</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Доля выручки: 2 живых артикула</div>
+      <div class="block-sub">черная сумка тянет 70% магазина</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartRevSplit" aria-label="Доля выручки">Черная 116229, Серая 47628</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3" style="margin-bottom:22px">
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Переходов на карточки</div>
+      <div style="font-size:26px;font-weight:700;color:var(--text)">6 589</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:5px">за квартал, ~73/день — органика</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Конверсия в заказ</div>
+      <div style="font-size:26px;font-weight:700;color:#ecc784">~1%</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:5px">57 заказов / 6 589 переходов</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Остаток на складах</div>
+      <div style="font-size:26px;font-weight:700;color:var(--gold)">239 шт.</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:5px">~645 000 ₽ замороженных денег</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Ключевые проблемы магазина — коротко</div>
+    <div class="block-sub">детальный разбор на вкладке «Аудит кабинета»</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px">
+      <div style="background:var(--bg4);border-radius:12px;padding:16px;border-left:3px solid var(--red)">
+        <div style="font-size:13px;font-weight:600;color:#f29a9a;margin-bottom:6px">🔴 9 «мертвых» карточек съедают трафик</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">958 переходов на товары без цены и наличия — это пользователи, которые видели карточку, кликнули, но не смогли купить. Прямая потеря потенциальных заказов.</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:12px;padding:16px;border-left:3px solid var(--red)">
+        <div style="font-size:13px;font-weight:600;color:#f29a9a;margin-bottom:6px">🔴 Выкуп 45% — половина заказов отменяется</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">Норма для категории сумок 60-75%. Здесь проблема в карточке — фото не соответствует, либо ожидания не оправдываются на ПВЗ.</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:12px;padding:16px;border-left:3px solid var(--amber)">
+        <div style="font-size:13px;font-weight:600;color:#ecc784;margin-bottom:6px">🟡 SEO-описание переспамлено и нарушает правила WB</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">Текст содержит запрещенные формулировки, переспам ключами и смешение целевых аудиторий — это снижает позиции в выдаче.</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:12px;padding:16px;border-left:3px solid var(--amber)">
+        <div style="font-size:13px;font-weight:600;color:#ecc784;margin-bottom:6px">🟡 Реклама не запускалась — упущенный рост</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">Магазин живёт только на органике. При 6.5к органических переходов за квартал нормальная реклама может удвоить-утроить трафик.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== AUDIT ==================== -->
+<div id="page-audit" class="page content">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Аудит кабинета: что мы нашли</h1>
+      <p>Проверка по ключевым параметрам WB: ассортимент, конверсии, выкуп, SEO, реклама, остатки, региональное покрытие. Каждый блок ниже — это конкретная находка с указанием статуса (🔴 критично / 🟡 требует внимания / 🟢 в норме).</p>
+    </div>
+  </div>
+
+  <div class="section-title">🔴 Критические находки</div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="audit-card" style="--status-color:#e8757a">
+      <div class="acl">Ассортимент</div>
+      <div class="acv">82% каталога не работает</div>
+      <div class="acd">9 из 11 артикулов имеют цену 0 ₽, заказов нет. При этом 4 из них продолжают получать органический трафик (137-285 переходов). Эти карточки нужно либо вернуть в продажу с актуальной ценой, либо удалить полностью.</div>
+    </div>
+    <div class="audit-card" style="--status-color:#e8757a">
+      <div class="acl">Процент выкупа</div>
+      <div class="acv">45.2% — критически низкий</div>
+      <div class="acd">Норма для категории сумок 60-75%. Каждый второй заказ отменяется или возвращается. Причины: несовпадение фото/реальности, проблемы с упаковкой, либо неактуальные фото на карточке.</div>
+    </div>
+    <div class="audit-card" style="--status-color:#e8757a">
+      <div class="acl">SEO-описание</div>
+      <div class="acv">Переспам + нарушение правил WB</div>
+      <div class="acd">Текст карточки содержит запрещенные формулировки («для беременных», «в роддом»), переспам ключами, смешение разных целевых аудиторий («девочки, девушки, мамы, любимая жена»). Детальный разбор на вкладке SEO.</div>
+    </div>
+    <div class="audit-card" style="--status-color:#e8757a">
+      <div class="acl">Замороженный товар</div>
+      <div class="acv">239 шт. на 645 000 ₽</div>
+      <div class="acd">Оборачиваемость остатков &gt;999 дней по всем складам. При текущей скорости продаж эти деньги «застряли» — нужна стратегия активной распродажи.</div>
+    </div>
+  </div>
+
+  <div class="section-title">🟡 Требуют внимания</div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="audit-card" style="--status-color:#e0a857">
+      <div class="acl">Реклама</div>
+      <div class="acv">Не запускалась за квартал</div>
+      <div class="acd">Все 6 589 переходов получены органически. Это значит, что у товара есть базовая видимость, но магазин не использует возможности платного продвижения для роста.</div>
+    </div>
+    <div class="audit-card" style="--status-color:#e0a857">
+      <div class="acl">Концентрация складов</div>
+      <div class="acv">97% товара в Центральном округе</div>
+      <div class="acd">160 шт. в Электростали, 72 в Коледино. В отдалённых регионах (Сибирь, Дальний Восток) — нет товара. Это значит, что и заказов оттуда быть не может физически.</div>
+    </div>
+    <div class="audit-card" style="--status-color:#e0a857">
+      <div class="acl">Конверсия в заказ</div>
+      <div class="acv">~1% — ниже нормы для категории</div>
+      <div class="acd">При 6 589 переходах получено всего 57 заказов. Норма для сумок 2-4%. Возможные причины: качество фото, описание, цена выше рынка, отзывы.</div>
+    </div>
+    <div class="audit-card" style="--status-color:#e0a857">
+      <div class="acl">Активные позиции</div>
+      <div class="acv">Зависимость от 1 товара</div>
+      <div class="acd">70.9% выручки делает черная сумка. Если её позиции упадут — упадёт почти весь магазин. Нужно диверсифицировать продажи.</div>
+    </div>
+  </div>
+
+  <div class="section-title">🟢 Что в порядке</div>
+
+  <div class="grid2">
+    <div class="audit-card" style="--status-color:#7fc99e">
+      <div class="acl">Рейтинг карточек</div>
+      <div class="acv">4.5 – 5.0 ★ по работающим товарам</div>
+      <div class="acd">Покупатели в целом довольны товаром после получения. Это значит, что проблема не в качестве самой сумки, а в карточке и сервисе.</div>
+    </div>
+    <div class="audit-card" style="--status-color:#7fc99e">
+      <div class="acl">Органический трафик</div>
+      <div class="acv">6 589 переходов без рекламы</div>
+      <div class="acd">База для роста есть — товар уже находят в поисковой выдаче WB. С грамотной работой над SEO и рекламой можно кратно увеличить заказы.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ARTICLES ==================== -->
+<div id="page-articles" class="page content">
+
+  <div class="card" style="margin-bottom:22px">
+    <div class="block-title">Полный каталог · 11 артикулов</div>
+    <div class="block-sub">статус каждого товара за квартал 19.03 – 19.06.2026</div>
+    <div style="overflow-x:auto">
+    <table class="art-table">
+      <thead><tr><th>Товар</th><th>Статус</th><th>Заказы</th><th>Выручка</th><th>Выкуп %</th><th>Переходы</th><th>Конв.</th><th>Цена</th><th>Остаток</th><th>Рейтинг</th></tr></thead>
+      <tbody>
+        <tr style="background:#7fc99e0a">
+          <td><div class="art-name">Сумка кросс-боди черная 🏆</div><div class="art-wb">WB: 217971427</div></td>
+          <td><span class="badge-green">активна</span></td>
+          <td class="num">37</td><td class="num">116 229 ₽</td>
+          <td><span class="badge-red">47%</span></td>
+          <td class="num">3 684</td><td>15%</td><td>3 141 ₽</td>
+          <td>151</td><td>★ 4.8</td>
+        </tr>
+        <tr style="background:#7fc99e0a">
+          <td><div class="art-name">Сумка классическая серая</div><div class="art-wb">WB: 218541909</div></td>
+          <td><span class="badge-green">активна</span></td>
+          <td class="num">20</td><td class="num">47 628 ₽</td>
+          <td><span class="badge-red">42%</span></td>
+          <td class="num">1 941</td><td>17%</td><td>2 381 ₽</td>
+          <td>88</td><td>★ 4.5</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка кросс-боди бежевая</div><div class="art-wb">WB: 218539525</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">285</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>★ 4.9</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка через плечо классическая</div><div class="art-wb">WB: 218542889</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">137</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>★ 5.0</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка через плечо кросс-боди</div><div class="art-wb">WB: 218543661</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">220</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>★ 5.0</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка через плечо кросс-боди</div><div class="art-wb">WB: 218544089</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">155</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>★ 5.0</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка кросс-боди коричневая</div><div class="art-wb">WB: 298493365</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">161</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>★ 4.4</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка саквояж черная</div><div class="art-wb">WB: 248376059</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">6</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>★ 4.7</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка саквояж средняя</div><div class="art-wb">WB: 248377624</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">0</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>★ 4.4</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка классическая (218546453)</div><div class="art-wb">WB: 218546453</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">0</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>—</td>
+        </tr>
+        <tr>
+          <td><div class="art-name">Сумка кросс-боди серая (218546904)</div><div class="art-wb">WB: 218546904</div></td>
+          <td><span class="badge-dead">мертва</span></td>
+          <td class="num">0</td><td class="num">0 ₽</td>
+          <td>—</td>
+          <td class="num">0</td><td>0%</td><td><span class="badge-red">0 ₽</span></td>
+          <td>0</td><td>—</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="block-title">Куда уходит органический трафик</div>
+      <div class="block-sub">958 переходов в квартал утекает на мёртвые карточки</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartTrafficLoss" aria-label="Распределение трафика">Активные 5625, Мертвые 964</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Зачёт трафика по карточкам</div>
+      <div class="block-sub">переходов на каждый артикул за квартал</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartTrafficByArt" aria-label="Переходы по карточкам">3684,1941,285,220,161,155,137,6</canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SEO ==================== -->
+<div id="page-seo" class="page content">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>SEO-разбор карточки</h1>
+      <p>Проверили текст описания самой важной карточки (черная сумка, 70.9% выручки). Нашли 7 серьёзных проблем: переспам ключами, запрещённые формулировки, нарушение правил WB, смешение целевых аудиторий, общий тон, неконкретность преимуществ.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:22px">
+    <div class="block-title">Текущее описание (с пометками)</div>
+    <div class="block-sub">красным выделены проблемные участки текста</div>
+    <div style="background:var(--bg4);padding:18px;border-radius:12px;font-size:12.5px;line-height:1.7;color:var(--text2);font-style:italic">
+      Сумка женская кросс-боди: функциональность, стиль и практичность. Ищете универсальную и стильную сумку, которая станет идеальным дополнением к вашему гардеробу? Встречайте женскую черную сумку с ручками — идеальное решение для всех случаев жизни.
+      <br><br>
+      Эта сумка из высококачественной экокожи отличается элегантным и изысканным дизайном, который дополнит любой образ. <span style="background:#e8757a30;color:#f29a9a;padding:1px 4px;border-radius:3px">Черный цвет добавляет ей нотку универсальности</span>, этот аксессуар станет незаменимым спутником для: как для деловых встреч, так и для прогулок по городу, и для путешествий, вы смело можете взять сумку в ручную кладь, а также с ней можно пойти даже на пляж.
+      <br><br>
+      Наша сумочка <span style="background:#e8757a30;color:#f29a9a;padding:1px 4px;border-radius:3px">отлично подходит для беременных женщин</span>, так как она легкая и удобная. Сумка вместит в себя все необходимые документы, <span style="background:#e8757a30;color:#f29a9a;padding:1px 4px;border-radius:3px">с ней можно отправится в роддом</span>. Изящная, стильная, модная сумочка подойдет <span style="background:#e8757a30;color:#f29a9a;padding:1px 4px;border-radius:3px">как для девочек, девушек, подросткам, мамы, матери, подруге, любимой жене</span>...
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:22px">
+    <div class="block-title">Найденные проблемы</div>
+    <div class="block-sub">7 серьёзных ошибок в текущей версии текста</div>
+    <div class="seo-block">
+      <div class="seo-issue">
+        <div class="seo-num">1</div>
+        <div class="seo-text"><strong>Запрещённые формулировки про беременность и роддом.</strong> WB не рекомендует категорически утверждать функциональные назначения для конкретных жизненных ситуаций без сертификатов. Кроме того, это сильно сужает поиск — попадает в выдачу по «сумка в роддом», где конкурируют специализированные товары.</div>
+      </div>
+      <div class="seo-issue">
+        <div class="seo-num">2</div>
+        <div class="seo-text"><strong>Смешение всех целевых аудиторий разом.</strong> «Девочки, девушки, подростки, мамы, матери, подруге, любимой жене» — WB-алгоритм не понимает, кому показывать карточку. Должна быть одна-две чёткие аудитории, например «для женщин 25-45» или «повседневная сумка для города».</div>
+      </div>
+      <div class="seo-issue">
+        <div class="seo-num">3</div>
+        <div class="seo-text"><strong>Переспам слова «сумка» и его вариаций.</strong> В тексте 12 повторов («сумка», «сумочку», «сумочка»). WB понижает в выдаче карточки с явным переспамом — это считается манипуляцией ключевыми словами.</div>
+      </div>
+      <div class="seo-issue">
+        <div class="seo-num">4</div>
+        <div class="seo-text"><strong>Нет ключевых слов из топа поиска.</strong> Отсутствуют важные запросы: «вместительная», «городская сумка», «вечерняя сумка», «для документов», «через плечо женская», «на молнии». Это слова, по которым реально ищут товар в категории.</div>
+      </div>
+      <div class="seo-issue">
+        <div class="seo-num">5</div>
+        <div class="seo-text"><strong>Неконкретные характеристики.</strong> «Высококачественная экокожа», «прочные ручки», «элегантный дизайн» — это маркетинговые штампы. Нужны конкретные цифры: длина ручек, размеры, вес, толщина кожи, количество отделений.</div>
+      </div>
+      <div class="seo-issue">
+        <div class="seo-num">6</div>
+        <div class="seo-text"><strong>Грамматические ошибки.</strong> «Отправится в роддом» (нужно «отправиться»). Это снижает доверие и качество карточки в глазах алгоритма.</div>
+      </div>
+      <div class="seo-issue">
+        <div class="seo-num">7</div>
+        <div class="seo-text"><strong>Структура текста как реклама из 2010-х.</strong> «Закажите эту женскую черную сумку с ручками уже сегодня и наслаждайтесь...» — устаревшая call-to-action не работает на современном WB. Лучше — фактические преимущества, конкретный сценарий использования, размеры.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-gold">
+    <div class="alert-icon">💡</div>
+    <div>
+      <div class="alert-title">Что мы делаем: новое SEO-описание под топовые запросы категории</div>
+      <div class="alert-body">Мы соберём семантическое ядро через MPstat и Wildbox по категории «Сумки женские», подберём актуальные ключи с реальной частотностью, переработаем структуру описания под современные требования WB, добавим конкретные характеристики и уберём всё запрещённое. Новый текст вместе с обновлёнными характеристиками карточки → рост позиций в поиске и трафика.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== STOCKS ==================== -->
+<div id="page-stocks" class="page content">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>239 шт. товара на складах — нужно распродать</h1>
+      <p>На WB лежит 239 единиц на сумму ~645 000 ₽ замороженного капитала. Оборачиваемость &gt;999 дней — товар не движется. При текущей скорости продаж (4-5 шт/неделя) распродажа займёт 50+ недель. Нужна тактическая стратегия активной распродажи.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="v">239 шт.</div><div class="l">всего на складах</div></div>
+      <div class="hero-stat"><div class="v">645к₽</div><div class="l">замороженных денег</div></div>
+      <div class="hero-stat" style="color:#f29a9a"><div class="v" style="color:#f29a9a">~50 нед.</div><div class="l">распродажи при текущем темпе</div></div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="block-title">Распределение остатков по артикулам</div>
+      <div class="block-sub">шт. на 19.06.2026</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartStockByArt" aria-label="Остатки по артикулам">Черная 151, Серая 88</canvas>
+      </div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg4);border-radius:8px">
+          <span style="font-size:12px;color:var(--text2)">Сумка черная (217971427)</span>
+          <span style="font-size:13px;font-weight:600;color:var(--gold)">151 шт. · 481 670 ₽</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg4);border-radius:8px">
+          <span style="font-size:12px;color:var(--text2)">Сумка серая (218541909)</span>
+          <span style="font-size:13px;font-weight:600;color:var(--gold)">88 шт. · 163 856 ₽</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="block-title">Где лежит товар</div>
+      <div class="block-sub">распределение по складам, оборачиваемость &gt;999 дней везде</div>
+      <table class="wh-table">
+        <thead><tr><th>Регион / Склад</th><th>Остаток</th><th>Стоимость</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot dot-amber"></span>Электросталь</td><td><strong>160</strong></td><td>454 328 ₽</td></tr>
+          <tr><td><span class="dot dot-amber"></span>Коледино</td><td><strong>72</strong></td><td>175 812 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Рязань (Тюшевское)</td><td><strong>1</strong></td><td>2 450 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Воронеж WB</td><td><strong>1</strong></td><td>1 862 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Владимир WB</td><td><strong>1</strong></td><td>2 450 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Тула</td><td><strong>1</strong></td><td>2 450 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Пенза WB</td><td><strong>1</strong></td><td>2 450 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Сарапул WB</td><td><strong>1</strong></td><td>1 862 ₽</td></tr>
+          <tr><td><span class="dot dot-red"></span>Невинномысск</td><td><strong>1</strong></td><td>1 862 ₽</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="block-title">Стратегия распродажи остатков</div>
+    <div class="block-sub">3 параллельных направления — выходим из остатков за 8-12 недель вместо 50</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px">
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border-top:3px solid var(--gold)">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Канал 1</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Снижение цены до уровня категории</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">Сейчас цена 3 141 ₽ — выше средней по категории. Снижение на 15-20% даст рост заказов в 2-3 раза без потери маржинальности.</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border-top:3px solid var(--gold)">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Канал 2</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Запуск рекламы (CPM + автоматические)</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">Бюджет ~3-5к ₽/неделя на топовый артикул. При текущей органике 6.5к переходов реклама добавит +30-50% трафика.</div>
+      </div>
+      <div style="background:var(--bg4);border-radius:13px;padding:18px;border-top:3px solid var(--gold)">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Канал 3</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Акции WB и участие в распродажах</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">Подача товара в недельные/месячные акции WB с дополнительной скидкой. Дает буст в топ выдачи на 3-7 дней.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PLAN ==================== -->
+<div id="page-plan" class="page content">
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Что мы предлагаем сделать</h1>
+      <p>Полная программа работ на 4-6 недель: чистка каталога, новое SEO, фото, регулярная аналитика, запуск рекламы, стратегия распродажи. Цель — выйти из 239 шт. остатков и удвоить выручку магазина за 2-3 месяца.</p>
+    </div>
+  </div>
+
+  <div class="section-title">📋 План действий — 6 шагов</div>
+
+  <div class="plan-step">
+    <div class="plan-num">1</div>
+    <div class="plan-content">
+      <div class="plan-title">Чистка каталога · неделя 1</div>
+      <div class="plan-desc">Удаляем 9 мёртвых артикулов (или возвращаем их в продажу с актуальной ценой). Прекращаем сливать ~960 переходов в квартал на пустые карточки. Параллельно эти переходы перенаправляем на активные товары через внутренние ссылки и категорию бренда.</div>
+    </div>
+  </div>
+
+  <div class="plan-step">
+    <div class="plan-num">2</div>
+    <div class="plan-content">
+      <div class="plan-title">Новое SEO-описание + характеристики · неделя 1-2</div>
+      <div class="plan-desc">Собираем семантическое ядро по категории «Сумки женские» через MPstat. Пишем новое описание для двух активных артикулов под топовые запросы, убираем все запрещённые формулировки. Дополняем все обязательные характеристики WB (вес, размеры, материал, отделения, тип застёжки).</div>
+    </div>
+  </div>
+
+  <div class="plan-step">
+    <div class="plan-num">3</div>
+    <div class="plan-content">
+      <div class="plan-title">Анализ причин низкого выкупа · неделя 2</div>
+      <div class="plan-desc">Изучаем отзывы и причины возвратов, выясняем, в чём расхождение между ожиданиями и реальным товаром. Возможные направления: переснять фото, переделать инфографику, улучшить упаковку. Цель: поднять выкуп с 45% до 60%+ за месяц.</div>
+    </div>
+  </div>
+
+  <div class="plan-step">
+    <div class="plan-num">4</div>
+    <div class="plan-content">
+      <div class="plan-title">Корректировка цен под стратегию распродажи · неделя 2</div>
+      <div class="plan-desc">Анализируем цены конкурентов в категории. Снижаем цену активных артикулов на 15-20% для разгона продаж. Цель — увеличить скорость оборота с 4-5 шт/неделя до 12-15 шт/неделя.</div>
+    </div>
+  </div>
+
+  <div class="plan-step">
+    <div class="plan-num">5</div>
+    <div class="plan-content">
+      <div class="plan-title">Запуск рекламы · неделя 3</div>
+      <div class="plan-desc">Запускаем рекламу WB на 2 активных артикула: CPM-кампания на места в категории + автокампании. Стартовый бюджет 5-7 тыс. ₽/неделя с прицелом на ДРР ниже 15%. Ежедневный мониторинг и корректировка ставок.</div>
+    </div>
+  </div>
+
+  <div class="plan-step">
+    <div class="plan-num">6</div>
+    <div class="plan-content">
+      <div class="plan-title">Еженедельная аналитика и отчётность · постоянно</div>
+      <div class="plan-desc">Каждую неделю присылаем дашборд с полной картиной: выручка, заказы, выкуп, остатки, реклама, регионы. Видны все изменения после каждого внесённого улучшения — клиент полностью контролирует процесс.</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="section-title">📈 Целевые показатели через 2-3 месяца</div>
+
+  <div class="grid4">
+    <div class="audit-card" style="--status-color:#7fc99e">
+      <div class="acl">Выручка/месяц</div>
+      <div class="acv">с ~54 600 ₽ → 120 000 ₽</div>
+      <div class="acd">рост за счёт чистого каталога, SEO, рекламы и нормальной цены</div>
+    </div>
+    <div class="audit-card" style="--status-color:#7fc99e">
+      <div class="acl">Выкуп</div>
+      <div class="acv">с 45% → 65%+</div>
+      <div class="acd">исправление карточек, фото, упаковки</div>
+    </div>
+    <div class="audit-card" style="--status-color:#7fc99e">
+      <div class="acl">Конверсия в заказ</div>
+      <div class="acv">с ~1% → 2.5-3%</div>
+      <div class="acd">новое описание + конкурентная цена</div>
+    </div>
+    <div class="audit-card" style="--status-color:#7fc99e">
+      <div class="acl">Остатки</div>
+      <div class="acv">239 шт. → 50 шт.</div>
+      <div class="acd">распродажа за 8-10 недель, освобождение 500к ₽</div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="alert alert-gold">
+    <div class="alert-icon">🚀</div>
+    <div>
+      <div class="alert-title">Старт уже на этой неделе</div>
+      <div class="alert-body">Готовы начать с чистки каталога и подготовки нового SEO-описания сразу после подписания договора. Первые результаты в виде роста позиций в поиске WB должны проявиться в течение 7-14 дней после внесения изменений.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Аудит подготовлен агентством <strong>ScaleUP</strong> · ИП Бекжасарова О.В. · Ksenya Gold · Wildberries · период 19.03–19.06.2026
+</div>
+
+<script>
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const gridColor='rgba(255,255,255,0.05)';
+const tickColor='rgba(255,255,255,0.4)';
+
+const defOpts={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1b1813',titleColor:'#f5f1e8',bodyColor:'#a09787',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12}},
+  scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}}}
+};
+
+new Chart(document.getElementById('chartCatalogState'),{
+  type:'doughnut',
+  data:{labels:['Активные (2)','Мертвые (9)'],datasets:[{data:[2,9],backgroundColor:['#7fc99e','#5e5849'],borderColor:'#13110e',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10,padding:12}},tooltip:defOpts.plugins.tooltip}}
+});
+
+new Chart(document.getElementById('chartRevSplit'),{
+  type:'doughnut',
+  data:{labels:['Сумка черная (70.9%)','Сумка серая (29.1%)'],datasets:[{data:[116229,47628],backgroundColor:['#d4a857','#7fa8d9'],borderColor:'#13110e',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:true,position:'bottom',labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10,padding:12}},tooltip:{backgroundColor:'#1b1813',titleColor:'#f5f1e8',bodyColor:'#a09787',borderColor:'rgba(255,255,255,0.12)',borderWidth:1,cornerRadius:10,padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed.toLocaleString()} ₽`}}}}
+});
+
+new Chart(document.getElementById('chartTrafficLoss'),{
+  type:'doughnut',
+  data:{labels:['На активные карточки','На мёртвые карточки'],datasets:[{data:[5625,964],backgroundColor:['#7fc99e','#e8757a'],borderColor:'#13110e',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:true,position:'bottom',labels:{color:tickColor,font:{size:11},usePointStyle:true,pointStyleWidth:10,padding:12}},tooltip:defOpts.plugins.tooltip}}
+});
+
+new Chart(document.getElementById('chartTrafficByArt'),{
+  type:'bar',
+  data:{labels:['Черная','Серая','Бежевая','218543661','Коричневая','218544089','Классич.','Саквояж'],datasets:[{label:'Переходы',data:[3684,1941,285,220,161,155,137,6],backgroundColor:(ctx)=>{const v=ctx.raw;return v>1000?'#7fc99e':v>100?'#e0a857':'#e8757a'},borderRadius:6,borderSkipped:false}]},
+  options:{...defOpts,scales:{...defOpts.scales,x:{...defOpts.scales.x,ticks:{...defOpts.scales.x.ticks,maxRotation:30}}}}
+});
+
+new Chart(document.getElementById('chartStockByArt'),{
+  type:'bar',
+  data:{labels:['Сумка черная','Сумка серая'],datasets:[{label:'Остаток шт.',data:[151,88],backgroundColor:['#d4a857','#7fa8d9'],borderRadius:8,borderSkipped:false}]},
+  options:{...defOpts}
+});
+</script>
+</body>
+</html>
