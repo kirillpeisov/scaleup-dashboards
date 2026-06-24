@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ИП Гутова Карина Николаевна · мультикабинетная аналитика</title>
+<style>
+:root {
+  --bg:#07111d;
+  --bg2:#0b1524;
+  --panel:rgba(18, 31, 49, .78);
+  --panel2:rgba(12, 22, 36, .82);
+  --line:rgba(156, 178, 214, .16);
+  --text:#eef5ff;
+  --muted:#93a4ba;
+  --muted2:#6f8198;
+  --cyan:#5ee2ff;
+  --blue:#74a7ff;
+  --violet:#a88cff;
+  --green:#48e0a4;
+  --red:#ff6d7d;
+  --orange:#ffbe6b;
+  --white:#fff;
+  --shadow: 0 30px 90px rgba(0,0,0,.44);
+  --radius: 26px;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0;
+  color:var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(900px 600px at 15% 5%, rgba(74,167,255,.20), transparent 65%),
+    radial-gradient(820px 560px at 90% 10%, rgba(168,140,255,.18), transparent 64%),
+    radial-gradient(720px 520px at 70% 95%, rgba(72,224,164,.10), transparent 58%),
+    linear-gradient(135deg, #06101d 0%, #0c1524 50%, #07111d 100%);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body:before {
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at 50% 20%, black 0%, transparent 72%);
+  pointer-events:none;
+}
+body:after {
+  content:"";
+  position:fixed; inset:-25%;
+  background: conic-gradient(from 90deg, transparent, rgba(94,226,255,.045), transparent, rgba(168,140,255,.055), transparent);
+  animation: aura 22s linear infinite;
+  pointer-events:none;
+  opacity:.8;
+}
+@keyframes aura { to { transform:rotate(360deg); } }
+.container {
+  width:min(1480px, calc(100% - 44px));
+  margin:0 auto;
+  position:relative;
+  z-index:2;
+}
+.header {
+  padding:30px 0 18px;
+  position:sticky; top:0; z-index:20;
+  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(7,17,29,.92), rgba(7,17,29,.68) 70%, transparent);
+}
+.header-inner {
+  display:flex; align-items:center; justify-content:space-between; gap:22px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(18,31,49,.86), rgba(12,22,36,.72));
+  box-shadow: var(--shadow);
+  border-radius:30px;
+  padding:16px 20px;
+}
+.brand { display:flex; align-items:center; gap:18px; min-width:0; }
+.logo-wrap {
+  width:112px; height:70px; flex:0 0 auto; border-radius:20px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.10);
+  display:grid; place-items:center; overflow:hidden;
+}
+.logo-wrap img { width:100%; height:100%; object-fit:cover; opacity:.98; }
+.kicker { color:var(--cyan); font-size:12px; letter-spacing:.22em; text-transform:uppercase; font-weight:800; }
+h1 { margin:5px 0 0; font-size:clamp(25px, 3vw, 48px); line-height:1.02; letter-spacing:-.04em; }
+.sub { margin:9px 0 0; color:var(--muted); font-size:14px; max-width:860px; line-height:1.45; }
+.header-side { text-align:right; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+.period { font-weight:800; color:#dce9ff; font-size:14px; }
+.tagrow { display:flex; flex-wrap:wrap; gap:7px; justify-content:flex-end; }
+.tag {
+  font-size:12px; color:#c8d7ee; padding:7px 10px; border-radius:999px;
+  background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08);
+}
+.hero { padding:18px 0 20px; }
+.hero-grid { display:grid; grid-template-columns: 1.28fr .72fr; gap:18px; align-items:stretch; }
+.card {
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:linear-gradient(180deg, rgba(18,31,49,.82), rgba(11,21,35,.77));
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  position:relative;
+}
+.card:before {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(120deg, rgba(94,226,255,.08), transparent 38%, rgba(168,140,255,.07));
+  opacity:.85; pointer-events:none;
+}
+.card-content { position:relative; z-index:1; padding:24px; }
+.big-title { font-size:clamp(30px, 4vw, 70px); line-height:.96; letter-spacing:-.06em; margin:0; }
+.gradient-text { background:linear-gradient(90deg, #f6fbff, #83e7ff 42%, #a98dff 80%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.lead { color:#a9bad0; line-height:1.65; font-size:16px; max-width:920px; margin:18px 0 0; }
+.quick-actions { display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:22px; }
+.action-card {
+  padding:16px; border-radius:22px; border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.04);
+}
+.action-card b { display:block; margin-bottom:7px; }
+.action-card span { color:var(--muted); font-size:13px; line-height:1.45; }
+.summary-panel .metric-list { display:grid; gap:12px; }
+.metric-line { display:flex; justify-content:space-between; gap:16px; padding:15px 0; border-bottom:1px solid rgba(255,255,255,.09); }
+.metric-line:last-child { border-bottom:0; }
+.metric-line span { color:var(--muted); }
+.metric-line b { font-size:22px; }
+.tabs {
+  display:flex; gap:8px; padding:8px; margin:12px 0 18px;
+  border:1px solid var(--line); border-radius:22px;
+  background:rgba(6,16,29,.58); backdrop-filter: blur(14px);
+  overflow:auto;
+  position:sticky; top:120px; z-index:19;
+}
+.tab-btn {
+  color:#b7c6dc; background:transparent; border:0; padding:12px 16px; border-radius:16px;
+  cursor:pointer; white-space:nowrap; font-weight:800; letter-spacing:-.01em;
+  transition:.25s ease;
+}
+.tab-btn:hover { color:white; background:rgba(255,255,255,.055); transform:translateY(-1px); }
+.tab-btn.active {
+  color:#06101d; background:linear-gradient(90deg, var(--cyan), var(--blue));
+  box-shadow:0 14px 34px rgba(94,226,255,.20);
+}
+.panel { display:none; animation: panelIn .45s cubic-bezier(.2,.8,.2,1) both; }
+.panel.active { display:block; }
+@keyframes panelIn { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: translateY(0); } }
+.section { padding:10px 0 30px; }
+.section-title { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin:0 0 14px; }
+.section-title h2 { margin:0; font-size:30px; letter-spacing:-.04em; }
+.section-title p { margin:0; color:var(--muted); font-size:14px; max-width:720px; text-align:right; line-height:1.5; }
+.kpi-grid { display:grid; grid-template-columns: repeat(6, 1fr); gap:14px; margin:16px 0; }
+.kpi {
+  position:relative; overflow:hidden; border:1px solid var(--line); border-radius:24px;
+  background:linear-gradient(180deg, rgba(18,31,49,.78), rgba(10,20,34,.70));
+  padding:18px 16px; min-height:130px; box-shadow:0 22px 60px rgba(0,0,0,.26);
+  animation: rise .7s cubic-bezier(.2,.8,.2,1) both;
+}
+.kpi:nth-child(2){ animation-delay:.05s } .kpi:nth-child(3){ animation-delay:.1s } .kpi:nth-child(4){ animation-delay:.15s } .kpi:nth-child(5){ animation-delay:.2s } .kpi:nth-child(6){ animation-delay:.25s }
+@keyframes rise { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:translateY(0); } }
+.kpi:after {
+  content:""; position:absolute; right:-28px; top:-32px; width:96px; height:96px; border-radius:50%;
+  background:radial-gradient(circle, rgba(94,226,255,.20), transparent 68%);
+}
+.kpi .label { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.13em; font-weight:900; }
+.kpi .value { margin-top:14px; font-size:31px; font-weight:900; letter-spacing:-.04em; }
+.kpi .hint { margin-top:10px; color:#92a4bc; font-size:13px; line-height:1.35; }
+.grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; }
+.chart-card { padding:20px; min-height:420px; }
+.chart-head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:18px; }
+.chart-title { margin:0; font-size:20px; letter-spacing:-.03em; }
+.chart-sub { color:var(--muted); font-size:13px; margin:6px 0 0; line-height:1.45; }
+.chart { position:relative; height:310px; padding:12px 0 0; }
+.chart.small { height:240px; }
+.bar-chart { display:flex; align-items:flex-end; gap:16px; height:100%; padding:16px 6px 40px; border-bottom:1px solid rgba(255,255,255,.12); }
+.bar-group { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative; }
+.bars { display:flex; gap:6px; align-items:flex-end; height:100%; width:100%; justify-content:center; }
+.bar {
+  width:22%; min-width:12px; border-radius:12px 12px 4px 4px;
+  background:linear-gradient(180deg, var(--cyan), rgba(94,226,255,.24));
+  height:0; transition:height 1.1s cubic-bezier(.2,.8,.2,1), filter .2s, transform .2s;
+  cursor:pointer; position:relative; box-shadow:0 12px 34px rgba(94,226,255,.16);
+}
+.bar.metric2 { background:linear-gradient(180deg, var(--blue), rgba(116,167,255,.22)); }
+.bar.metric3 { background:linear-gradient(180deg, var(--violet), rgba(168,140,255,.22)); }
+.bar.metric4 { background:linear-gradient(180deg, var(--green), rgba(72,224,164,.18)); }
+.bar:hover { filter:brightness(1.2); transform:translateY(-5px); }
+.bar-label { position:absolute; bottom:-32px; color:#9aadC4; font-size:11px; text-align:center; width:100%; line-height:1.15; }
+.legend { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; }
+.legend span { font-size:12px; color:#a8bad0; display:flex; align-items:center; gap:6px; }
+.dot { width:9px; height:9px; border-radius:50%; display:inline-block; background:var(--cyan); }
+.dot.b { background:var(--blue); } .dot.v { background:var(--violet); } .dot.g { background:var(--green); } .dot.r { background:var(--red); } .dot.o { background:var(--orange); }
+.h-bars { display:grid; gap:13px; padding:8px 0; }
+.h-row { display:grid; grid-template-columns: 190px 1fr 90px; gap:12px; align-items:center; }
+.h-name { color:#c8d8ef; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.track { height:14px; background:rgba(255,255,255,.07); border-radius:999px; overflow:hidden; position:relative; }
+.fill { height:100%; width:0; border-radius:999px; background:linear-gradient(90deg, var(--cyan), var(--blue)); transition:width 1s cubic-bezier(.2,.8,.2,1); cursor:pointer; }
+.fill.green { background:linear-gradient(90deg, var(--green), var(--cyan)); }
+.fill.violet { background:linear-gradient(90deg, var(--violet), var(--blue)); }
+.fill.red { background:linear-gradient(90deg, var(--red), #ff9f87); }
+.h-val { text-align:right; font-weight:900; color:#f4f8ff; }
+.funnel { display:grid; gap:12px; margin-top:10px; }
+.funnel-step {
+  position:relative; border-radius:18px; padding:14px 16px; min-height:62px; overflow:hidden;
+  background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.09);
+}
+.funnel-step .bg { position:absolute; inset:0 auto 0 0; width:0; background:linear-gradient(90deg, rgba(94,226,255,.26), rgba(116,167,255,.08)); transition:width 1.2s cubic-bezier(.2,.8,.2,1); }
+.funnel-step .row { position:relative; display:flex; justify-content:space-between; align-items:center; gap:18px; }
+.funnel-step b { font-size:18px; } .funnel-step span { color:#a9bad0; }
+.table-wrap { overflow:auto; border-radius:24px; border:1px solid var(--line); background:rgba(9,19,32,.58); }
+table { border-collapse:collapse; width:100%; min-width:940px; }
+th, td { padding:16px 14px; border-bottom:1px solid rgba(255,255,255,.08); text-align:left; }
+th { color:#8fa2ba; font-size:12px; letter-spacing:.11em; text-transform:uppercase; background:rgba(255,255,255,.035); position:sticky; top:0; backdrop-filter: blur(12px); }
+td { color:#e7efff; font-size:14px; }
+tr:hover td { background:rgba(94,226,255,.045); }
+.badge { display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:999px; font-size:12px; font-weight:900; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.055); color:#dbe9ff; }
+.badge.green { color:#72efc0; background:rgba(72,224,164,.10); }
+.badge.red { color:#ff97a3; background:rgba(255,109,125,.10); }
+.badge.orange { color:#ffcf8c; background:rgba(255,190,107,.10); }
+.badge.blue { color:#91eaff; background:rgba(94,226,255,.10); }
+.timeline { display:grid; gap:14px; }
+.time-item { display:grid; grid-template-columns: 56px 1fr; gap:14px; align-items:start; }
+.time-dot { width:44px; height:44px; border-radius:16px; display:grid; place-items:center; background:linear-gradient(135deg, rgba(94,226,255,.18), rgba(168,140,255,.14)); border:1px solid rgba(255,255,255,.10); font-weight:900; color:#bdf4ff; }
+.time-box { padding:16px; border-radius:20px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); }
+.time-box b { display:block; margin-bottom:5px; } .time-box span { color:var(--muted); line-height:1.45; }
+.tooltip {
+  position:fixed; z-index:1000; pointer-events:none; transform:translate(-50%, -125%);
+  background:rgba(4,10,18,.94); border:1px solid rgba(255,255,255,.16); border-radius:14px;
+  padding:10px 12px; color:white; font-size:12px; line-height:1.35; box-shadow:0 22px 70px rgba(0,0,0,.5);
+  opacity:0; transition:opacity .12s ease; max-width:260px;
+}
+.tooltip.show { opacity:1; }
+.reveal { opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.priority-card {
+  border:1px solid rgba(255,255,255,.10); border-radius:24px; padding:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)); min-height:230px;
+}
+.priority-card h3 { margin:0 0 8px; font-size:18px; }
+.priority-card p { color:#a7b8ce; line-height:1.55; font-size:14px; margin:0 0 12px; }
+.todo { display:grid; gap:10px; }
+.todo div { padding:12px 13px; border-radius:16px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); color:#dbe9ff; line-height:1.45; }
+.footer { padding:30px 0 50px; color:#71839b; font-size:12px; text-align:center; }
+@media (max-width: 1120px) { .hero-grid,.grid-2,.grid-3 { grid-template-columns:1fr; } .kpi-grid { grid-template-columns: repeat(3, 1fr); } .section-title { flex-direction:column; align-items:flex-start; } .section-title p { text-align:left; } }
+@media (max-width: 760px) {
+  .container { width:min(100% - 24px, 1480px); }
+  .header-inner { flex-direction:column; align-items:flex-start; } .header-side { align-items:flex-start; text-align:left; }
+  .kpi-grid { grid-template-columns:1fr 1fr; } .quick-actions { grid-template-columns:1fr; }
+  .tabs { top:0; } .h-row { grid-template-columns:1fr; gap:6px; } .h-val { text-align:left; }
+}
+</style>
+</head>
+<body>
+<div class="tooltip" id="tooltip"></div>
+<header class="header">
+  <div class="container header-inner">
+    <div class="brand">
+      <div class="logo-wrap"><img src="data:image/jpeg;base64,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" alt="ScaleUP" /></div>
+      <div>
+        <div class="kicker">ScaleUP Analytics</div>
+        <h1>ИП Гутова Карина Николаевна</h1>
+        <div class="sub">Мультикабинетная аналитика: 3 кабинета Ozon + 1 кабинет WB. Период Ozon: 27 мая — 23 июня 2026. WB-срез NPC: 24 мая — 24 июня 2026. Цель — превратить маркетплейсы в источник заявок и аккуратно перевести обработку лидов в WhatsApp, Telegram и TG-бот.</div>
+      </div>
+    </div>
+    <div class="header-side">
+      <div class="period">Ozon 27.05–23.06 · WB 24.05–24.06</div>
+      <div class="tagrow">
+        <span class="tag">Ozon × 3</span><span class="tag">WB × 1</span><span class="tag">WhatsApp / TG / Bot</span><span class="tag">Реклама и воронка</span>
+      </div>
+    </div>
+  </div>
+</header>
+<main class="container">
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="card reveal">
+        <div class="card-content">
+          <p class="kicker">Управленческий вывод</p>
+          <h2 class="big-title gradient-text">Трафик есть. Основной разрыв — перевод корзин в заказы и обработка лидов.</h2>
+          <p class="lead">Суммарно по трём кабинетам Ozon собрано <b>73 752 показа</b>, <b>3 676 посещений карточек</b>, <b>141 добавление в корзину</b> и <b>10 заказов</b>. Самый крупный поток трафика — кабинет <b>NPS</b>; самый качественный сигнал по заказам и выкупу — <b>antero_nsk_bot</b>. Следующий шаг: убрать финансовые ограничения, запустить/дозапустить рекламу и связать карточки с быстрым сценарием заявки через мессенджеры.</p>
+          <div class="quick-actions">
+            <div class="action-card"><b>1. NPS</b><span>Закрыть долг 61 ₽, продолжить тест рекламы после запуска 19.06 и отдельно развести оффер по мягким окнам.</span></div>
+            <div class="action-card"><b>2. NPS потолки</b><span>Пополнить рекламный баланс на 5 500 ₽ и запускать аккуратный тест, так как заказов пока 0.</span></div>
+            <div class="action-card"><b>3. antero_nsk_bot</b><span>Баланс 5 480 ₽ готов. После доступа к рекламе — запускать первым тестом с контролем заявки.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card summary-panel reveal">
+        <div class="card-content">
+          <p class="kicker">Сводка</p>
+          <div class="metric-list">
+            <div class="metric-line"><span>Показы всего</span><b class="count" data-value="73752">0</b></div>
+            <div class="metric-line"><span>Посещения карточек</span><b class="count" data-value="3676">0</b></div>
+            <div class="metric-line"><span>Добавления в корзину</span><b class="count" data-value="141">0</b></div>
+            <div class="metric-line"><span>Заказано товаров</span><b class="count" data-value="10">0</b></div>
+            <div class="metric-line"><span>Выкуплено</span><b class="count" data-value="1">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="overview">Обзор</button>
+    <button class="tab-btn" data-tab="cabinets">Кабинеты</button>
+    <button class="tab-btn" data-tab="funnel">Воронка</button>
+    <button class="tab-btn" data-tab="traffic">Трафик</button>
+    <button class="tab-btn" data-tab="messengers">Мессенджеры</button>
+    <button class="tab-btn" data-tab="actions">Действия</button>
+  </nav>
+
+  <section class="panel active" id="overview">
+    <div class="section">
+      <div class="section-title reveal"><h2>Общий срез по проекту</h2><p>Сводные цифры по трём кабинетам Ozon. WB-кабинет учитываем как отдельный канал, но для полноценного расчёта нужна его выгрузка.</p></div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="label">Показы</div><div class="value count" data-value="73752">0</div><div class="hint">Суммарный верх воронки</div></div>
+        <div class="kpi"><div class="label">Поиск и каталог</div><div class="value count" data-value="17939">0</div><div class="hint">Целевой вход в карточки</div></div>
+        <div class="kpi"><div class="label">В карточку</div><div class="value">20,49%</div><div class="hint">Средняя конверсия поиска в карточку</div></div>
+        <div class="kpi"><div class="label">В корзину</div><div class="value">3,84%</div><div class="hint">Средняя конверсия карточки</div></div>
+        <div class="kpi"><div class="label">В заказ</div><div class="value">7,09%</div><div class="hint">Конверсия корзины в заказ</div></div>
+        <div class="kpi"><div class="label">Выкуп</div><div class="value">10%</div><div class="hint">1 выкуп из 10 заказов</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card chart-card reveal">
+          <div class="chart-head"><div><h3 class="chart-title">Сравнение кабинетов по объёму</h3><p class="chart-sub">Наведи на столбец — увидишь точное значение по каждому кабинету.</p></div><div class="legend"><span><i class="dot"></i>Показы</span><span><i class="dot b"></i>Посещения</span><span><i class="dot v"></i>Корзины</span><span><i class="dot g"></i>Заказы</span></div></div>
+          <div class="chart" id="chart-volume"></div>
+        </div>
+        <div class="card chart-card reveal">
+          <div class="chart-head"><div><h3 class="chart-title">Приоритет запуска рекламы</h3><p class="chart-sub">Оценка с учётом текущих ограничений, трафика, заказов и готовности рекламного кабинета.</p></div></div>
+          <div class="h-bars" id="priority-bars"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="cabinets">
+    <div class="section">
+      <div class="section-title reveal"><h2>Кабинеты и статусы</h2><p>Разделение по каждому кабинету: текущая ситуация, рекламная готовность и задача на ближайший шаг.</p></div>
+      <div class="table-wrap reveal">
+        <table>
+          <thead><tr><th>Кабинет</th><th>Статус</th><th>Баланс / долг</th><th>Показы</th><th>Посещения</th><th>Корзины</th><th>Заказы</th><th>Выкупы</th><th>Действие</th></tr></thead>
+          <tbody id="cab-table"></tbody>
+        </table>
+      </div>
+      <div class="grid-3" style="margin-top:16px;">
+        <div class="card reveal"><div class="card-content"><span class="badge blue">NPS</span><h3>NPS · мягкие окна</h3><p class="lead" style="font-size:14px; margin-top:12px;">Кабинет с самым большим трафиком: 55 778 показов и 2 876 посещений. После погашения долга 12 300 ₽ реклама включена 19 июня. Важно сразу закрыть остаточный долг 61 ₽ и не допустить паузы в рекламе.</p></div></div>
+        <div class="card reveal"><div class="card-content"><span class="badge orange">NPS потолки</span><h3>Натяжные потолки Сибири</h3><p class="lead" style="font-size:14px; margin-top:12px;">Есть показы и корзины, но заказов нет. Баланс 800 ₽ недостаточен. Для старта рекламы нужно пополнить на 5 500 ₽ и запускать не широкий трафик, а точечные коммерческие связки.</p></div></div>
+        <div class="card reveal"><div class="card-content"><span class="badge green">antero_nsk_bot</span><h3>Готов к рекламе после доступа</h3><p class="lead" style="font-size:14px; margin-top:12px;">Баланс 5 480 ₽ уже есть. Кабинет дал 3 заказа и 1 выкуп. После открытия доступа к рекламе — запускать аккуратный тест и вести заявки в TG-бот/мессенджеры.</p></div></div>
+        <div class="card reveal"><div class="card-content"><span class="badge orange">NPC WB</span><h3>WB · реклама не включена</h3><p class="lead" style="font-size:14px; margin-top:12px;">По кабинету NPC — Натяжные потолки Сибири на Wildberries есть 168 переходов в карточку и 2 корзины, но заказов нет. Рекламу пока не запускать в текущем виде: сначала усилить карточку, оффер и сценарий выхода в мессенджер.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="funnel">
+    <div class="section">
+      <div class="section-title reveal"><h2>Воронка продаж</h2><p>Основной провал не в показах, а в нижней части воронки: корзина → заказ → выкуп.</p></div>
+      <div class="grid-2">
+        <div class="card chart-card reveal">
+          <div class="chart-head"><div><h3 class="chart-title">Суммарная воронка по Ozon</h3><p class="chart-sub">Все 3 кабинета вместе: от показов до выкупов.</p></div></div>
+          <div class="funnel" id="funnel-chart"></div>
+        </div>
+        <div class="card chart-card reveal">
+          <div class="chart-head"><div><h3 class="chart-title">Конверсии по кабинетам</h3><p class="chart-sub">Сравнение ключевых конверсий. Наведение показывает %.</p></div><div class="legend"><span><i class="dot"></i>Поиск→карточка</span><span><i class="dot b"></i>Карточка→корзина</span><span><i class="dot v"></i>Корзина→заказ</span><span><i class="dot g"></i>Заказ→выкуп</span></div></div>
+          <div class="chart" id="chart-conversions"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="traffic">
+    <div class="section">
+      <div class="section-title reveal"><h2>Динамика и качество трафика</h2><p>Падение верхней части воронки компенсируется ростом отдельных нижних конверсий. Это значит: трафик нужно не расширять вслепую, а чистить и вести в быстрый контакт.</p></div>
+      <div class="grid-2">
+        <div class="card chart-card reveal">
+          <div class="chart-head"><div><h3 class="chart-title">Динамика заказов и корзин</h3><p class="chart-sub">Рост или падение относительно предыдущего периода по скринам аналитики.</p></div></div>
+          <div class="h-bars" id="dynamic-bars"></div>
+        </div>
+        <div class="card chart-card reveal">
+          <div class="chart-head"><div><h3 class="chart-title">Где есть потенциал</h3><p class="chart-sub">Сила кабинета не только в заказах, но и в объёме трафика, который можно конвертировать через мессенджеры.</p></div></div>
+          <div class="chart small" id="potential-chart"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="messengers">
+    <div class="section">
+      <div class="section-title reveal"><h2>Сценарий перевода заявок в мессенджеры</h2><p>Маркетплейсы используем как витрину и источник спроса. Дальше задача — быстро довести клиента до консультации, замера/расчёта и согласованного способа доставки.</p></div>
+      <div class="grid-2">
+        <div class="card reveal"><div class="card-content">
+          <p class="kicker">Маршрут заявки</p>
+          <div class="timeline">
+            <div class="time-item"><div class="time-dot">1</div><div class="time-box"><b>Ozon / WB карточка</b><span>Клиент получает первый контакт с оффером: потолки, мягкие окна, комплекты услуг, УТП и быстрый призыв к консультации.</span></div></div>
+            <div class="time-item"><div class="time-dot">2</div><div class="time-box"><b>WhatsApp / Telegram</b><span>Переход в мессенджер для уточнения размеров, города, сроков, стоимости и формата доставки/монтажа.</span></div></div>
+            <div class="time-item"><div class="time-dot">3</div><div class="time-box"><b>TG-бот</b><span>Автоматизация: сбор контакта, города, фото/замера, типа услуги, передача менеджеру.</span></div></div>
+            <div class="time-item"><div class="time-dot">4</div><div class="time-box"><b>Менеджер и доставка</b><span>Согласование финального расчёта, условий, маршрута доставки и оплаты в рамках выбранной модели работы.</span></div></div>
+          </div>
+        </div></div>
+        <div class="card reveal"><div class="card-content">
+          <p class="kicker">Что усилить</p>
+          <div class="todo">
+            <div><b>В карточках:</b> добавить явный CTA: «получить расчёт в WhatsApp / Telegram».</div>
+            <div><b>В описании:</b> прописать сценарий консультации: город, размер, фото, срок, доставка.</div>
+            <div><b>В боте:</b> сделать 5 быстрых кнопок: потолок, мягкое окно, замер, доставка, консультация.</div>
+            <div><b>В рекламе:</b> разделить кампании по кабинетам и офферам, не смешивать мягкие окна и потолки.</div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="actions">
+    <div class="section">
+      <div class="section-title reveal"><h2>План действий</h2><p>Чёткая последовательность, чтобы не распылять бюджет и быстрее показать клиенту управляемый результат.</p></div>
+      <div class="grid-3">
+        <div class="priority-card reveal"><span class="badge red">Срочно</span><h3>Закрыть финансовые блокеры</h3><p>По NPS закрыть долг 61 ₽. По NPS потолки пополнить рекламный баланс на 5 500 ₽. Без этого невозможно стабильно проверять рекламные связки.</p><div class="todo"><div>NPS: долг 61 ₽ → оплатить</div><div>NPS потолки: +5 500 ₽ → запуск теста</div><div>NPC WB: карточка/оффер → потом тест рекламы</div></div></div>
+        <div class="priority-card reveal"><span class="badge blue">Реклама</span><h3>Запустить по кабинетам отдельно</h3><p>Не объединять офферы в одну логику. NPS мягкие окна, NPS потолки и antero_nsk_bot должны иметь разные рекламные гипотезы.</p><div class="todo"><div>NPS: тест мягких окон</div><div>antero: старт после доступа</div><div>NPS потолки: тест после пополнения</div></div></div>
+        <div class="priority-card reveal"><span class="badge green">Продажи</span><h3>Собрать быстрый лид-контур</h3><p>Главная задача — не просто получить заказ на площадке, а не потерять клиента после посещения карточки и корзины.</p><div class="todo"><div>CTA в карточках</div><div>WhatsApp/TG ссылки</div><div>TG-бот с заявкой</div></div></div>
+      </div>
+      <div class="card reveal" style="margin-top:16px;"><div class="card-content">
+        <p class="kicker">Финальный вывод</p>
+        <h2 style="margin:8px 0 10px; font-size:32px; letter-spacing:-.04em;">Проект готов к росту, но рост зависит от дисциплины по рекламе и обработке заявок.</h2>
+        <p class="lead" style="margin:0;">Сейчас есть трафик и первые заказы, но кабинеты находятся на разных стадиях: один уже в рекламе, второй требует пополнения, третий ждёт доступ, а WB-кабинет NPC требует подготовки карточки перед рекламой. Правильная стратегия — не ждать органики, а последовательно закрыть финансовые и технические блокеры, запустить рекламу по каждому кабинету отдельно и переводить интерес в быстрые мессенджер-сценарии.</p>
+      </div></div>
+    </div>
+  </section>
+</main>
+<footer class="footer">ScaleUP Analytics · подготовлено для ИП Гутова Карина Николаевна · Ozon / WB · июнь 2026</footer>
+<script>
+const cabs = [{"name": "NPS", "label": "NPS · мягкие окна", "type": "Ozon", "period": "27 мая — 23 июня", "status": "Реклама включена 19.06", "balance": "Долг 61 ₽", "action": "Погасить 61 ₽, не допустить остановки рекламы", "note": "После погашения долга 12 300 ₽ реклама запущена. На кабинет добавлена категория «мягкие окна».", "impressions": 55778, "search": 10927, "search_to_card": 26.32, "visits": 2876, "card_to_cart": 4.17, "carts": 120, "cart_to_order": 5.83, "orders": 7, "order_to_buyout": 0, "buyouts": 0, "dyn": {"impressions": -23, "search": -34, "search_to_card": -10, "visits": -41, "card_to_cart": 35, "carts": -20, "cart_to_order": 118, "orders": 75, "buyouts": 0}, "priority": "Высокий", "priority_num": 1}, {"name": "NPS потолки Ozon", "label": "NPS · натяжные потолки Сибири", "type": "Ozon", "period": "27 мая — 23 июня", "status": "Реклама не включена", "balance": "Баланс 800 ₽", "action": "Пополнить на 5 500 ₽ и запустить тест", "note": "Кабинет готовится к запуску. Сейчас есть трафик и корзины, но заказов нет.", "impressions": 4849, "search": 2252, "search_to_card": 9.81, "visits": 221, "card_to_cart": 2.71, "carts": 6, "cart_to_order": 0, "orders": 0, "order_to_buyout": 0, "buyouts": 0, "dyn": {"impressions": -16, "search": 1, "search_to_card": -3, "visits": -2, "card_to_cart": 22, "carts": 20, "cart_to_order": -100, "orders": -100, "buyouts": 0}, "priority": "Средний", "priority_num": 3}, {"name": "antero_nsk_bot", "label": "antero_nsk_bot", "type": "Ozon", "period": "27 мая — 23 июня", "status": "Ждём доступ к рекламе", "balance": "Баланс 5 480 ₽", "action": "После доступа сразу включить рекламу", "note": "Кабинет уже даёт заказы и первый выкуп. Ограничение сейчас — ожидание доступа к рекламному кабинету Ozon.", "impressions": 13125, "search": 4760, "search_to_card": 12.16, "visits": 579, "card_to_cart": 2.59, "carts": 15, "cart_to_order": 20.0, "orders": 3, "order_to_buyout": 33.33, "buyouts": 1, "dyn": {"impressions": -46, "search": -41, "search_to_card": -19, "visits": -52, "card_to_cart": -49, "carts": -76, "cart_to_order": 519, "orders": 50, "buyouts": 0}, "priority": "Высокий после доступа", "priority_num": 2}, {"name": "NPC WB", "label": "NPC · натяжные потолки Сибири", "type": "Wildberries", "period": "24 мая — 24 июня", "status": "Реклама не включена", "balance": "Реклама выключена", "action": "Доработать карточку, оффер и запускать отдельный WB-тест", "note": "WB-кабинет: 168 переходов в карточку, 2 добавления в корзину, 0 заказов и 0 выкупов. Рекламное продвижение не запущено.", "impressions": 0, "search": 0, "search_to_card": 0, "visits": 168, "card_to_cart": 1.19, "carts": 2, "cart_to_order": 0, "orders": 0, "order_to_buyout": 0, "buyouts": 0, "dyn": {"impressions": 0, "search": 0, "search_to_card": 0, "visits": -29, "card_to_cart": -83, "carts": -83, "cart_to_order": 0, "orders": 0, "buyouts": 0}, "priority": "Подготовка", "priority_num": 4}];
+const total = {"impressions": 73752, "search": 17939, "visits": 3844, "carts": 143, "orders": 10, "buyouts": 1, "search_to_card": 20.49, "card_to_cart": 3.72, "cart_to_order": 6.99, "order_to_buyout": 10.0};
+const fmt = new Intl.NumberFormat('ru-RU');
+const tooltip = document.getElementById('tooltip');
+function showTip(e, html){ tooltip.innerHTML = html; tooltip.classList.add('show'); moveTip(e); }
+function moveTip(e){ tooltip.style.left = e.clientX + 'px'; tooltip.style.top = e.clientY + 'px'; }
+function hideTip(){ tooltip.classList.remove('show'); }
+function money(n){ return fmt.format(n) + ' ₽'; }
+function num(n){ return fmt.format(n); }
+function pct(n){ return String(n).replace('.', ',') + '%'; }
+
+function initTabs(){
+  const buttons = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.panel');
+  buttons.forEach(btn => btn.addEventListener('click', () => {
+    buttons.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    setTimeout(animateCharts, 60);
+  }));
+}
+function initReveal(){
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}
+function countUp(){
+  document.querySelectorAll('.count').forEach(el=>{
+    const target = Number(el.dataset.value || 0);
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    let start = performance.now();
+    function tick(t){
+      const p = Math.min(1, (t-start)/1100);
+      const val = Math.floor(target * (1 - Math.pow(1-p, 3)));
+      el.textContent = num(val);
+      if(p<1) requestAnimationFrame(tick); else el.textContent = num(target);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+function makeGroupedBarChart(id, metrics){
+  const root = document.getElementById(id); if(!root || root.dataset.ready) return;
+  root.dataset.ready = '1';
+  const max = Math.max(...cabs.flatMap(c => metrics.map(m => c[m.key])));
+  const chart = document.createElement('div'); chart.className = 'bar-chart';
+  cabs.forEach(c => {
+    const group = document.createElement('div'); group.className='bar-group';
+    const bars = document.createElement('div'); bars.className='bars';
+    metrics.forEach((m, idx) => {
+      const bar = document.createElement('div'); bar.className='bar metric' + (idx+1);
+      const h = Math.max(2, c[m.key] / max * 100);
+      bar.dataset.height = h + '%';
+      bar.addEventListener('mouseenter', e=>showTip(e, `<b>${c.label}</b><br>${m.label}: <b>${num(c[m.key])}</b>`));
+      bar.addEventListener('mousemove', moveTip); bar.addEventListener('mouseleave', hideTip);
+      bars.appendChild(bar);
+    });
+    const label = document.createElement('div'); label.className='bar-label'; label.textContent = c.name.length>18 ? c.name.slice(0,18)+'…' : c.name;
+    group.appendChild(bars); group.appendChild(label); chart.appendChild(group);
+  });
+  root.appendChild(chart);
+}
+function makeHbars(id, rows, max, colorClass=''){
+  const root = document.getElementById(id); if(!root || root.dataset.ready) return;
+  root.dataset.ready='1';
+  rows.forEach(r => {
+    const row = document.createElement('div'); row.className='h-row';
+    const name = document.createElement('div'); name.className='h-name'; name.textContent = r.name;
+    const track = document.createElement('div'); track.className='track';
+    const fill = document.createElement('div'); fill.className='fill ' + (r.color || colorClass); fill.dataset.width = Math.max(1, Math.abs(r.value)/max*100) + '%';
+    fill.addEventListener('mouseenter', e=>showTip(e, `<b>${r.name}</b><br>${r.tip || r.label}: <b>${r.label}</b>`));
+    fill.addEventListener('mousemove', moveTip); fill.addEventListener('mouseleave', hideTip);
+    track.appendChild(fill);
+    const val = document.createElement('div'); val.className='h-val'; val.textContent = r.label;
+    row.appendChild(name); row.appendChild(track); row.appendChild(val); root.appendChild(row);
+  });
+}
+function makeFunnel(){
+  const root = document.getElementById('funnel-chart'); if(!root || root.dataset.ready) return;
+  root.dataset.ready='1';
+  const rows = [
+    ['Показы всего', total.impressions, 'Верх воронки'],
+    ['Показы в поиске и каталоге', total.search, 'Целевые показы'],
+    ['Посещения карточек', total.visits, pct(total.search_to_card) + ' из поиска в карточку'],
+    ['Добавления в корзину', total.carts, pct(total.card_to_cart) + ' из карточки в корзину'],
+    ['Заказано товаров', total.orders, pct(total.cart_to_order) + ' из корзины в заказ'],
+    ['Выкуплено', total.buyouts, pct(total.order_to_buyout) + ' из заказа в выкуп']
+  ];
+  const max = rows[0][1];
+  rows.forEach(([name,value,sub])=>{
+    const el = document.createElement('div'); el.className='funnel-step';
+    const bg = document.createElement('div'); bg.className='bg'; bg.dataset.width = Math.max(2, value/max*100) + '%';
+    const r = document.createElement('div'); r.className='row';
+    r.innerHTML = `<div><b>${name}</b><br><span>${sub}</span></div><strong>${num(value)}</strong>`;
+    el.appendChild(bg); el.appendChild(r);
+    el.addEventListener('mouseenter', e=>showTip(e, `<b>${name}</b><br>Значение: <b>${num(value)}</b><br>${sub}`));
+    el.addEventListener('mousemove', moveTip); el.addEventListener('mouseleave', hideTip);
+    root.appendChild(el);
+  });
+}
+function makeTable(){
+  const tb = document.getElementById('cab-table'); if(!tb || tb.dataset.ready) return; tb.dataset.ready='1';
+  cabs.forEach(c=>{
+    let badge = c.status.includes('не') ? 'orange' : (c.status.includes('доступ') ? 'blue' : 'green');
+    tb.insertAdjacentHTML('beforeend', `<tr>
+      <td><b>${c.label}</b><br><span style="color:#8294ab">${c.type} · ${c.period}</span></td>
+      <td><span class="badge ${badge}">${c.status}</span></td>
+      <td>${c.balance}</td><td>${num(c.impressions)}</td><td>${num(c.visits)}</td><td>${num(c.carts)}</td><td><b>${num(c.orders)}</b></td><td>${num(c.buyouts)}</td><td>${c.action}</td>
+    </tr>`);
+  });
+}
+function makeDynamics(){
+  const rows = [];
+  cabs.forEach(c=>{
+    rows.push({name:c.name+' · заказы', value: c.dyn.orders, label:(c.dyn.orders>0?'+':'')+c.dyn.orders+'%', color:c.dyn.orders>=0?'green':'red', tip:'Динамика заказов'});
+    rows.push({name:c.name+' · корзины', value: c.dyn.carts, label:(c.dyn.carts>0?'+':'')+c.dyn.carts+'%', color:c.dyn.carts>=0?'green':'red', tip:'Динамика корзин'});
+  });
+  makeHbars('dynamic-bars', rows, 520);
+}
+function makePotentialChart(){
+  const root = document.getElementById('potential-chart'); if(!root || root.dataset.ready) return;
+  root.dataset.ready='1';
+  const metrics = [{key:'visits', label:'Посещения'},{key:'carts', label:'Корзины'},{key:'orders', label:'Заказы'}];
+  const max = Math.max(...cabs.flatMap(c => metrics.map(m=>c[m.key])));
+  const chart = document.createElement('div'); chart.className='bar-chart';
+  cabs.forEach(c => {
+    const group = document.createElement('div'); group.className='bar-group';
+    const bars = document.createElement('div'); bars.className='bars';
+    metrics.forEach((m, idx) => {
+      const bar = document.createElement('div'); bar.className='bar metric' + (idx+1);
+      bar.dataset.height = Math.max(2, c[m.key]/max*100)+'%';
+      bar.addEventListener('mouseenter', e=>showTip(e, `<b>${c.label}</b><br>${m.label}: <b>${num(c[m.key])}</b>`));
+      bar.addEventListener('mousemove', moveTip); bar.addEventListener('mouseleave', hideTip);
+      bars.appendChild(bar);
+    });
+    const label=document.createElement('div'); label.className='bar-label'; label.textContent=c.name.length>18?c.name.slice(0,18)+'…':c.name;
+    group.appendChild(bars); group.appendChild(label); chart.appendChild(group);
+  });
+  root.appendChild(chart);
+}
+function animateCharts(){
+  document.querySelectorAll('.bar').forEach(b => { if(b.dataset.height) b.style.height = b.dataset.height; });
+  document.querySelectorAll('.fill').forEach(f => { if(f.dataset.width) f.style.width = f.dataset.width; });
+  document.querySelectorAll('.funnel-step .bg').forEach(f => { if(f.dataset.width) f.style.width = f.dataset.width; });
+}
+function initAllCharts(){
+  makeGroupedBarChart('chart-volume', [{key:'impressions',label:'Показы'},{key:'visits',label:'Посещения'},{key:'carts',label:'Корзины'},{key:'orders',label:'Заказы'}]);
+  makeHbars('priority-bars', [
+    {name:'NPS · мягкие окна', value:88, label:'88/100', tip:'Реклама уже включена, самый большой трафик', color:'green'},
+    {name:'antero_nsk_bot', value:82, label:'82/100', tip:'Баланс готов, есть выкуп, ждём доступ', color:'violet'},
+    {name:'NPS · потолки Ozon', value:55, label:'55/100', tip:'Нужно пополнение 5 500 ₽, заказов пока 0', color:'orange'},
+    {name:'NPC · WB', value:38, label:'38/100', tip:'Реклама не включена. Есть 168 переходов, но 0 заказов — сначала правка карточки', color:'red'}
+  ], 100);
+  makeTable();
+  makeFunnel();
+  makeGroupedBarChart('chart-conversions', [{key:'search_to_card',label:'Поиск → карточка, %'},{key:'card_to_cart',label:'Карточка → корзина, %'},{key:'cart_to_order',label:'Корзина → заказ, %'},{key:'order_to_buyout',label:'Заказ → выкуп, %'}]);
+  makeDynamics();
+  makePotentialChart();
+  setTimeout(animateCharts, 220);
+}
+initTabs(); initReveal(); countUp(); initAllCharts();
+setTimeout(animateCharts, 500);
+</script>
+</body>
+</html>
