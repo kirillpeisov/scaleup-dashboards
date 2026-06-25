@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>ScaleUP · Аудит WB без скринов · ИП Давыдов Р. Ю.</title>
+<style>
+:root{
+  --bg:#0b1220; --bg2:#101a2e; --card:#121d31; --card2:#17243b; --line:#263852;
+  --text:#edf4ff; --muted:#8ea0b7; --blue:#63a8ff; --cyan:#5eead4; --pink:#ff4fa3;
+  --red:#ff5c77; --green:#4ade80; --amber:#fbbf24; --violet:#a78bfa; --white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  color:var(--text); background:
+  radial-gradient(900px 520px at 12% -10%, rgba(99,168,255,.22), transparent 60%),
+  radial-gradient(760px 520px at 92% 2%, rgba(255,79,163,.16), transparent 60%),
+  linear-gradient(180deg, #07101e 0%, #0b1220 42%, #09111d 100%);
+  overflow-x:hidden;
+}
+body:before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.22; z-index:-1;
+  background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size:54px 54px;
+  mask-image: radial-gradient(circle at 50% 15%, black, transparent 74%);
+}
+.wrap{width:min(1240px, calc(100vw - 36px)); margin:0 auto;}
+.hero{padding:34px 0 22px; position:relative;}
+.top{display:flex; gap:18px; align-items:center; justify-content:space-between; margin-bottom:26px;}
+.logo{display:flex; align-items:center; gap:15px}
+.logo img{width:86px; height:86px; object-fit:contain; border-radius:18px; box-shadow:0 18px 60px rgba(0,0,0,.35)}
+.badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid rgba(99,168,255,.32); border-radius:999px; color:#b9d9ff; background:rgba(99,168,255,.08); font-size:13px}
+h1{font-size:clamp(36px, 5.3vw, 76px); line-height:.96; margin:0; letter-spacing:-.06em}
+.sub{font-size:18px; color:var(--muted); max-width:830px; line-height:1.55; margin-top:16px}
+.heroGrid{display:grid; grid-template-columns: 1.2fr .8fr; gap:18px; align-items:stretch;}
+.panel{border:1px solid rgba(255,255,255,.09); background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.035)); border-radius:28px; box-shadow:0 30px 110px rgba(0,0,0,.36); backdrop-filter:blur(14px); overflow:hidden}
+.panel.pad{padding:24px}
+.productShot{min-height:390px; background:linear-gradient(135deg, rgba(99,168,255,.08), rgba(255,79,163,.07)); position:relative;}
+.productShot img{width:100%; height:100%; object-fit:cover; display:block; opacity:.92}
+.productShot:after{content:"Аудит карточки WB"; position:absolute; top:18px; left:18px; padding:9px 12px; border-radius:999px; background:rgba(8,15,28,.72); color:#d7e8ff; border:1px solid rgba(255,255,255,.14); font-size:13px}
+.kpiGrid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; margin-top:22px}
+.kpi{padding:18px; border:1px solid rgba(255,255,255,.08); border-radius:22px; background:rgba(255,255,255,.05); position:relative; overflow:hidden}
+.kpi:before{content:""; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); transform:translateX(-120%); animation:shine 5.8s infinite}
+@keyframes shine{45%,100%{transform:translateX(140%)}}
+.kpi .label{color:var(--muted); font-size:13px}
+.kpi .val{font-size:30px; font-weight:800; margin-top:8px; letter-spacing:-.04em}
+.kpi .bad{color:var(--red)} .kpi .good{color:var(--green)} .kpi .warn{color:var(--amber)}
+.tabs{position:sticky; top:0; z-index:20; margin:8px 0 24px; padding:10px; border:1px solid rgba(255,255,255,.08); border-radius:22px; background:rgba(8,15,28,.76); backdrop-filter:blur(18px); display:flex; gap:8px; overflow:auto}
+.tabBtn{border:0; color:#c7d6ea; background:transparent; padding:12px 15px; border-radius:15px; cursor:pointer; white-space:nowrap; font-weight:700; transition:.25s}
+.tabBtn.active,.tabBtn:hover{color:white; background:linear-gradient(135deg, rgba(99,168,255,.25), rgba(94,234,212,.13)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+section{display:none; animation:fadeUp .55s ease both} section.active{display:block}
+@keyframes fadeUp{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+.grid{display:grid; gap:18px} .g2{grid-template-columns:repeat(2,minmax(0,1fr))} .g3{grid-template-columns:repeat(3,minmax(0,1fr))} .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{border:1px solid rgba(255,255,255,.09); background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035)); border-radius:28px; padding:24px; box-shadow:0 24px 70px rgba(0,0,0,.26); position:relative; overflow:hidden}
+.card:hover{border-color:rgba(99,168,255,.35); transform:translateY(-2px); transition:.25s}
+.card h2,.card h3{margin:0 0 12px; letter-spacing:-.03em} .card h2{font-size:30px} .card h3{font-size:22px}
+.muted{color:var(--muted)} .mini{font-size:13px} .red{color:var(--red)} .green{color:var(--green)} .amber{color:var(--amber)} .cyan{color:var(--cyan)} .blue{color:var(--blue)}
+.problem{display:flex; gap:14px; padding:15px; border-radius:18px; background:rgba(255,92,119,.09); border:1px solid rgba(255,92,119,.18); margin-top:10px}
+.problem b{color:#fff}
+.ok{background:rgba(74,222,128,.08); border-color:rgba(74,222,128,.18)}
+.warnBox{background:rgba(251,191,36,.08); border-color:rgba(251,191,36,.18)}
+.pill{display:inline-flex; padding:7px 10px; border-radius:999px; background:rgba(255,255,255,.08); color:#dbeafe; font-size:12px; margin:4px 6px 0 0; border:1px solid rgba(255,255,255,.08)}
+.chart{height:270px; position:relative; margin-top:16px; border-radius:22px; padding:18px; background:rgba(8,15,28,.42); border:1px solid rgba(255,255,255,.07)}
+.bars{height:210px; display:flex; align-items:end; gap:11px; padding:15px 8px 30px; position:relative}
+.bar{flex:1; min-width:24px; border-radius:10px 10px 4px 4px; background:linear-gradient(180deg, var(--blue), var(--cyan)); height:0; animation:grow 1.15s ease forwards; position:relative; box-shadow:0 0 22px rgba(99,168,255,.22)}
+.bar.redbar{background:linear-gradient(180deg, var(--red), #ff9a9e)} .bar.violet{background:linear-gradient(180deg, var(--violet), var(--pink))}
+.bar:hover::after,.dot:hover::after,.hbar:hover::after{
+  content:attr(data-tip); position:absolute; z-index:10; left:50%; bottom:calc(100% + 10px); transform:translateX(-50%);
+  white-space:nowrap; background:#06101e; color:white; border:1px solid rgba(255,255,255,.14); padding:9px 10px; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.4); font-size:12px
+}
+@keyframes grow{to{height:var(--h)}}
+.xlabels{position:absolute; bottom:10px; left:24px; right:24px; display:flex; gap:11px; color:#92a4ba; font-size:11px; text-align:center}
+.xlabels span{flex:1; overflow:hidden; text-overflow:ellipsis}
+.hbars{display:grid; gap:10px; margin-top:18px}
+.hbarRow{display:grid; grid-template-columns:160px 1fr 70px; align-items:center; gap:12px; font-size:13px}
+.hbarTrack{height:14px; background:rgba(255,255,255,.07); border-radius:99px; overflow:visible}
+.hbar{height:14px; width:0; border-radius:99px; background:linear-gradient(90deg, var(--blue), var(--cyan)); animation:wide 1.1s .1s ease forwards; position:relative}
+@keyframes wide{to{width:var(--w)}}
+.funnel{display:grid; gap:12px; margin-top:18px}
+.funnelStep{display:grid; grid-template-columns:170px 1fr 70px; gap:12px; align-items:center}
+.stepTrack{height:32px; background:rgba(255,255,255,.06); border-radius:99px; overflow:hidden}
+.stepFill{height:100%; width:0; background:linear-gradient(90deg, #4f46e5, #ff4fa3); border-radius:99px; animation:wide 1.3s ease forwards}
+.table{width:100%; border-collapse:collapse; overflow:hidden; border-radius:16px; font-size:14px}
+.table th,.table td{padding:13px 12px; border-bottom:1px solid rgba(255,255,255,.08); text-align:left}
+.table th{color:#aebdd0; font-weight:700; background:rgba(255,255,255,.04)} .table tr:hover td{background:rgba(99,168,255,.055)}
+.checklist{display:grid; gap:12px} .task{display:flex; gap:12px; padding:14px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); border-radius:18px}
+.num{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#05101d;font-weight:900;flex:0 0 32px}
+.evidence{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px}
+.evidence img{width:100%; border-radius:18px; border:1px solid rgba(255,255,255,.12); box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.progress{height:9px; background:rgba(255,255,255,.07); border-radius:99px; overflow:hidden; margin-top:8px} .progress span{display:block; height:100%; width:var(--w); background:linear-gradient(90deg,var(--red),var(--amber)); animation:wide 1.2s ease forwards}
+.footer{padding:40px 0 60px; color:#7f8da1; text-align:center}
+.reveal{opacity:0; transform:translateY(20px); transition:.7s ease} .reveal.show{opacity:1; transform:none}
+@media(max-width:900px){.heroGrid,.g2,.g3,.g4,.evidence{grid-template-columns:1fr} h1{font-size:42px} .top{align-items:flex-start; flex-direction:column} .hbarRow,.funnelStep{grid-template-columns:1fr}}
+
+.auditPanel{padding:24px; min-height:390px; display:flex; flex-direction:column; justify-content:space-between; background:linear-gradient(135deg, rgba(99,168,255,.12), rgba(94,234,212,.06), rgba(255,79,163,.06));}
+.auditPanel:after{display:none}
+.auditBadge{display:inline-flex; width:max-content; padding:9px 12px; border-radius:999px; background:rgba(8,15,28,.72); color:#d7e8ff; border:1px solid rgba(255,255,255,.14); font-size:13px; margin-bottom:14px}
+.auditStack{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+.auditMetric{padding:15px; border-radius:18px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.055)}
+.auditMetric span{display:block; color:var(--muted); font-size:12px; margin-bottom:6px}
+.auditMetric b{font-size:22px; letter-spacing:-.03em}
+.auditMetric.danger{border-color:rgba(255,92,119,.26); background:rgba(255,92,119,.09)}
+.auditMetric.danger b{color:var(--red)}
+.auditNote{margin:16px 0 0; line-height:1.5}
+@media(max-width:900px){.auditStack{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="hero wrap">
+<div class="top">
+<div class="logo">
+<img alt="ScaleUP" src="data:image/jpeg;base64,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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf//Z"/>
+<div>
+<div class="badge">ScaleUP Audit · Wildberries</div>
+<div class="muted mini" style="margin-top:8px">Предварительная аналитика для ИП Давыдов Роман Юрьевич</div>
+</div>
+</div>
+<div class="badge">Артикул WB: 909407696 · карточка: комбинезон</div>
+</div>
+<div class="heroGrid">
+<div class="panel pad">
+<h1>Карточка продаёт слабо — потенциал есть, но сейчас деньги заморожены</h1>
+<p class="sub">Аудит показывает критичный разрыв: товар выглядит как сильная нишевая позиция с рейтингом 4,9 и большим остатком, но текущий объём заказов низкий. Для закрытия клиента важно показать не “всё хорошо”, а конкретные зоны потерь и план, как вывести карточку в продажи.</p>
+<div class="kpiGrid">
+<div class="kpi"><div class="label">Заказы за 30 дней</div><div class="val red">7 шт</div><div class="muted mini">≈ 0,23 заказа в день</div></div>
+<div class="kpi"><div class="label">Выручка за 30 дней</div><div class="val">16 723 ₽</div><div class="muted mini">низко для остатка 369 шт</div></div>
+<div class="kpi"><div class="label">Остаток</div><div class="val warn">369 шт</div><div class="muted mini">товара хватит примерно на 52,7 месяца</div></div>
+<div class="kpi"><div class="label">Розничная сумма остатка</div><div class="val red">714 015 ₽</div><div class="muted mini">369 шт × 1 935 ₽</div></div>
+</div>
+</div>
+<div class="panel productShot auditPanel">
+<div class="auditBadge">Аналитика без скринов · сервисная проверка</div>
+<div class="auditStack">
+<div class="auditMetric"><span>Артикул WB</span><b>909407696</b></div>
+<div class="auditMetric"><span>Цена на витрине</span><b>1 935 ₽</b></div>
+<div class="auditMetric"><span>Текущий остаток</span><b>369 шт</b></div>
+<div class="auditMetric"><span>Розничная сумма остатка</span><b>714 015 ₽</b></div>
+<div class="auditMetric danger"><span>Темп продаж</span><b>7 заказов / 30 дней</b></div>
+<div class="auditMetric danger"><span>Прогноз оборачиваемости</span><b>≈ 52,7 месяца</b></div>
+</div>
+<p class="muted mini auditNote">Данные предварительного аудита собраны по открытой карточке WB, отзывам и внешним сервисам аналитики. Для финальной стратегии нужен полный доступ к кабинету.</p>
+</div>
+</div>
+</header>
+<nav class="tabs wrap">
+<button class="tabBtn active" data-tab="overview">Обзор</button>
+<button class="tabBtn" data-tab="card">Карточка</button>
+<button class="tabBtn" data-tab="funnel">Воронка и продажи</button>
+<button class="tabBtn" data-tab="reviews">Отзывы</button>
+<button class="tabBtn" data-tab="risks">Минусы</button>
+<button class="tabBtn" data-tab="plan">План работ</button>
+<button class="tabBtn" data-tab="methods">Методика и доступ</button>
+</nav>
+<main class="wrap">
+<section class="active" id="overview">
+<div class="grid g3 reveal">
+<div class="card"><h3>Основной диагноз</h3><p class="muted">Карточка имеет рейтинг и остаток, но не имеет нормального оборота. Главная задача — не просто включить рекламу, а сначала усилить оффер и конверсию карточки.</p><div class="problem"><span>⚠️</span><div><b>369 шт на складе при 7 заказах за 30 дней.</b><br/><span class="muted">При таком темпе оборачиваемость выглядит критично.</span></div></div></div>
+<div class="card"><h3>Потенциал</h3><p class="muted">Ниша понятная: женский спортивный комбинезон, фитнес/йога/прогулки, круглый сезон. Рейтинг высокий, размерная сетка заполнена, складов много.</p><div class="problem ok"><span>✅</span><div><b>Есть база для роста.</b><br/><span class="muted">Но без переработки карточки реклама будет дорогой.</span></div></div></div>
+<div class="card"><h3>Что продаём клиенту</h3><p class="muted">Не “ведение рекламы”, а антикризисную упаковку карточки: визуал, SEO, оффер, конверсия, отзывы, склады, реклама по CPA.</p><div class="problem warnBox"><span>🔥</span><div><b>Сначала исправляем потери, потом масштабируем.</b><br/><span class="muted">Так аудит выглядит профессионально.</span></div></div></div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="card reveal">
+<h3>Методология аудита</h3>
+<p class="muted">Аналитика подготовлена по внешним сервисам и открытым данным: <b class="cyan">Маяк</b>, <b class="cyan">MPStats</b>, <b class="cyan">Wildbox</b>, <b class="cyan">Evirma</b>, карточка WB и выгрузка отзывов.</p>
+<div class="problem ok"><span>✓</span><div><b>Это не визуальный разбор “на глаз”.</b><br/><span class="muted">Цифры сверены по нескольким источникам, но финальная стратегия требует доступов.</span></div></div>
+</div>
+<div class="card reveal">
+<h3>Что нужно для финального расчёта</h3>
+<p class="muted">Для точной экономики и медиаплана нужен полный доступ от кабинета WB: реклама, продажи, выкупы, финансы, остатки, поисковые запросы, складская аналитика.</p>
+<div class="problem"><span>!</span><div><b>Без доступа нельзя корректно посчитать чистую прибыль и допустимый рекламный расход.</b><br/><span class="muted">Сейчас аудит показывает зоны потерь и потенциал закрытия.</span></div></div>
+</div>
+</div>
+
+<div class="grid g2" style="margin-top:18px">
+<div class="card reveal">
+<h2>Карта текущих метрик</h2>
+<div class="chart">
+<div class="bars">
+<div class="bar" data-tip="Остаток: 369 шт" style="--h:86%"></div>
+<div class="bar violet" data-tip="Рейтинг карточки: 4,9" style="--h:72%"></div>
+<div class="bar redbar" data-tip="Заказы за 30 дней: 7" style="--h:12%"></div>
+<div class="bar redbar" data-tip="Выкуп: 27,4%" style="--h:27%"></div>
+<div class="bar" data-tip="Возвраты: 23,87%" style="--h:23%"></div>
+</div>
+<div class="xlabels"><span>Остаток</span><span>Рейтинг</span><span>Заказы</span><span>Выкуп</span><span>Возвраты</span></div>
+</div>
+</div>
+<div class="card reveal">
+<h2>Главные цифры для разговора</h2>
+<table class="table">
+<tr><th>Метрика</th><th>Значение</th><th>Вывод</th></tr>
+<tr><td>Цена</td><td>1 935 ₽</td><td>нужно тестировать оффер и скидку</td></tr>
+<tr><td>Заказов за 30 дней</td><td>7</td><td class="red">очень низкий оборот</td></tr>
+<tr><td>Остаток</td><td>369 шт</td><td class="red">заморозка товара</td></tr>
+<tr><td>Выкуп</td><td>27,4%</td><td class="red">низкая подтверждённая продажа</td></tr>
+<tr><td>Комиссия</td><td>34,5 / 38%</td><td>нужна жёсткая экономика рекламы</td></tr>
+</table>
+</div>
+</div>
+</section>
+<section id="card">
+<div class="grid g2">
+<div class="card reveal">
+<h2>Разбор карточки товара</h2>
+<p class="muted">Карточка визуально заметная, но есть риск: первый экран больше похож на креатив “под бренд”, чем на аккуратную товарную упаковку. Для аудитории WB это может снижать доверие и мешать конверсии.</p>
+<div class="problem"><span>⚠️</span><div><b>На главном фото крупно используется “SKIMS”.</b><br/><span class="muted">Это может давать риск по доверию, модерации и позиционированию. Лучше уводить карточку в собственный визуальный стиль.</span></div></div>
+<div class="problem"><span>⚠️</span><div><b>Недостаточно сильный первый экран.</b><br/><span class="muted">Нужны понятные УТП: посадка, молния, эффект утяжки, ткань, размеры, сценарии носки.</span></div></div>
+<div class="problem"><span>⚠️</span><div><b>Описание длинное, но не продаёт структурно.</b><br/><span class="muted">Его надо разбить на выгоды, сценарии и ответы на возражения: просвечивает/не просвечивает, размер, плотность, рост.</span></div></div>
+</div>
+<div class="card reveal">
+<h2>Размеры и остатки</h2>
+<div class="hbars" id="sizeBars"></div>
+<p class="muted mini" style="margin-top:16px">Размеры доступны, но избыток остатка без спроса усиливает финансовый риск. Рекламу нельзя запускать “в лоб” на весь остаток — только после улучшения карточки и теста конверсии.</p>
+</div>
+</div>
+<div class="card reveal" style="margin-top:18px">
+<h2>Что нужно изменить в карточке</h2>
+<div class="grid g4">
+<div class="problem ok"><span>1</span><div><b>Первое фото</b><br/><span class="muted">сделать чистым, без спорной имитации бренда, с сильным УТП.</span></div></div>
+<div class="problem ok"><span>2</span><div><b>Инфографика</b><br/><span class="muted">ткань, посадка, молния, сезон, сценарии носки.</span></div></div>
+<div class="problem ok"><span>3</span><div><b>SEO</b><br/><span class="muted">пересобрать название и описание под запросы: спорт, йога, фитнес, утягивающий.</span></div></div>
+<div class="problem ok"><span>4</span><div><b>Отзывы</b><br/><span class="muted">ответить на негатив и усилить фото-UGC.</span></div></div>
+</div>
+</div>
+</section>
+<section id="funnel">
+<div class="grid g2">
+<div class="card reveal">
+<h2>Воронка: где теряется продажа</h2>
+<div class="funnel">
+<div class="funnelStep"><span>Видимость</span><div class="stepTrack"><div class="stepFill" data-tip="Товар виден, но не набирает заказы" style="--w:100%"></div></div><b>100%</b></div>
+<div class="funnelStep"><span>Интерес</span><div class="stepTrack"><div class="stepFill" style="--w:38%"></div></div><b>слабый</b></div>
+<div class="funnelStep"><span>Заказы</span><div class="stepTrack"><div class="stepFill" style="--w:10%"></div></div><b>7 шт</b></div>
+<div class="funnelStep"><span>Выкуп</span><div class="stepTrack"><div class="stepFill" style="--w:27.4%"></div></div><b>27,4%</b></div>
+<div class="funnelStep"><span>Оборот остатка</span><div class="stepTrack"><div class="stepFill" style="--w:8%"></div></div><b>низкий</b></div>
+</div>
+</div>
+<div class="card reveal">
+<h2>Расчёт заморозки</h2>
+<p class="muted">Если ориентироваться на текущие 7 заказов за 30 дней, остатка 369 шт хватает примерно на <b class="red">52.7 месяца</b>. Это главный аргумент в пользу срочного усиления карточки и рекламы.</p>
+<div class="kpiGrid">
+<div class="kpi"><div class="label">Остаток</div><div class="val warn">369 шт</div></div>
+<div class="kpi"><div class="label">Продажи / 30 дней</div><div class="val red">7 шт</div></div>
+<div class="kpi"><div class="label">Оценка продажи остатка</div><div class="val red">52.7 мес.</div></div>
+<div class="kpi"><div class="label">Деньги на витрине</div><div class="val">714,015 ₽</div></div>
+</div>
+</div>
+</div>
+<div class="card reveal" style="margin-top:18px">
+<h2>Складская концентрация</h2>
+<div class="hbars" id="whBars"></div>
+</div>
+</section>
+<section id="reviews">
+<div class="grid g3">
+<div class="card reveal"><h3>Отзывы из выгрузки</h3><div class="kpi"><div class="label">Всего в файле</div><div class="val">143</div><div class="muted mini">карточка показывает 360 отзывов</div></div></div>
+<div class="card reveal"><h3>Средний рейтинг</h3><div class="kpi"><div class="label">По выгрузке</div><div class="val">4.70</div><div class="muted mini">на карточке видно 4,9</div></div></div>
+<div class="card reveal"><h3>Фото-UGC</h3><div class="kpi"><div class="label">Отзывы с фото</div><div class="val">16 <span class="muted mini">(11.2%)</span></div><div class="muted mini">для одежды это мало</div></div></div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="card reveal">
+<h2>Распределение оценок</h2>
+<div class="hbars" id="ratingBars"></div>
+</div>
+<div class="card reveal">
+<h2>Динамика отзывов</h2>
+<div class="chart">
+<div class="bars" id="monthBars"></div>
+<div class="xlabels" id="monthLabels"></div>
+</div>
+<p class="muted mini">В июне средняя оценка по выгрузке ниже исторического уровня: 4.44. Есть свежий отзыв на 1★, это нужно обработать ответом продавца.</p>
+</div>
+</div>
+<div class="card reveal" style="margin-top:18px">
+<h2>Что говорят отзывы</h2>
+<div class="grid g3">
+<div class="problem ok"><span>✅</span><div><b>Сильные стороны</b><br/><span class="muted">удобство, посадка, приятная ткань, подходит для спорта и прогулок.</span></div></div>
+<div class="problem warnBox"><span>⚠️</span><div><b>Повторяющиеся возражения</b><br/><span class="muted">тонкая ткань, просвечивание, нужен размер больше, ожидание более сильной утяжки.</span></div></div>
+<div class="problem"><span>🧨</span><div><b>Что бьёт по выкупу</b><br/><span class="muted">ожидание “утягивающего эффекта” выше, чем реальность; это надо честно объяснить в карточке.</span></div></div>
+</div>
+</div>
+</section>
+<section id="risks">
+<div class="card reveal">
+<h2>Минусы, которые нужно подсветить клиенту</h2>
+<p class="muted">Формулировки ниже можно использовать на созвоне: не обвинять, а показать, где магазин теряет деньги и почему нужна системная работа.</p>
+<div class="grid g2" style="margin-top:14px">
+<div class="problem"><span>1</span><div><b>Остаток большой, оборот маленький.</b><br/><span class="muted">369 шт при 7 заказах за месяц — товар фактически лежит, а не работает.</span></div></div>
+<div class="problem"><span>2</span><div><b>Низкий выкуп 27,4%.</b><br/><span class="muted">Даже если рекламой привести заказы, часть денег будет теряться на отказах/возвратах.</span></div></div>
+<div class="problem"><span>3</span><div><b>Слабая упаковка первого экрана.</b><br/><span class="muted">Картинка цепляет, но больше похожа на “дешёвый аналог бренда”, а не на собственный сильный продукт.</span></div></div>
+<div class="problem"><span>4</span><div><b>Недостаточно фото-отзывов.</b><br/><span class="muted">Только 11.2% отзывов из выгрузки с фото. Для одежды визуальное доверие критично.</span></div></div>
+<div class="problem"><span>5</span><div><b>Возражения в отзывах не закрыты в карточке.</b><br/><span class="muted">Тонкая ткань, просвечивание, размер — это надо вынести в инфографику, иначе будет продолжаться низкий выкуп.</span></div></div>
+<div class="problem"><span>6</span><div><b>Рекламу нельзя масштабировать без подготовки.</b><br/><span class="muted">С текущей конверсией реклама может просто ускорить слив бюджета и возвраты.</span></div></div>
+</div>
+</div>
+<div class="card reveal" style="margin-top:18px">
+<h2>Рейтинг рисков</h2>
+<div class="hbars">
+<div class="hbarRow"><span>Заморозка остатка</span><div class="hbarTrack"><div class="hbar" data-tip="369 шт / ~714 015 ₽ по рознице" style="--w:92%; background:linear-gradient(90deg,var(--red),var(--amber))"></div></div><b class="red">92%</b></div>
+<div class="hbarRow"><span>Выкуп</span><div class="hbarTrack"><div class="hbar" data-tip="Выкуп 27,4% — зона риска" style="--w:73%; background:linear-gradient(90deg,var(--red),var(--amber))"></div></div><b class="red">73%</b></div>
+<div class="hbarRow"><span>Первый экран</span><div class="hbarTrack"><div class="hbar" data-tip="Нужно менять визуальное позиционирование" style="--w:68%; background:linear-gradient(90deg,var(--red),var(--amber))"></div></div><b class="amber">68%</b></div>
+<div class="hbarRow"><span>Отзывы/UGC</span><div class="hbarTrack"><div class="hbar" data-tip="Мало фото-отзывов для категории одежды" style="--w:54%; background:linear-gradient(90deg,var(--amber),var(--cyan))"></div></div><b class="amber">54%</b></div>
+</div>
+</div>
+
+<div class="grid g2" style="margin-top:18px">
+<div class="card reveal">
+<h3>Точные цифры риска</h3>
+<table class="table"><tr><th>Показатель</th><th>Значение</th><th>Что означает</th></tr>
+<tr><td>Остаток</td><td>369 шт</td><td>замороженный товар</td></tr>
+<tr><td>Сумма остатка в рознице</td><td>714 015 ₽</td><td>потенциал выручки без оборота</td></tr>
+<tr><td>Заказы за 30 дней</td><td>7 шт</td><td>низкий спрос / слабая карточка</td></tr>
+<tr><td>Выкуп</td><td>27,4%</td><td>высокий риск возвратов</td></tr>
+<tr><td>Комиссия WB</td><td>34,5 / 38%</td><td>сильно давит на маржу</td></tr>
+<tr><td>Возвраты</td><td>23,87%</td><td>нужна работа с ожиданиями и посадкой</td></tr>
+</table>
+</div>
+<div class="card reveal">
+<h3>Почему нельзя просто включить рекламу</h3>
+<p class="muted">При текущей конверсии и выкупе реклама может разогнать показы, но не гарантирует прибыль. Сначала нужно поднять конверсию карточки, снизить барьер покупки и проверить экономику.</p>
+<div class="problem"><span>⚠️</span><div><b>Реклама без упаковки = риск ускорить слив бюджета.</b><br/><span class="muted">Сначала фото, оффер, SEO, отзывы, цена, затем тестовая РК.</span></div></div>
+</div>
+</div>
+</section>
+<section id="plan">
+<div class="grid g2">
+<div class="card reveal">
+<h2>План работы на 14 дней</h2>
+<div class="checklist">
+<div class="task"><div class="num">1</div><div><b>Пересобрать первый экран и инфографику</b><br/><span class="muted">Убрать рискованный визуал “под бренд”, сделать собственное позиционирование: посадка, молния, ткань, размер, сценарии.</span></div></div>
+<div class="task"><div class="num">2</div><div><b>Переписать SEO и описание</b><br/><span class="muted">Ключи: комбинезон женский спортивный, для фитнеса, йоги, утягивающий, на молнии, для прогулок.</span></div></div>
+<div class="task"><div class="num">3</div><div><b>Закрыть возражения по размеру и ткани</b><br/><span class="muted">Добавить размерную памятку, “как сидит”, кому брать на размер больше, плотность/просвечивание.</span></div></div>
+<div class="task"><div class="num">4</div><div><b>Ответить на негатив и усилить отзывы</b><br/><span class="muted">Ответить на 1–3★, стимулировать фото-отзывы, использовать сильные фразы покупателей в инфографике.</span></div></div>
+<div class="task"><div class="num">5</div><div><b>Запустить тест рекламы только после правок</b><br/><span class="muted">Поиск + каталог, лимит 700–1000 ₽/день, контроль CPA, отключение связок без корзин/заказов.</span></div></div>
+</div>
+</div>
+<div class="card reveal">
+<h2>Рекламная стратегия</h2>
+<table class="table">
+<tr><th>Этап</th><th>Что делаем</th><th>Контроль</th></tr>
+<tr><td>День 1–3</td><td>Правка карточки</td><td>CTR, корзины</td></tr>
+<tr><td>День 4–7</td><td>Тест поиска</td><td>цена корзины / цена заказа</td></tr>
+<tr><td>День 8–10</td><td>Каталог + ретаргет</td><td>добавления в корзину</td></tr>
+<tr><td>День 11–14</td><td>Оставить рабочие связки</td><td>CPA и выкуп</td></tr>
+</table>
+<div class="problem warnBox"><span>Важно</span><div><b>Не запускать большой бюджет сразу.</b><br/><span class="muted">При выкупе 27,4% масштаб без правок может увеличить возвраты и кассовый разрыв.</span></div></div>
+</div>
+</div>
+<div class="card reveal" style="margin-top:18px">
+<h2>Коммерческий вывод для клиента</h2>
+<p class="sub" style="margin:0">Карточка не провальная, но сейчас она не реализует потенциал: сильный остаток, рейтинг и ниша есть, а оборота нет. Поэтому задача ScaleUP — не просто “запустить рекламу”, а провести упаковку карточки, исправить конверсию, снизить риски выкупа и только потом масштабировать трафик. Без этого товар продолжит лежать на складе и замораживать деньги.</p>
+</div>
+</section>
+<section id="methods">
+<div class="grid g2">
+<div class="card reveal">
+<h2>Как проводилась аналитика</h2>
+<p class="muted">Аудит выполнен не по визуальному впечатлению, а по связке данных из карточки WB, выгрузки отзывов и сервисов аналитики маркетплейсов.</p>
+<div class="problem ok"><span>📊</span><div><b>Использованные источники:</b><br/><span class="muted">Маяк, MPStats, Wildbox, Evirma, открытые данные карточки WB, выгрузка отзывов по артикулу 909407696.</span></div></div>
+<div class="problem warnBox"><span>⚠️</span><div><b>Точность аудита предварительная.</b><br/><span class="muted">Для расчёта чистой прибыли, рекламы, ДРР, заказов, выкупов, остатков и поисковых фраз необходим полный доступ к кабинету WB.</span></div></div>
+</div>
+<div class="card reveal">
+<h2>Что нужно запросить у клиента</h2>
+<div class="checklist">
+<div class="task"><div class="num">1</div><div><b>Полный доступ к кабинету WB</b><br/><span class="muted">Статистика, реклама, финансы, заказы, выкупы, остатки, поисковые запросы.</span></div></div>
+<div class="task"><div class="num">2</div><div><b>Доступ к рекламному кабинету</b><br/><span class="muted">Кампании, ставки, расходы, CTR, CPC/CPM, заказы с рекламы, ДРР.</span></div></div>
+<div class="task"><div class="num">3</div><div><b>Финансовая модель товара</b><br/><span class="muted">Себестоимость, логистика, комиссия, налог, упаковка, маржинальность.</span></div></div>
+<div class="task"><div class="num">4</div><div><b>Остатки и поставки</b><br/><span class="muted">Фактическое наличие по складам, план поставок, себестоимость замороженного остатка.</span></div></div>
+</div>
+</div>
+</div>
+<div class="grid g3" style="margin-top:18px">
+<div class="card reveal"><h3>Критичная цифра</h3><div class="kpi"><div class="label">Остаток в рознице</div><div class="val red">714 015 ₽</div><div class="muted mini">369 шт × 1 935 ₽</div></div></div>
+<div class="card reveal"><h3>Скорость продаж</h3><div class="kpi"><div class="label">Факт за 30 дней</div><div class="val red">7 заказов</div><div class="muted mini">≈ 0,23 заказа в день</div></div></div>
+<div class="card reveal"><h3>Оборотность</h3><div class="kpi"><div class="label">При текущем темпе</div><div class="val red">52,7 мес</div><div class="muted mini">критически длинный цикл распродажи</div></div></div>
+</div>
+</section>
+</main>
+<footer class="footer wrap">
+  ScaleUP Analytics · Предварительный аудит карточки WB · ИП Давыдов Роман Юрьевич
+</footer>
+<script>
+const whData=[{"name": "Алексин", "value": 244, "share": 66.1}, {"name": "Невинномысск", "value": 100, "share": 27.1}, {"name": "Самарская обл.", "value": 13, "share": 3.5}, {"name": "Электросталь", "value": 4, "share": 1.1}, {"name": "Свердловская обл.", "value": 2, "share": 0.5}, {"name": "Котовск", "value": 2, "share": 0.5}, {"name": "Коледино", "value": 1, "share": 0.3}, {"name": "Казань", "value": 1, "share": 0.3}, {"name": "Владимир", "value": 1, "share": 0.3}, {"name": "СПБ Шушары", "value": 1, "share": 0.3}];
+const sizeData=[{"name": "S", "market": 98, "wb": 102}, {"name": "M", "market": 93, "wb": 97}, {"name": "L", "market": 89, "wb": 93}, {"name": "XL", "market": 89, "wb": 93}];
+const ratingData=[{"name": "1★", "value": 4, "share": 2.8}, {"name": "2★", "value": 2, "share": 1.4}, {"name": "3★", "value": 4, "share": 2.8}, {"name": "4★", "value": 13, "share": 9.1}, {"name": "5★", "value": 120, "share": 83.9}];
+const monthData=[{"m": "2025-11", "count": 13, "avg": 4.38}, {"m": "2025-12", "count": 5, "avg": 4.8}, {"m": "2026-01", "count": 10, "avg": 4.5}, {"m": "2026-02", "count": 12, "avg": 5.0}, {"m": "2026-03", "count": 21, "avg": 4.9}, {"m": "2026-04", "count": 9, "avg": 4.89}, {"m": "2026-05", "count": 14, "avg": 4.71}, {"m": "2026-06", "count": 11, "avg": 4.45}];
+
+function money(n){return new Intl.NumberFormat('ru-RU').format(n)}
+
+document.querySelectorAll('.tabBtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top: document.querySelector('.tabs').offsetTop-6, behavior:'smooth'});
+  });
+});
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+function hBars(el, data, max, labelKey='name', valKey='value', suffix='') {
+  const root=document.getElementById(el);
+  root.innerHTML=data.map(d=>{
+    const pct=Math.max(3, d[valKey]/max*100);
+    const tip = `${d[labelKey]}: ${d[valKey]}${suffix}${d.share!==undefined ? ' · '+d.share+'%' : ''}`;
+    return `<div class="hbarRow"><span>${d[labelKey]}</span><div class="hbarTrack"><div class="hbar" style="--w:${pct}%" data-tip="${tip}"></div></div><b>${d[valKey]}${suffix}</b></div>`;
+  }).join('');
+}
+hBars('whBars', whData, Math.max(...whData.map(d=>d.value)), 'name','value',' шт');
+hBars('ratingBars', ratingData, Math.max(...ratingData.map(d=>d.value)), 'name','value','');
+
+document.getElementById('sizeBars').innerHTML=sizeData.map(d=>`
+  <div class="hbarRow"><span>${d.name}</span><div class="hbarTrack"><div class="hbar" style="--w:${Math.max(12,d.market/110*100)}%" data-tip="Размер ${d.name}: маркетплейс ${d.market} шт, WB ${d.wb} шт"></div></div><b>${d.market} / ${d.wb}</b></div>
+`).join('');
+
+const mb=document.getElementById('monthBars'), ml=document.getElementById('monthLabels');
+if(mb){
+  const maxC=Math.max(...monthData.map(d=>d.count));
+  mb.innerHTML=monthData.map(d=>`<div class="bar violet" style="--h:${Math.max(8,d.count/maxC*100)}%" data-tip="${d.m}: ${d.count} отзывов · средняя ${d.avg}"></div>`).join('');
+  ml.innerHTML=monthData.map(d=>`<span>${d.m.replace('2026-','').replace('2025-','')}</span>`).join('');
+}
+</script>
+</body>
+</html>
